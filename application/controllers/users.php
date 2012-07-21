@@ -23,8 +23,12 @@ class Users extends CI_Controller {
             $allUsers = $this->users_model->getUsers( $userID );
             $userToTotalsMap = NULL;
             foreach( $allUsers as $user ) {
-                $userToTotalsMap[ $user[ 'user_id' ] ][ 'total' ] = $this->users_model->getTotalBeerCountForUser( $user[ 'user_id' ] )[ 0 ][ 'beer_count' ];
-                $userToTotalsMap[ $user[ 'user_id' ] ][ 'unique' ] = $this->users_model->getUniqueBeerCountForUser( $user[ 'user_id' ] )[ 0 ][ 'unique_count' ];
+                $result = $this->users_model->getTotalBeerCountForUser( $user[ 'user_id' ] );
+                $total = $result[ 0 ][ 'beer_count' ];
+                $userToTotalsMap[ $user[ 'user_id' ] ][ 'total' ] = $total;
+                $result = $this->users_model->getUniqueBeerCountForUser( $user[ 'user_id' ] );
+                $unique = $result[ 0 ][ 'unique_count' ];
+                $userToTotalsMap[ $user[ 'user_id' ] ][ 'unique' ] = $unique;
             }
             $data[ 'allUsers' ] = $allUsers;
             $data[ 'totals' ] = $userToTotalsMap;

@@ -81,6 +81,7 @@ class Styles_Model extends CI_Model {
                 ->from( 'beer_sub_style' )
                 ->order_by( 'substyle_name', 'asc' )
                 ->where( 'style_id', $styleID )
+                ->where( 'substyle_id', $substyleID )
                 ->get();
         }
         if( $query->num_rows > 0 ) {
