@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>All Drinkers</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>Totals</h1>" ?>
-<p>
+<section id="totals">
+    <div class="page-header">
+        <h1>Totals</h1>
+    </div>
+    <div>
     <?php
+        $tmpl = array (
+            'table_open' => '<table class="table table-bordered">'
+        );
+        $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
         foreach( $allUsers as $user ) {
             $base = base_url( "index.php/users/totals/" . $user[ 'user_id' ] );
@@ -34,20 +31,23 @@
         }
         echo $this->table->generate();
     ?>
-</p>
-
-<?php echo "<h2> Recent Beers </h2>" ?>
-<?php
-    $this->table->set_heading( 'Date', 'Person', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
-    foreach( $drinkLog as $log ) {
-        $beerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
-        $beerAnchor = anchor( $beerBase, $log[ 'beer_name' ] );
-        $brewerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] );
-        $brewerAnchor = anchor( $brewerBase, $log[ 'brewer_name' ] );
-        $this->table->add_row( $log[ 'date' ], $log[ 'display_name' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
-    }
-    echo $this->table->generate();
-?>
-
-</body>
-</html>
+    </div>
+</section>
+<section id="recent">
+    <div class="page-header">
+        <h1> Recent Beers </h1>
+    </div>
+    <div>
+    <?php
+        $this->table->set_heading( 'Date', 'Person', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
+        foreach( $drinkLog as $log ) {
+            $beerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
+            $beerAnchor = anchor( $beerBase, $log[ 'beer_name' ] );
+            $brewerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] );
+            $brewerAnchor = anchor( $brewerBase, $log[ 'brewer_name' ] );
+            $this->table->add_row( $log[ 'date' ], $log[ 'display_name' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
+        }
+        echo $this->table->generate();
+    ?>
+    </div>
+</section>

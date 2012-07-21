@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title>Brewery Profile - " . $brewery[ 'name' ] . "</title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>" . $brewery[ 'full_name' ] . "</h1>" ?>
-<p>
+<h1><?php echo $brewery[ 'full_name' ] ?></h1>
+<address>
     <?php echo $brewery[ 'street' ] ?>
-    <?php echo "<br>" ?>
+    <br>
     <?php
         $cityBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/";
         if( isset( $brewery[ 'region' ] ) ) {
@@ -35,21 +25,25 @@
 
         echo $location;
     ?>
-    <?php echo "<br>" ?>
+    <br>
     <?php
-        $base = "index.php/beer/location/" . $brewery[ 'country' ] . "/";
+        $base = "beer/location/" . $brewery[ 'country' ] . "/";
         $anchor = anchor( base_url( $base ), $brewery[ 'country_name' ] );
         echo $anchor;
     ?>
-    <?php echo "<br>" ?>
-</p>
+</address>
 <p>
     <?php
         echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
     ?>
 </p>
-    <?php echo "<h2> Beers </h2>" ?>
+<section id="beers">
+<h2>Beers</h2>
     <?php
+        $tmpl = array(
+            'table_open' => '<table class="table table-bordered">'
+        );
+        $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Beer', 'Style', 'ABV', 'BA Rating' );
         foreach( $beers as $beer ) {
             $name  = $beer[ 'beer_name' ];
@@ -69,7 +63,4 @@
         }
         echo $this->table->generate();
     ?>
-</p>
-
-</body>
-</html>
+</section>

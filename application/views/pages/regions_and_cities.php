@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title>" . $country[ 'name' ] . " | " . ( empty( $regions ) ? "Cities" : "Regions" ) . "</title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
 <?php
     if( empty( $regions ) ) {
         $base1 = base_url( "index.php/beer/location/" . $country[ '3166_1_id' ] );
@@ -58,6 +48,3 @@
     }
     
 ?>
-
-</body>
-</html>

@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title>" . $city[ 'city' ] . " | " . ( $region == NULL ? "" : $region[ 'rgn_name' ] . " | " ) . $country[ 'name' ] . "</title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-<?php echo "<h1>" . $city[ 'city' ] . "</h1>" ?>
+<h1><?php echo $city[ 'city' ] ?></h1>
 <p>
     <?php
         if( $region != NULL ) {
@@ -34,6 +25,3 @@
         echo $this->table->generate();
     ?>
 </p>
-
-</body>
-</html>

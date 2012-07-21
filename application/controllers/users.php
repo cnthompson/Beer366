@@ -18,6 +18,9 @@ class Users extends CI_Controller {
     }
 
     public function totals( $userID = 0 ) {
+        $data[ 'title' ] = 'All Drinkers';
+        $this->load->view( 'templates/header.php', $data );
+
         if( $userID <= 0 ) {
             $this->load->library( 'table' );
             $allUsers = $this->users_model->getUsers( $userID );
@@ -42,5 +45,7 @@ class Users extends CI_Controller {
             $data[ 'fives' ] = $this->beers_model->getBeersByRating( $userID, 5 );
             $this->load->view( 'pages/user_profile', $data );
         }
+
+        $this->load->view( 'templates/footer.php', $data );
     }
 }

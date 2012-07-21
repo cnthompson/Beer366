@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>All Breweries</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>All Breweries</h1>" ?>
+<h1>All Breweries</h1>
 <p>
     <?php
         $this->table->set_heading( 'Brewery' );
@@ -26,6 +16,3 @@
         echo $this->table->generate();
     ?>
 </p>
-
-</body>
-</html>

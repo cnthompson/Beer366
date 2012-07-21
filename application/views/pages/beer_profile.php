@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title>Beer Profile - " . $brewery[ 'name' ] . " | " . $beer[ 'beer_name' ] . "</title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>" . $beer[ 'beer_name' ] . "</h1>" ?>
+<h1><?php echo $beer[ 'beer_name' ] ?></h1>
 <p>
-    <?php echo "<b>" . "Brewed By:" ."</b>" ?>
-    <?php echo "<br>" ?>
+    <b>Brewed By:</b>
+    <br>
     <?php
         $breweryName = $brewery[ 'full_name' ];
         $s1 = base_url( "index.php/beer/info/" . $brewery[ 'brewery_id' ] );
         $nameAnchor = anchor( $s1, $breweryName );
         echo $nameAnchor;
     ?>
-    <?php echo "<br>" ?>
+    <br>
+    <address>
     <?php
         $cityBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/";
         if( isset( $brewery[ 'region' ] ) ) {
@@ -42,7 +33,7 @@
 
         echo $location;
     ?>
-
+    </address>
 </p>
 <p>
     <?php echo "<b>" . "Style:" ."</b>" ?>
@@ -65,9 +56,13 @@
         echo $ba;
     ?>
 </p>
-<?php echo "<h2> Logged Drinks </h2>" ?>
+<h2> Logged Drinks </h2>
 <?php
     if( $drinkLog != false ) {
+        $tmpl = array(
+            'table_open' => '<table class="table table-bordered">'
+        );
+        $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Date', 'Person', 'Serving', 'Rating', 'Notes' );
         foreach( $drinkLog as $log ) {
             $this->table->add_row( $log[ 'date' ], $log[ 'display_name' ], $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
@@ -77,5 +72,3 @@
         echo 'No one has logged this beer yet';
     }
 ?>
-</body>
-</html>
