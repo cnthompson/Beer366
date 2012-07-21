@@ -9,7 +9,10 @@
 <body>
 
 <div id="container">
-    <h1>Welcome to Beer 366!</h1>
+    <?php
+    $name = $_SESSION[ 'displayname' ];
+    echo "<h1>Welcome to Beer 366, " . $name . "!</h1>"
+    ?>
 </div>
 
 </body>

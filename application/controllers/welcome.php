@@ -22,7 +22,7 @@ class Welcome extends CI_Controller {
         session_start();
         parent::__construct();
         
-        if( !isset( $_SESSION[ 'username' ] ) ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
         }
     }

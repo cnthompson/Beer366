@@ -19,6 +19,21 @@ class Authenticate_Model extends CI_Model {
         }
         return false;
     }
+    
+    public function change_pw( $email, $oldPW, $newPW ) {
+        $data = array(
+            'password' => sha1( $newPW ),
+            );
+        $q = $this->db
+            ->where( 'password', sha1( $oldPW ) )
+            ->where( 'email', $email )
+            ->update( 'users', $data );
+        if( $q == 1 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>
