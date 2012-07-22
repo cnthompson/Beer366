@@ -1,18 +1,23 @@
 <h1>All Breweries</h1>
-<p>
+<?php
+$currentLetter = '';
+?>
+<?php
+foreach( $breweries as $brewery ):
+?>
     <?php
-        $this->table->set_heading( 'Brewery' );
-        foreach( $breweries as $brewery ) {
-            $s1 = base_url( "index.php/beer/info/" . $brewery[ 'brewery_id' ] );
-            $s2 = anchor( $s1, $brewery[ 'name' ] );
-            $numBeers = " (" . $brewery[ 'num_beers' ] . " beer";
-            if( $brewery[ 'num_beers' ] == 1 ) {
-                $numBeers .= ")";
-            } else {
-                $numBeers .= "s)";
-            }
-            $this->table->add_row( $s2 . $numBeers );
-        }
-        echo $this->table->generate();
+    if( strtoupper( substr( $brewery['name'], 0, 1 ) ) != $currentLetter ):
+        $currentLetter = strtoupper( substr( $brewery['name'], 0, 1 ) );
     ?>
-</p>
+        <a name="<?php echo $currentLetter ?>"></a>
+        <div class="span12"><h2><?php echo $currentLetter ?></h2></div>
+    <?php
+    endif;
+    ?>
+    <div class="span3">
+        <a href="<?php echo base_url( 'beer/info/' . $brewery['brewery_id'] ) ?>"><?php echo $brewery['name'] ?></a>
+        &nbsp;(<?php echo $brewery['num_beers'] ?>)
+    </div>
+<?php
+endforeach;
+?>
