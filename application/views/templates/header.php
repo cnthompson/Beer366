@@ -21,6 +21,16 @@
                     ?>
                     <li><a href="/beer/info">Breweries</a></li>
                     <li><a href="/beer/location">Locations</a></li>
+                    <?php
+                        if( isset($_SESSION['userid']) ) {
+                            echo '<li><a href="/authenticate/logout/">Sign Out</a></li>';
+                        }
+                    ?>
+                    <?php
+                        if( isset($_SESSION['userid']) ) {
+                            echo '<li><a href="/users/info/">User Info</a></li>';
+                        }
+                    ?>
                 </ul>
             </div>
         </div>

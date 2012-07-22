@@ -54,15 +54,16 @@ class Authenticate extends CI_Controller {
                 echo 'Password successfully changed.';
             }
         }
-        
+        $header[ 'title' ] = 'Change Password';
+        $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'change_pw_view' );
     }
-    
+
     public function cur_pw_check( $pw ) {
         $this->load->model('authenticate_model');
         $res = $this->authenticate_model->verify_user( $_SESSION[ 'email' ], $pw );
         if( $res == false ) {
-            $this->form_validation->set_message( 'cur_pw_check', 'You current password is not correct.' );
+            $this->form_validation->set_message( 'cur_pw_check', 'Your current password is not correct.' );
             return FALSE;
         }
         return TRUE;

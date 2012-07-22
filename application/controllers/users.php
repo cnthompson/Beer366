@@ -17,6 +17,15 @@ class Users extends CI_Controller {
         redirect( 'users/totals' );
     }
 
+    public function info() {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $header[ 'title' ] = 'User Information';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/user_info.php' );
+    }
+    
     public function totals( $userID = 0 ) {
         $data[ 'title' ] = 'All Drinkers';
         $this->load->view( 'templates/header.php', $data );
