@@ -8,7 +8,13 @@
 </head>
 <body>
 
-<h1> Login </h1>
+<div class="page-header">
+    <h1>Login</h1>
+</div>
+<?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
+<?php if ( $error ): ?>
+    <div class="alert alert-error"><?php echo $error ?></div>
+<?php endif; ?>
 <?php echo form_open('authenticate'); ?>
 <p>
     <?php
@@ -31,10 +37,8 @@
     ?>
 </p>
 <p>
-    <?php echo form_submit( 'submit', 'login' ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Login', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
-
-<div  class="errors"> <?php echo validation_errors(); ?> </div>
 </body>
 </html>
