@@ -50,6 +50,32 @@ class Drinkers_Model extends CI_Model {
         }
     }
 
+    public function getBeersByABV( $userID, $limit ) {
+        $query = $this
+            ->db
+            ->select( 'drink_log.*, beers.beer_name AS beer_name, beers.beer_id AS beer_id, breweries.name AS brewer_name, breweries.brewery_id AS brewery_id, beers.beer_abv' )
+            ->from( 'drink_log' )
+            ->join( 'beers', 'beers.beer_id = drink_log.beer_id', 'inner' )
+            ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
+            ->group_by( 'drink_log.beer_id' )
+            ->order_by( 'beers.beer_abv', 'desc' )
+            ->order_by( 'beers.beer_name', 'asc' )
+            ->limit( $limit );
+        if( $userID > 0 ) {
+            $query = $this
+                ->db
+                ->where( 'drink_log.user_id', $userID );
+        }
+        $query = $this
+            ->db
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
 
 }
 

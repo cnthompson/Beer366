@@ -9,7 +9,7 @@ class Authenticate extends CI_Controller {
 
     public function index() {
         if( isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'welcome' );
+            redirect( 'users' );
         }
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email_address', 'Email Address', 'required|valid_email' );
@@ -38,7 +38,7 @@ class Authenticate extends CI_Controller {
     
     public function changePassword() {
         if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'welcome' );
+            redirect( 'authenticate' );
         }
 
         $this->load->library( 'form_validation' );
@@ -60,6 +60,9 @@ class Authenticate extends CI_Controller {
     }
 
     public function cur_pw_check( $pw ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         $this->load->model('authenticate_model');
         $res = $this->authenticate_model->verify_user( $_SESSION[ 'email' ], $pw );
         if( $res == false ) {
@@ -70,6 +73,9 @@ class Authenticate extends CI_Controller {
     }
     
     public function new_pw_check( $pw ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         if( $pw == 'meow' ) {
             $this->form_validation->set_message( 'new_pw_check', 'The %s field can not be the word "meow"' );
             return FALSE;

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
     <title><?php echo $title ?></title>
     <style>label { display: block; } .errors { color: red;} </style>
     <link href="<?php echo base_url(); ?>/css/bootstrap.css" rel="stylesheet">
@@ -21,6 +22,7 @@
                     ?>
                     <li><a href="/beer/info">Breweries</a></li>
                     <li><a href="/beer/location">Locations</a></li>
+                    <li><a href="/beer/styles">Styles</a></li>
                     <?php
                         if( isset($_SESSION['userid']) ) {
                             echo '<li><a href="/authenticate/logout/">Sign Out</a></li>';

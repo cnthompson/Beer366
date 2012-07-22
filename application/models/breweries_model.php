@@ -30,7 +30,7 @@ class Breweries_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getBreweriesByLocation( $countryID, $regionID, $city = NULL ) {
         $query = $this
             ->db
@@ -74,6 +74,21 @@ class Breweries_Model extends CI_Model {
             return array();
         }
     }
+
+    function getBreweryTypes() {
+        $query = $this
+            ->db
+            ->select( '*' )
+            ->from( 'brewery_types' )
+            ->order_by( 'brewery_types.brewer_type_name', 'asc' )
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
 
 }
 

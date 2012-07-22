@@ -33,6 +33,25 @@
     ?>
     </div>
 </section>
+<section id="abv">
+    <div class="page-header">
+        <h1> Strongest Beers </h1>
+    </div>
+    <div>
+    <?php
+        $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
+        foreach( $abv as $a ) {
+            $beerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
+            $beerAnchor = anchor( $beerBase, $a[ 'beer_name' ] );
+            $brewerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] );
+            $brewerAnchor = anchor( $brewerBase, $a[ 'brewer_name' ] );
+            $percent = sprintf( '%.2f%%', $a[ 'beer_abv' ] );
+            $this->table->add_row( $beerAnchor, $brewerAnchor, $percent );
+        }
+        echo $this->table->generate();
+    ?>
+    </div>
+</section>
 <section id="recent">
     <div class="page-header">
         <h1> Recent Beers </h1>

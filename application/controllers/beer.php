@@ -14,13 +14,16 @@ class Beer extends CI_Controller {
 
     public function index() {
         if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'welcome' );
+            redirect( 'authenticate' );
         }
-        echo 'Meow';
+        redirect( 'info/' );
     }
 
 
     public function info( $brewery = 0, $beer = 0 ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         $this->load->library( 'table' );
         if( $brewery <= 0 ) {
             $data[ 'breweries' ] = $this->breweries_model->getBreweries( $brewery );
@@ -57,10 +60,15 @@ class Beer extends CI_Controller {
     }
 
     public function styles( $family = 0, $style = 0, $substyle = 0 ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         $this->load->library( 'table' );
         if( $family <= 0 || $style <= 0 ) {
             $data[ 'families' ] = $this->styles_model->getFamilies( $family );
             $data[ 'styles'   ] = $this->styles_model->getStyles( $family, $style );
+            $header[ 'title' ] = 'Beer Styles';
+            $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/beer_styles', $data );
         } else if( $substyle <= 0 ) {
             $families = $this->styles_model->getFamilies( $family );
@@ -71,6 +79,8 @@ class Beer extends CI_Controller {
                 $data[ 'family' ] = $families[ 0 ];
                 $data[ 'style' ] = $styles[ 0 ];
                 $data[ 'substyles' ] = $this->styles_model->getSubStyles( $style );
+                $header[ 'title' ] = 'Beer Sub Styles';
+                $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/beer_substyles', $data );
             }
         } else {
@@ -84,12 +94,17 @@ class Beer extends CI_Controller {
                 $data[ 'style' ] = $styles[ 0 ];
                 $data[ 'substyle' ] = $substyles[ 0 ];
                 $data[ 'beers' ] = $this->beers_model->getBeersBySubStyle( $substyle );
+                $header[ 'title' ] = "Beer Sub-Style | " . $styles[ 0 ][ 'style_name' ] . " | " . $substyles[ 0 ][ 'substyle_name' ];
+                $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/substyle_profile', $data );
             }
         }
     }
 
     public function location( $countryID = 0, $regionID = 0, $city = NULL ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         $this->load->library( 'table' );
         if( $city != NULL ) {
             $city = urldecode( $city );

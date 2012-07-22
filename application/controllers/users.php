@@ -12,7 +12,7 @@ class Users extends CI_Controller {
 
     public function index() {
         if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'welcome' );
+            redirect( 'authenticate' );
         }
         redirect( 'users/totals' );
     }
@@ -27,6 +27,9 @@ class Users extends CI_Controller {
     }
     
     public function totals( $userID = 0 ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
         $data[ 'title' ] = 'All Drinkers';
         $this->load->view( 'templates/header.php', $data );
 
@@ -45,6 +48,7 @@ class Users extends CI_Controller {
             $data[ 'allUsers' ] = $allUsers;
             $data[ 'totals' ] = $userToTotalsMap;
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 7 );
+            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
             $this->load->view( 'pages/all_users', $data );
         } else {
             $this->load->library( 'table' );
@@ -52,6 +56,7 @@ class Users extends CI_Controller {
             $data[ 'user' ] = $allUsers[ 0 ];
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 10 );
             $data[ 'fives' ] = $this->beers_model->getBeersByRating( $userID, 5 );
+            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
             $this->load->view( 'pages/user_profile', $data );
         }
 

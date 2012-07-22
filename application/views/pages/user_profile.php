@@ -13,6 +13,25 @@
     }
 ?>
 </ul>
+<h2>Strongest</h2>
+<ul>
+<?php
+    $tmpl = array(
+        'table_open' => '<table class="table table-bordered">'
+    );
+    $this->table->set_template( $tmpl );
+    $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
+    foreach( $abv as $a ) {
+        $beerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
+        $beerAnchor = anchor( $beerBase, $a[ 'beer_name' ] );
+        $brewerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] );
+        $brewerAnchor = anchor( $brewerBase, $a[ 'brewer_name' ] );
+        $percent = sprintf( '%.2f%%', $a[ 'beer_abv' ] );
+        $this->table->add_row( $beerAnchor, $brewerAnchor, $percent );
+    }
+    echo $this->table->generate();
+?>
+</ul>
 <h2> Recent Beers </h2>
 <?php
     $tmpl = array(

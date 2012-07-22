@@ -4,14 +4,18 @@ class Location_Model extends CI_Model {
     function __construct() {
     }
 
-    public function getCountries( $countryID = 0 ) {
+    public function getCountries( $countryID = 0, $withBreweries = true ) {
         $query = $this
             ->db
             ->select( 'iso_3166_1.*, COUNT( iso_3166_1.3166_1_id ) AS num_brewers'  )
             ->from( 'iso_3166_1' )
-            ->join( 'breweries', 'breweries.country =  iso_3166_1.3166_1_id', 'inner' )
             ->group_by( 'iso_3166_1.3166_1_id' )
             ->order_by( 'iso_3166_1.name', 'asc' );
+        if( $withBreweries ) {
+            $query = $this
+                ->db
+                ->join( 'breweries', 'breweries.country =  iso_3166_1.3166_1_id', 'inner' );
+        }
         if( $countryID <= 0 ) {
             $query = $this
                 ->db
@@ -29,37 +33,55 @@ class Location_Model extends CI_Model {
         }
     }
     
-    public function getRegions( $countryID = 0, $regionID = 0 ) {
+    public function getRegions( $countryID = 0, $regionID = 0, $withBreweries = true ) {
         $query = NULL;
         if( $countryID <= 0 ) {
             $query = $this
                 ->db
                 ->select( 'iso_3166_2.*, COUNT( iso_3166_2.3166_2_id ) AS num_brewers'  )
                 ->from( 'iso_3166_2' )
-                ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' )
                 ->group_by( 'iso_3166_2.3166_2_id' )
-                ->order_by( 'iso_3166_2.rgn_name', 'asc' )
+                ->order_by( 'iso_3166_2.rgn_name', 'asc' );
+            if( $withBreweries ) {
+                $query = $this
+                    ->db
+                    ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' );
+            }
+            $query = $this
+                ->db
                 ->get();
         } else if( $regionID <= 0 ) {
             $query = $this
                 ->db
                 ->select( 'iso_3166_2.*, COUNT( iso_3166_2.3166_2_id ) AS num_brewers'  )
                 ->from( 'iso_3166_2' )
-                ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' )
                 ->where( 'iso_3166_2.3166_1_id', $countryID )
                 ->group_by( 'iso_3166_2.3166_2_id' )
-                ->order_by( 'iso_3166_2.rgn_name', 'asc' )
+                ->order_by( 'iso_3166_2.rgn_name', 'asc' );
+            if( $withBreweries ) {
+                $query = $this
+                    ->db
+                    ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' );
+            }
+            $query = $this
+                ->db
                 ->get();
         } else {
             $query = $this
                 ->db
                 ->select( 'iso_3166_2.*, COUNT( iso_3166_2.3166_2_id ) AS num_brewers'  )
                 ->from( 'iso_3166_2' )
-                ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' )
                 ->where( 'iso_3166_2.3166_1_id', $countryID )
                 ->where( 'iso_3166_2.3166_2_id', $regionID )
                 ->group_by( 'iso_3166_2.3166_2_id' )
-                ->order_by( 'iso_3166_2.rgn_name', 'asc' )
+                ->order_by( 'iso_3166_2.rgn_name', 'asc' );
+            if( $withBreweries ) {
+                $query = $this
+                    ->db
+                    ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' );
+            }
+            $query = $this
+                ->db
                 ->get();
         }
         if( $query->num_rows > 0 ) {
