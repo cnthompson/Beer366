@@ -24,6 +24,7 @@ class Users extends CI_Controller {
         $header[ 'title' ] = 'User Information';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/user_info.php' );
+        $this->load->view( 'templates/footer.php', null );
     }
     
     public function totals( $userID = 0 ) {
@@ -60,6 +61,6 @@ class Users extends CI_Controller {
             $this->load->view( 'pages/user_profile', $data );
         }
 
-        $this->load->view( 'templates/footer.php', $data );
+        $this->load->view( 'templates/footer.php', null );
     }
 }
