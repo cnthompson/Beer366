@@ -5,7 +5,10 @@ class Log extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model( 'breweries_model' );
+        $this->load->model( 'beers_model' );
         $this->load->model( 'location_model' );
+        $this->load->model( 'styles_model' );
+        $this->load->model( 'drinkers_model' );
         session_start();
     }
 
@@ -22,31 +25,270 @@ class Log extends CI_Controller {
             redirect( 'authenticate' );
         }
 
-        $data[ 'lastCountry' ] = '226';
+        $data[ 'error' ] = '';
+
         $allCountries = $this->location_model->getCountries( 0, false );
         foreach( $allCountries as $country ) {
             $data[ 'countries' ][ $country[ '3166_1_id' ] ] = $country[ 'name' ];
+            $data[ 'c2rMap' ][ $country[ '3166_1_id' ] ] = array();
         }
 
-        $data[ 'lastRegion' ] = '0';
         $allRegions = $this->location_model->getRegions( 226, 0, false );
-        $data[ 'regions' ][ '0' ] = '---';
         foreach( $allRegions as $region ) {
-            $data[ 'regions' ][ $region[ '3166_2_id' ] ] = $region[ 'rgn_name' ];
+            $data[ 'c2rMap' ][ $region[ '3166_1_id' ] ][ $region[ '3166_2_id' ] ] = $region[ 'rgn_name' ];
         }
 
-        $data[ 'lastBreweryType' ] = '0';
         $allTypes = $this->breweries_model->getBreweryTypes();
         foreach( $allTypes as $type ) {
             $data[ 'breweryTypes' ][ $type[ 'brewer_type' ] ] = $type[ 'brewer_type_name' ];
         }
 
         $this->load->library( 'form_validation' );
-        if( $this->form_validation->run() !== false ) {
 
+        $this->form_validation->set_rules( 'shortname', 'Brewery Name', 'trim|required' );
+        $this->form_validation->set_rules( 'fullname', 'Full Brewery Name', 'trim|required' );
+
+        $this->form_validation->set_rules( 'address', 'Street Address', 'trim' );
+        $this->form_validation->set_rules( 'city', 'City', 'trim|required' );
+        $this->form_validation->set_rules( 'postcode', 'Postal Code', 'trim' );
+        $this->form_validation->set_rules( 'country', 'Country', 'required|callback_checkCountry' );
+        $this->form_validation->set_rules( 'region', 'Region', 'callback_checkRegion' );
+
+        $this->form_validation->set_rules( 'homepage', 'Home Page', 'trim' );
+        $this->form_validation->set_rules( 'brewerytype', 'Brewery Type', 'required|callback_checkBreweryType' );
+        $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
+
+        if( $this->form_validation->run() !== false ) {
+            $sName = $this->input->post( 'shortname' );
+            $fName = $this->input->post( 'fullname' );
+            $address = $this->input->post( 'address' );
+            $city = $this->input->post( 'city' );
+            $post = $this->input->post( 'postcode' );
+            $country = $this->input->post( 'country' );
+            $region = $this->input->post( 'region' );
+            $homepage = $this->input->post( 'homepage' );
+            $type = $this->input->post( 'brewerytype' );
+            $notes = $this->input->post( 'notes' );
+            $res = $this->breweries_model->updateBrewery( -1, $sName, $fName, $address, $city, $post, $country, $region, $homepage, $type, $notes );
+            if( $res == 0 ) {
+                 $data[ 'error' ] = 'An unknown error occurred while adding the brewery.';
+            } else {
+                echo 'Brewery Added.';
+                $brewerBase = base_url( "index.php/beer/info/" . $res );
+                redirect( $brewerBase );
+            }
         }
-        $header[ 'title' ] = 'Log Brewery';
+        $header[ 'title' ] = 'Add Brewery';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_brewery', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+
+    function checkCountry( $country ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->location_model->getCountries( $country, false );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkCountry', 'Your country selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkRegion( $region ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->location_model->getRegions( 0, $region, false );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkRegion', 'Your region selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkBreweryType( $type ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->breweries_model->getBreweryTypes( $type );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkBreweryType', 'Your brewery type selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    public function beer() {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+
+        $data[ 'error' ] = '';
+
+        $allBreweries = $this->breweries_model->getBreweries( 0, false );
+        foreach( $allBreweries as $brewery ) {
+            $data[ 'breweries' ][ $brewery[ 'brewery_id' ] ] = $brewery[ 'name' ];
+        }
+
+        $allSubStyles = $this->styles_model->getSubStyles();
+        foreach( $allSubStyles as $substyle ) {
+            $data[ 'substyles' ][ $substyle[ 'substyle_id' ] ] = $substyle[ 'substyle_name' ];
+        }
+
+        $this->load->library( 'form_validation' );
+
+        $this->form_validation->set_rules( 'beername', 'Beer Name', 'trim|required' );
+        $this->form_validation->set_rules( 'brewery', 'Brewery', 'required|callback_checkBrewery' );
+        $this->form_validation->set_rules( 'substyle', 'Sub-Style', 'required|callback_checkSubStyle' );
+        $this->form_validation->set_rules( 'abv', 'ABV', 'trim|numeric' );
+        $this->form_validation->set_rules( 'ba', 'BA Rating', 'trim|integer' );
+
+        if( $this->form_validation->run() !== false ) {
+            $beerName = $this->input->post( 'beername' );
+            $brewery = $this->input->post( 'brewery' );
+            $substyle = $this->input->post( 'substyle' );
+            $abv = $this->input->post( 'abv' );
+            $ba = $this->input->post( 'ba' );
+            $res = $this->beers_model->updateBeer( -1, $beerName, $brewery, $substyle, $abv, $ba );
+            if( $res == 0 ) {
+                 $data[ 'error' ] = 'An unknown error occurred while adding the beer.';
+            } else {
+                echo 'Beer Added.';
+                $beerBase = base_url( "index.php/beer/info/" . $brewery . '/' . $res );
+                redirect( $beerBase );
+            }
+        }
+
+        $header[ 'title' ] = 'Add Beer';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/log_beer', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+
+    function checkBrewery( $brewery ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->breweries_model->getBreweries( $brewery, false );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkBrewery', 'Your brewery selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkSubStyle( $substyle ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->styles_model->getSubStyles( 0, $substyle );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkSubStyle', 'Your sub-style selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function drink() {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+
+        $data[ 'error' ] = '';
+
+        $allBreweries = $this->breweries_model->getBreweries( 0, false );
+        foreach( $allBreweries as $brewery ) {
+            $data[ 'breweries' ][ $brewery[ 'brewery_id' ] ] = $brewery[ 'name' ];
+            $data[ 'brew2beerMap' ][ $brewery[ 'brewery_id' ] ] = array();
+        }
+
+        $allBeers = $this->beers_model->getBeers( 0 );
+        foreach( $allBeers as $beer ) {
+            $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
+        }
+
+        $allSizes = $this->beers_model->getServingSizes();
+        foreach( $allSizes as $size ) {
+            $data[ 'sizes' ][ $size[ 'size_id' ] ] = $size[ 'name' ];
+        }
+
+        $this->load->library( 'form_validation' );
+
+        $this->form_validation->set_rules( 'date', 'Date', 'trim|required|callback_checkDate' );
+        $this->form_validation->set_rules( 'beer', 'Beer', 'callback_checkBeer' );
+        $this->form_validation->set_rules( 'ssize', 'Serving Size', 'callback_checkSSize' );
+        $this->form_validation->set_rules( 'rating', 'Rating', 'trim|numeric|callback_checkRating' );
+        $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
+
+        if( $this->form_validation->run() !== false ) {
+            $date = $this->input->post( 'date' );
+            $user = $_SESSION[ 'userid' ];
+            $beer = $this->input->post( 'beer' );
+            $ssize = $this->input->post( 'ssize' );
+            $rating = $this->input->post( 'rating' );
+            $notes = $this->input->post( 'notes' );
+            $res = $this->drinkers_model->updateLoggedDrink( -1, $date, $user, $beer, $ssize, $rating, $notes );
+            if( $res == 0 ) {
+                 $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
+            } else {
+                echo 'Drink Logged.';
+                $beerBase = base_url( "index.php/users/totals/" . $user );
+                redirect( $beerBase );
+            }
+        }
+
+        $header[ 'title' ] = 'Log Drink';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/log_drink', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+
+    function checkDate( $date ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $d = strtotime( $date );
+        if( $d == false || $d == -1 ) {
+            $this->form_validation->set_message( 'checkDate', "Could not understand date." );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkBeer( $beer ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->beers_model->getBeers( 0, $beer );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkBeer', 'Your beer selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkSSize( $ssize ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $res = $this->beers_model->getServingSizes( $ssize );
+        if( count( $res ) == 0 ) {
+            $this->form_validation->set_message( 'checkSSize', 'Your serving size selection is invalid.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    function checkRating( $rating ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        if( $rating < 0 || $rating > 5 ) {
+            $this->form_validation->set_message( 'checkRating', 'Your rating must be between 0 and 5, inclusive.' );
+            return FALSE;
+        }
+        return TRUE;
     }
 }

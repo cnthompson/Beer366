@@ -19,8 +19,8 @@
                         if( isset($_SESSION['userid']) ):
                     ?>
                             <li class="dropdown" id="userMenu">
-                                <a href="#" 
-                                    class="dropdown-toggle" 
+                                <a href="#"
+                                    class="dropdown-toggle"
                                     data-toggle="dropdown"
                                     data-target="#userMenu"><?php echo $_SESSION['displayname']?> <b class="caret"></b>
                                 </a>
@@ -30,7 +30,20 @@
                                     <li class="divider"></li>
                                     <li><a href="/authenticate/logout/">Sign Out</a></li>
                                 </ul>
-                            </li>                            
+                            </li>
+                            <li class="dropdown" id="logMenu">
+                                <a href="#"
+                                    class="dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    data-target="#logMenu">Log<b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/log/drink/">Log Drink</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="/log/brewery/">Add Brewery</a></li>
+                                    <li><a href="/log/beer/">Add Beer</a></li>
+                                </ul>
+                            </li>
                     <?php
                         endif;
                     ?>

@@ -76,6 +76,52 @@ class Drinkers_Model extends CI_Model {
         }
     }
 
+    public function updateLoggedDrink( $id, $date, $user, $beer, $ssize, $rating, $notes ) {
+        $d = strtotime( $date );
+        if( ( $d == FALSE || $d == -1 )
+         || ( $user <= 0 )
+         || ( $beer <= 0 )
+         || ( $ssize <= 0 ) ) {
+            return FALSE;
+        }
+        $data = array (
+            'date'      => date( 'Y-m-d', $d ),
+            'user_id'   => $user,
+            'beer_id'   => $beer,
+            'size_id'   => $ssize,
+            'rating'    => ( is_numeric( $rating ) ) ? $rating : null,
+            'notes'     => ( $notes == null || strlen( $notes ) == 0 ) ? null : $notes,
+        );
+        $query = null;
+        if( $id > 0 ) {
+            //updating
+            $query = $this
+                ->db
+                ->where( 'log_id', $id )
+                ->update( 'drink_log', $data );
+        } else {
+            //inserting
+            $query = $this
+                ->db
+                ->insert( 'drink_log', $data );
+        }
+        if( $query == 1 ) {
+            $query = $this
+                ->db
+                ->select( 'log_id' )
+                ->where( $data )
+                ->get( 'drink_log' );
+            if( $query->num_rows > 0 ) {
+                $results = $query->result_array();
+                return $results[ 0 ][ 'log_id' ];
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
 
 }
 

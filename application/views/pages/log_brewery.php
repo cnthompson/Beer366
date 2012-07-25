@@ -1,6 +1,20 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Add Brewery</title>
+    <style>label { display: block; } .errors { color: red;} </style>
+</head>
+<body>
+
 <div class="page-header">
-    <h1>Log Brewery</h1>
+    <h1>Add Brewery</h1>
 </div>
+<?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
+<?php if ( $error ): ?>
+    <div class="alert alert-error"><?php echo $error ?></div>
+<?php endif; ?>
 
 <?php echo form_open( 'log/brewery' ); ?>
 <p>
@@ -29,10 +43,13 @@
         echo form_input( 'postcode', set_value( 'postcode' ), 'id="postcode"' );
 
         echo form_label( 'Country', 'country' );
-        echo form_dropdown( 'country', $countries, $lastCountry ); //, 'onChange="changeCountry( this.options[ this.selectedIndex ].value, 1 );"' );
+        echo form_dropdown( 'country', $countries,  set_value( 'country', '226' ), 'id="country" onChange="changeCountry( this.options[ this.selectedIndex ].value );"' );
 
-        echo form_label( 'Region', 'region' );
-        echo form_dropdown( 'region', $regions, $lastRegion );
+        $attributes = array(
+            'id' => 'regionlabel'
+        );
+        echo form_label( 'Region', 'region', $attributes );
+        echo form_dropdown( 'region', array(), set_value( 'region', null ), 'id="region"' );
 
         echo form_fieldset_close();
     ?>
@@ -45,7 +62,7 @@
         echo form_input( 'homepage', set_value( 'homepage' ), 'id="homepage"' );
 
         echo form_label( 'Brewery Type', 'brewerytype' );
-        echo form_dropdown( 'brewerytype', $breweryTypes, $lastBreweryType );
+        echo form_dropdown( 'brewerytype', $breweryTypes, set_value( 'brewerytype', '1' ) );
 
         echo form_label( 'Notes:', 'notes' );
         echo form_textarea( 'notes', set_value( 'notes' ), 'id="notes"' );
@@ -54,9 +71,52 @@
     ?>
 </p>
 <p>
-    <?php echo form_submit( 'submit', 'Log Brewery' ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Add Brewery', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
+
+<script type="text/javascript">
+    <?php
+        //First, we'll create a javascript mapping of countries to regions
+        echo 'var $jsCountryToRegionMap = {};';
+        foreach( $c2rMap as $countryCode => $rgns ) {
+            echo '$jsCountryToRegionMap[ ' . $countryCode . ' ] = {};';
+            foreach( $rgns as $rgnCode => $rgn ) {
+                echo '$jsCountryToRegionMap[ ' . $countryCode . ' ][ ' . $rgnCode . ' ] = \'' . $rgn . '\';';
+            }
+        }
+        
+        //Then, we'll trigger an onchange event to initialize the region dropdown
+        echo 'document.getElementById( "country" ).onchange();' ;
+    ?>
+    function changeCountry( $curCountry ) {
+        var $jsRegions = $jsCountryToRegionMap[ $curCountry ];
+        var elem = document.getElementById( "region" );
+        var elemLabel = document.getElementById( "regionlabel" );
+        if( $curCountry == 226 ) {
+            elemLabel.InnerHTML = 'State';
+        } else {
+            elemLabel.InnerHTML = 'Region4';
+        }
+        elem.options.length = 0;
+        if( Object.keys( $jsRegions ).length == 0 ) {
+            elem.style.visibility = 'hidden';
+            elemLabel.style.visibility = 'hidden';
+        } else {
+            for( var $key in Object.keys( $jsRegions ) ) {
+                if( $jsRegions.hasOwnProperty( $key ) ) {
+                    var opt = document.createElement( 'option' );
+                    opt.value = $key;
+                    opt.text = $jsRegions[ $key ];
+                    elem.options.add( opt );
+                }
+            }
+            elem.style.visibility = 'visible';
+            elemLabel.style.visibility = 'visible';
+        }
+    }
+
+</script>
 
 </body>
 </html>

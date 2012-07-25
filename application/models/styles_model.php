@@ -64,7 +64,14 @@ class Styles_Model extends CI_Model {
                 ->db
                 ->select( '*' )
                 ->from( 'beer_sub_style' )
-                ->order_by( 'substyle_name', 'asc' )
+                ->order_by( 'substyle_name', 'asc' );
+            if( $substyleID > 0 ) {
+                $query = $this
+                    ->db
+                    ->where( 'substyle_id', $substyleID );
+            }
+            $query = $this
+                ->db
                 ->get();
         } else if( $substyleID <= 0 ) {
             $query = $this

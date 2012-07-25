@@ -13,7 +13,13 @@ class Beers_Model extends CI_Model {
             ->join( 'beer_style', 'beer_sub_style.style_id = beer_style.style_id' )
             ->order_by( 'beers.beer_name', 'asc' );
         if( $brewerID <= 0 ) {
+            if( $beerID > 0 ) {
+                $query = $this
+                    ->db
+                    ->where( 'beers.beer_id', $beerID );
+            }
             $query = $this
+                ->db
                 ->get();
         } else if( $beerID <= 0 ) {
             $query = $this
@@ -33,7 +39,7 @@ class Beers_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getBeersBySubStyle( $substyleID ) {
         $query = $this
             ->db
@@ -49,8 +55,8 @@ class Beers_Model extends CI_Model {
             return array();
         }
     }
-    
-    
+
+
     public function getBeersByRating( $userID, $rating ) {
         $query = $this
             ->db
@@ -76,6 +82,68 @@ class Beers_Model extends CI_Model {
         }
     }
 
+    function updateBeer( $id, $name, $brewer, $substyle, $abv, $ba ) {
+        if( ( $name == null || strlen( $name ) == 0 )
+         || ( $brewer <= 0 )
+         || ( $substyle <= 0 ) ) {
+            return FALSE;
+        }
+        $data = array (
+            'beer_name'     => $name,
+            'brewery_id'    => $brewer,
+            'substyle_id'   => $substyle,
+            'beer_abv'      => ( $abv == null || strlen( $abv ) == 0 ) ? null : $abv,
+            'beer_ba_rating'=> ( $ba == null || strlen( $ba ) == 0 ) ? null : $ba,
+        );
+        $query = null;
+        if( $id > 0 ) {
+            //updating
+            $query = $this
+                ->db
+                ->where( 'beer_id', $id )
+                ->update( 'beers', $data );
+        } else {
+            //inserting
+            $query = $this
+                ->db
+                ->insert( 'beers', $data );
+        }
+        if( $query == 1 ) {
+            $query = $this
+                ->db
+                ->select( 'beer_id' )
+                ->where( $data )
+                ->get( 'beers' );
+            if( $query->num_rows > 0 ) {
+                $results = $query->result_array();
+                return $results[ 0 ][ 'beer_id' ];
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    function getServingSizes( $ssize = 0 ) {
+        $query = $this
+            ->db
+            ->select( '*' )
+            ->from( 'serving_size' );
+        if( $ssize > 0 ) {
+            $query = $this
+                ->db
+                ->where( 'size_id', $ssize );
+        }
+        $query = $this
+            ->db
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>

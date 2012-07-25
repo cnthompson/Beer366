@@ -31,7 +31,7 @@ class Beer extends CI_Controller {
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/all_breweries', $data );
         } else if( $beer <= 0 ) {
-            $breweries = $this->breweries_model->getBreweries( $brewery );
+            $breweries = $this->breweries_model->getBreweries( $brewery, false );
             if( count( $breweries ) == 0 ) {
                 echo 'Meow error occurred!';
             } else {

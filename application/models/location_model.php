@@ -47,6 +47,11 @@ class Location_Model extends CI_Model {
                     ->db
                     ->join( 'breweries', 'breweries.country =  iso_3166_2.3166_1_id AND breweries.region = iso_3166_2.3166_2_id', 'inner' );
             }
+            if( $regionID > 0 ) {
+                $query = $this
+                    ->db
+                    ->where( 'iso_3166_2.3166_2_id', $regionID );
+            }
             $query = $this
                 ->db
                 ->get();
