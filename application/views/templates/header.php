@@ -6,6 +6,7 @@
     <style>label { display: block; } .errors { color: red;} </style>
     <link href="<?php echo base_url(); ?>/css/bootstrap.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/smoothness/jquery-ui-1.8.22.custom.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>/css/doc.css" rel="stylesheet">
 </head>
 <body data-offset="25">

@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Log Drink</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
 <div class="page-header">
     <h1>Log Drink</h1>
 </div>
@@ -45,8 +35,11 @@
     <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Log Drink', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
-
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.22.custom.min.js"></script>
 <script type="text/javascript">
+    $( "#date" ).datepicker( { dateFormat: "yy-mm-dd" } );
+
     <?php
         //First, we'll create a javascript mapping of breweries to beers
         echo 'var $jsBreweryToBeerMap = {};';
