@@ -3,7 +3,7 @@
 class Authenticate_Model extends CI_Model {
     function __construct() {
     }
-    
+
     public function verify_user( $email, $password ) {
         $q = $this
            ->db
@@ -16,7 +16,7 @@ class Authenticate_Model extends CI_Model {
         }
         return false;
     }
-    
+
     public function change_pw( $email, $oldPW, $newPW ) {
         $data = array(
             'password' => sha1( $newPW ),

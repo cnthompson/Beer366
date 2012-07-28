@@ -14,7 +14,7 @@
 
         echo form_label( 'Brewery', 'brewery' );
         echo form_dropdown( 'brewery', $breweries,  set_value( 'brewery', '1' ), 'id="brewery" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
-        
+
         $attributes = array(
             'id' => 'beerlabel'
         );
@@ -49,7 +49,7 @@
                 echo '$jsBreweryToBeerMap[ ' . $breweryID . ' ].push(  new BeerObj( ' . $beerID . ', "' . $beer . '", ' . $breweryID . ' ) );';
             }
         }
-        
+
         //Then, we'll trigger an onchange event to initialize the region dropdown
         echo 'document.getElementById( "brewery" ).onchange();' ;
     ?>

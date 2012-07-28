@@ -1,14 +1,26 @@
-<h1><?php echo $beer[ 'beer_name' ] ?></h1>
+<?php
+    if( isset( $_SESSION[ 'email' ] ) ) {
+        echo '<h1 class="dropdown" id="beerMenu">';
+        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#beerMenu" style="text-decoration:none;color:black" >' . $beer[ 'beer_name' ] . '<b class="caret"></b> </a>';
+        echo '<ul class="dropdown-menu">';
+        $s1 = base_url( "index.php/log/beer/" . $beer[ 'beer_id' ] );
+        echo '<li><h5>' . anchor( $s1, "Edit Beer Info" ) . '</h5></li>';
+        echo '</ul>';
+        echo '</h1>';
+    } else {
+        echo '<h1>' . $beer[ 'beer_name' ] . '</h1>';
+    }
+?> 
 <p>
     <b>Brewed By:</b>
-    <br>
+    <p>
     <?php
         $breweryName = $brewery[ 'full_name' ];
         $s1 = base_url( "index.php/beer/info/" . $brewery[ 'brewery_id' ] );
         $nameAnchor = anchor( $s1, $breweryName );
         echo $nameAnchor;
     ?>
-    <br>
+    </p>
     <address>
     <?php
         $cityBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/";

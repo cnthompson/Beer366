@@ -120,21 +120,55 @@ class Log extends CI_Controller {
         return TRUE;
     }
 
-    public function beer() {
+    public function beer( $id = 0 ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
         }
 
         $data[ 'error' ] = '';
 
+        $editBeers = array();
+        if( $id > 0 ) {
+            $editBeers = $this->beers_model->getBeers( 0, $id );
+        }
+        $data[ 'editBeer' ] = null;
+        if( count( $editBeers ) == 1 ) {
+            $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id'     ], true );
+            if( count( $editBrewer ) == 1 ) {
+                $data[ 'editBeer' ][ 'id'       ] = $editBeers[ 0 ][ 'beer_id'        ];
+                $data[ 'editBeer' ][ 'name'     ] = $editBeers[ 0 ][ 'beer_name'      ];
+                $data[ 'editBeer' ][ 'brewerID' ] = $editBeers[ 0 ][ 'brewery_id'     ];
+                $data[ 'editBeer' ][ 'brewerN'  ] = $editBrewer[ 0 ][ 'name'          ];
+                $data[ 'editBeer' ][ 'substyle' ] = $editBeers[ 0 ][ 'substyle_id'    ];
+                $data[ 'editBeer' ][ 'abv'      ] = $editBeers[ 0 ][ 'beer_abv'       ];
+                $data[ 'editBeer' ][ 'ba'       ] = $editBeers[ 0 ][ 'beer_ba_rating' ];
+            }
+        }
+
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
         foreach( $allBreweries as $brewery ) {
             $data[ 'breweries' ][ $brewery[ 'brewery_id' ] ] = $brewery[ 'name' ];
         }
 
+        $allFamilies = $this->styles_model->getFamilies();
+        $data[ 'families' ][ -1 ] = 'All';
+        foreach( $allFamilies as $family ) {
+            $data[ 'families' ][ $family[ 'family_id' ] ] = $family[ 'family_name' ];
+            $data[ 'family2stylesMap' ][ $family[ 'family_id' ] ] = array();
+        }
+
+        $allStyles = $this->styles_model->getStyles();
+        $data[ 'styles' ][ -1 ] = 'All';
+        foreach( $allStyles as $style ) {
+            $data[ 'styles' ][ $style[ 'style_id' ] ] = $style[ 'style_name' ];
+            $data[ 'family2stylesMap' ][ $style[ 'family_id' ] ][ $style[ 'style_id' ] ] = $style[ 'style_name' ];
+            $data[ 'style2sstylesMap' ][ $style[ 'style_id' ] ] = array();
+        }
+
         $allSubStyles = $this->styles_model->getSubStyles();
         foreach( $allSubStyles as $substyle ) {
             $data[ 'substyles' ][ $substyle[ 'substyle_id' ] ] = $substyle[ 'substyle_name' ];
+            $data[ 'style2sstylesMap' ][ $substyle[ 'style_id' ] ][ $substyle[ 'substyle_id' ] ] = $substyle[ 'substyle_name' ];
         }
 
         $this->load->library( 'form_validation' );
@@ -146,22 +180,27 @@ class Log extends CI_Controller {
         $this->form_validation->set_rules( 'ba', 'BA Rating', 'trim|integer' );
 
         if( $this->form_validation->run() !== false ) {
+            $beerID = (int)$this->input->post( 'beer_id' );
             $beerName = $this->input->post( 'beername' );
             $brewery = $this->input->post( 'brewery' );
             $substyle = $this->input->post( 'substyle' );
             $abv = $this->input->post( 'abv' );
             $ba = $this->input->post( 'ba' );
-            $res = $this->beers_model->updateBeer( -1, $beerName, $brewery, $substyle, $abv, $ba );
-            if( $res == 0 ) {
-                 $data[ 'error' ] = 'An unknown error occurred while adding the beer.';
+            if( $this->beers_model->checkIfBeerExistsByNameAndBrewer( (int)$brewery, $beerName, $beerID ) ) {
+                $data[ 'error' ] = 'The name "' . $beerName . '" already exists for this brewery.';
             } else {
-                echo 'Beer Added.';
-                $beerBase = base_url( "index.php/beer/info/" . $brewery . '/' . $res );
-                redirect( $beerBase );
+                $res = $this->beers_model->updateBeer( $beerID, $beerName, $brewery, $substyle, $abv, $ba );
+                if( $res == 0 ) {
+                     $data[ 'error' ] = 'An unknown error occurred while adding the beer.';
+                } else {
+                    echo 'Beer Added.';
+                    $beerBase = base_url( "index.php/beer/info/" . $brewery . '/' . $res );
+                    redirect( $beerBase );
+                }
             }
         }
 
-        $header[ 'title' ] = 'Add Beer';
+        $header[ 'title' ] = $data[ 'editBeer' ] == null ? 'Add Beer' : ( 'Edit Beer - ' . $data[ 'editBeer' ][ 'brewerN' ] . ': ' . $data[ 'editBeer' ][ 'name' ] );
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_beer', $data );
         $this->load->view( 'templates/footer.php', null );

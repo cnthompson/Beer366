@@ -3,7 +3,7 @@
 class Styles_Model extends CI_Model {
     function __construct() {
     }
-    
+
     public function getFamilies( $familyID = 0 ) {
         $query =  $this
             ->db
@@ -57,7 +57,7 @@ class Styles_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getSubStyles( $styleID = 0, $substyleID = 0 ) {
         if( $styleID <= 0 ) {
             $query = $this
@@ -96,7 +96,7 @@ class Styles_Model extends CI_Model {
         } else {
             return array();
         }
-    
+
     }
 
 }

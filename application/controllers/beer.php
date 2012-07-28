@@ -55,7 +55,7 @@ class Beer extends CI_Controller {
                 $this->load->view( 'pages/beer_profile', $data );
             }
         }
-        
+
         $this->load->view( 'templates/footer.php', null );
     }
 

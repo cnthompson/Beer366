@@ -82,6 +82,20 @@ class Beers_Model extends CI_Model {
         }
     }
 
+    public function checkIfBeerExistsByNameAndBrewer( $brewerID, $name, $beerID ) {
+        $query = $this
+            ->db
+            ->where( 'brewery_id', $brewerID )
+            ->where( "LOWER( beer_name ) = '" . strtolower( $name ) . "'" )
+            ->where( "beer_id != " . $beerID )
+            ->limit( 1 )
+            ->get( 'beers' );
+        if( $query->num_rows > 0 ) {
+            return true;
+        }
+        return false;
+    }
+
     function updateBeer( $id, $name, $brewer, $substyle, $abv, $ba ) {
         if( ( $name == null || strlen( $name ) == 0 )
          || ( $brewer <= 0 )

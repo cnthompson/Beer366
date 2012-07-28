@@ -14,9 +14,9 @@ class Authenticate extends CI_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email_address', 'Email Address', 'required|valid_email' );
         $this->form_validation->set_rules('password', 'Password', 'required' );
-        
+
         $data[ 'error' ] = '';
-        
+
         if( $this->form_validation->run() !== false ) {
             $this->load->model('authenticate_model');
             $res = $this->authenticate_model->verify_user( $this->input->post( 'email_address' ), $this->input->post( 'password' ) );
@@ -31,18 +31,18 @@ class Authenticate extends CI_Controller {
                 $data[ 'error' ] = 'Login unsuccessful. Please try again.';
             }
         }
-        
+
         $header[ 'title' ] = 'Beer366 Login';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'login_view', $data );
         $this->load->view( 'templates/footer.php', null );
     }
-    
+
     public function logout() {
         session_unset();
         redirect( 'authenticate' );
     }
-    
+
     public function changePassword() {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
@@ -78,7 +78,7 @@ class Authenticate extends CI_Controller {
         }
         return TRUE;
     }
-    
+
     public function new_pw_check( $pw ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
@@ -88,5 +88,5 @@ class Authenticate extends CI_Controller {
             return FALSE;
         }
     }
-    
+
 }
