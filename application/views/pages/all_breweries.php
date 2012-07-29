@@ -6,8 +6,12 @@ $currentLetter = '';
 foreach( $breweries as $brewery ):
 ?>
     <?php
-    if( strtoupper( substr( $brewery['name'], 0, 1 ) ) != $currentLetter ):
-        $currentLetter = strtoupper( substr( $brewery['name'], 0, 1 ) );
+    $letter = strtoupper( substr( iconv( 'UTF-8', 'ASCII//TRANSLIT//IGNORE', $brewery['name'] ), 0, 1 ) );
+    if( is_numeric( $letter ) ) {
+        $letter = '#';
+    }
+    if( $letter != $currentLetter ):
+        $currentLetter = $letter;
     ?>
         <a name="<?php echo $currentLetter ?>"></a>
         <div class="span12"><h2><?php echo $currentLetter ?></h2></div>
