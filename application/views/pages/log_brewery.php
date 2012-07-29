@@ -1,32 +1,26 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Add Brewery</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
 <div class="page-header">
-    <h1>Add Brewery</h1>
+    <h1>
+        <?php echo ( $editBrewer == null ? "Add Brewery" : ( "Edit Brewery - " . $editBrewer[ 'name' ] ) ) ; ?>
+    </h1>
 </div>
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
 <?php if ( $error ): ?>
     <div class="alert alert-error"><?php echo $error ?></div>
 <?php endif; ?>
 
-<?php echo form_open( 'log/brewery' ); ?>
+
+<?php echo form_open( 'log/brewery' . ( $editBrewer == null ? '' : ( '/' . $editBrewer[ 'id' ] ) ) ); ?>
+<?php echo form_hidden( 'brewer_id', $editBrewer == null ? -1 : $editBrewer[ 'id' ] ); ?>
 <p>
     <?php
         echo form_label( 'Brewery Name (Friendly Name):', 'shortname' );
-        echo form_input( 'shortname', set_value( 'shortname' ), 'id="shortname"' );
+        echo form_input( 'shortname', set_value( 'shortname', $editBrewer == null ? null : $editBrewer[ 'name' ] ), 'id="shortname"' );
     ?>
 </p>
 <p>
     <?php
         echo form_label( 'Full Name:', 'fullname' );
-        echo form_input( 'fullname', set_value( 'fullname' ), 'id="fullname"' );
+        echo form_input( 'fullname', set_value( 'fullname', $editBrewer == null ? null : $editBrewer[ 'fName' ] ), 'id="fullname"' );
     ?>
 </p>
 <p>
@@ -34,22 +28,22 @@
         echo form_fieldset('Brewery Address');
 
         echo form_label( 'Street Address:', 'address' );
-        echo form_input( 'address', set_value( 'address' ), 'id="address"' );
+        echo form_input( 'address', set_value( 'address', $editBrewer == null ? null : $editBrewer[ 'street' ] ), 'id="address"' );
 
         echo form_label( 'City:', 'city' );
-        echo form_input( 'city', set_value( 'city' ), 'id="city"' );
+        echo form_input( 'city', set_value( 'city', $editBrewer == null ? null : $editBrewer[ 'city' ] ), 'id="city"' );
 
         echo form_label( 'Postal Code:', 'postcode' );
-        echo form_input( 'postcode', set_value( 'postcode' ), 'id="postcode"' );
+        echo form_input( 'postcode', set_value( 'postcode', $editBrewer == null ? null : $editBrewer[ 'postal' ] ), 'id="postcode"' );
 
         echo form_label( 'Country', 'country' );
-        echo form_dropdown( 'country', $countries,  set_value( 'country', '226' ), 'id="country" onChange="changeCountry( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'country', $countries,  set_value( 'country', $editBrewer == null ? '226' : $editBrewer[ 'country' ] ), 'id="country" onChange="changeCountry( this.options[ this.selectedIndex ].value );"' );
 
         $attributes = array(
             'id' => 'regionlabel'
         );
         echo form_label( 'Region', 'region', $attributes );
-        echo form_dropdown( 'region', array(), set_value( 'region', null ), 'id="region"' );
+        echo form_dropdown( 'region', array(), set_value( 'region', $editBrewer == null ? null : $editBrewer[ 'region' ] ), 'id="region"' );
 
         echo form_fieldset_close();
     ?>
@@ -59,19 +53,19 @@
         echo form_fieldset( 'Miscellaneous' );
 
         echo form_label( 'Web Page:', 'homepage' );
-        echo form_input( 'homepage', set_value( 'homepage' ), 'id="homepage"' );
+        echo form_input( 'homepage', set_value( 'homepage', $editBrewer == null ? null : $editBrewer[ 'homepage' ] ), 'id="homepage"' );
 
         echo form_label( 'Brewery Type', 'brewerytype' );
-        echo form_dropdown( 'brewerytype', $breweryTypes, set_value( 'brewerytype', '1' ) );
+        echo form_dropdown( 'brewerytype', $breweryTypes, set_value( 'brewerytype', $editBrewer == null ? '1' : $editBrewer[ 'type' ] ) );
 
         echo form_label( 'Notes:', 'notes' );
-        echo form_textarea( 'notes', set_value( 'notes' ), 'id="notes"' );
+        echo form_textarea( 'notes', set_value( 'notes', $editBrewer == null ? null : $editBrewer[ 'notes' ] ), 'id="notes"' );
 
         echo form_fieldset_close();
     ?>
 </p>
 <p>
-    <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Add Brewery', 'class' => 'btn' ) ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => $editBrewer == null ? 'Add Brewery' : 'Update', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
 
@@ -85,16 +79,32 @@
                 echo '$jsCountryToRegionMap[ ' . $countryCode . ' ][ ' . $rgnCode . ' ] = \'' . $rgn . '\';';
             }
         }
-        
+
         //Then, we'll trigger an onchange event to initialize the region dropdown
         echo 'document.getElementById( "country" ).onchange();' ;
+
+        // And make sure that the drink we're editing has been selected
+        if( $editBrewer != null ) {
+            echo 'var elem = document.getElementById( "region" );';
+            echo 'for( i = 0; i < elem.options.length; i++ ) {';
+            echo '    if( elem.options[ i ].value == "' . $editBrewer[ 'region' ] . '") {';
+            echo '        elem.options[ i ].selected = true;';
+            echo '        break;';
+            echo '    }';
+            echo '}';
+        }
     ?>
+
     function changeCountry( $curCountry ) {
         var $jsRegions = $jsCountryToRegionMap[ $curCountry ];
         var elem = document.getElementById( "region" );
+        var prevValue = '';
+        if( elem.selectedIndex >= 0 ) {
+            prevValue = elem.options[ elem.selectedIndex ].value;
+        }
         var elemLabel = document.getElementById( "regionlabel" );
         if( $curCountry == 226 ) {
-            elemLabel.InnerHTML = 'State';
+            elemLabel.text = 'State';
         } else {
             elemLabel.InnerHTML = 'Region4';
         }
@@ -109,6 +119,12 @@
                     opt.value = $key;
                     opt.text = $jsRegions[ $key ];
                     elem.options.add( opt );
+                }
+            }
+            for( i = 0; i < elem.options.length; i++ ) {
+                if( elem.options[ i ].value == prevValue ) {
+                    elem.options[ i ].selected = true;
+                    break;
                 }
             }
             elem.style.visibility = 'visible';

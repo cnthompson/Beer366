@@ -20,12 +20,31 @@ class Log extends CI_Controller {
     }
 
 
-    public function brewery() {
+    public function brewery( $id = 0 ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
         }
 
         $data[ 'error' ] = '';
+
+        $editBrewers = array();
+        if( $id > 0 ) {
+            $editBrewers = $this->breweries_model->getBreweries( $id, false );
+        }
+        $data[ 'editBrewer' ] = null;
+        if( count( $editBrewers ) == 1 ) {
+            $data[ 'editBrewer' ][ 'id'       ] = $editBrewers[ 0 ][ 'brewery_id'   ];
+            $data[ 'editBrewer' ][ 'name'     ] = $editBrewers[ 0 ][ 'name'         ];
+            $data[ 'editBrewer' ][ 'fName'    ] = $editBrewers[ 0 ][ 'full_name'    ];
+            $data[ 'editBrewer' ][ 'street'   ] = $editBrewers[ 0 ][ 'street'       ];
+            $data[ 'editBrewer' ][ 'city'     ] = $editBrewers[ 0 ][ 'city'         ];
+            $data[ 'editBrewer' ][ 'postal'   ] = $editBrewers[ 0 ][ 'postal_code'  ];
+            $data[ 'editBrewer' ][ 'country'  ] = $editBrewers[ 0 ][ 'country'      ];
+            $data[ 'editBrewer' ][ 'region'   ] = $editBrewers[ 0 ][ 'region'       ];
+            $data[ 'editBrewer' ][ 'homepage' ] = $editBrewers[ 0 ][ 'homepage'     ];
+            $data[ 'editBrewer' ][ 'type'     ] = $editBrewers[ 0 ][ 'brewery_type' ];
+            $data[ 'editBrewer' ][ 'notes'    ] = $editBrewers[ 0 ][ 'notes'        ];
+        }
 
         $allCountries = $this->location_model->getCountries( 0, false );
         foreach( $allCountries as $country ) {
@@ -59,6 +78,7 @@ class Log extends CI_Controller {
         $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
 
         if( $this->form_validation->run() !== false ) {
+            $brewerID = (int)$this->input->post( 'brewer_id' );
             $sName = $this->input->post( 'shortname' );
             $fName = $this->input->post( 'fullname' );
             $address = $this->input->post( 'address' );
@@ -69,7 +89,7 @@ class Log extends CI_Controller {
             $homepage = $this->input->post( 'homepage' );
             $type = $this->input->post( 'brewerytype' );
             $notes = $this->input->post( 'notes' );
-            $res = $this->breweries_model->updateBrewery( -1, $sName, $fName, $address, $city, $post, $country, $region, $homepage, $type, $notes );
+            $res = $this->breweries_model->updateBrewery( $brewerID, $sName, $fName, $address, $city, $post, $country, $region, $homepage, $type, $notes );
             if( $res == 0 ) {
                  $data[ 'error' ] = 'An unknown error occurred while adding the brewery.';
             } else {
@@ -78,7 +98,7 @@ class Log extends CI_Controller {
                 redirect( $brewerBase );
             }
         }
-        $header[ 'title' ] = 'Add Brewery';
+        $header[ 'title' ] = $data[ 'editBrewer' ] == null ? "Add Brewery" : ( "Edit Brewery - " . $data[ 'editBrewer' ][ 'name' ] ) ;
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_brewery', $data );
         $this->load->view( 'templates/footer.php', null );
@@ -133,7 +153,7 @@ class Log extends CI_Controller {
         }
         $data[ 'editBeer' ] = null;
         if( count( $editBeers ) == 1 ) {
-            $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id'     ], true );
+            $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id'     ], false );
             if( count( $editBrewer ) == 1 ) {
                 $data[ 'editBeer' ][ 'id'       ] = $editBeers[ 0 ][ 'beer_id'        ];
                 $data[ 'editBeer' ][ 'name'     ] = $editBeers[ 0 ][ 'beer_name'      ];

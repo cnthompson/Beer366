@@ -1,4 +1,17 @@
-<h1><?php echo $brewery[ 'full_name' ] ?></h1>
+<?php
+    if( isset( $_SESSION[ 'email' ] ) ) {
+        echo '<h1 class="dropdown" id="brewerMenu">';
+        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#brewerMenu" style="text-decoration:none;color:black" >' . $brewery[ 'name' ] . '<b class="caret"></b> </a>';
+        echo '<ul class="dropdown-menu">';
+        $s1 = base_url( "index.php/log/brewery/" . $brewery[ 'brewery_id' ] );
+        echo '<li><h5>' . anchor( $s1, "Edit Brewer Info" ) . '</h5></li>';
+        echo '</ul>';
+        echo '</h1>';
+    } else {
+        echo '<h1>' . $brewery[ 'name' ] . '</h1>';
+    }
+?> 
+<h2><?php echo '[' . $brewery[ 'full_name' ] . ']' ; ?></h2>
 <address>
     <?php echo $brewery[ 'street' ] ?>
     <br>
@@ -37,6 +50,12 @@
         echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
     ?>
 </p>
+<p>
+    <?php
+        if( $brewery[ 'notes' ] != null and strlen( $brewery[ 'notes' ] ) > 0 ) {
+            echo '<b>Notes:</b> ' . $brewery[ 'notes' ];
+        }
+    ?>
 <section id="beers">
 <h2>Beers</h2>
     <?php
