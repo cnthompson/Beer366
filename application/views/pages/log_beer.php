@@ -1,5 +1,3 @@
-<body>
-
 <div class="page-header">
     <h1>
         <?php echo ( $editBeer == null ? "Add Beer" : ( "Edit Beer - " . $editBeer[ 'brewerN' ] . ': ' . $editBeer[ 'name' ] ) ) ; ?>
@@ -136,7 +134,6 @@
         if( $jsAllStyles.length == 0 ) {
             elem.onchange();
             elem.style.visibility = 'hidden';
-            elemLabel.style.visibility = 'hidden';
         } else {
             for( var i = 0; i < $jsAllStyles.length; i++ ) {
                 var opt = document.createElement( 'option' );
@@ -152,7 +149,6 @@
             }
             elem.onchange();
             elem.style.visibility = 'visible';
-            elemLabel.style.visibility = 'visible';
         }
     }
 
@@ -176,7 +172,6 @@
         $jsAllSubStyles.sort( compareStyles );
         if( $jsAllSubStyles.length == 0 ) {
             elem.style.visibility = 'hidden';
-            elemLabel.style.visibility = 'hidden';
         } else {
             for( var i = 0; i < $jsAllSubStyles.length; i++ ) {
                 var opt = document.createElement( 'option' );
@@ -191,7 +186,6 @@
                 }
             }
             elem.style.visibility = 'visible';
-            elemLabel.style.visibility = 'visible';
         }
     }
 

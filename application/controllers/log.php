@@ -230,12 +230,28 @@ class Log extends CI_Controller {
         return TRUE;
     }
 
-    function drink() {
+    function drink( $id = 0 ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
         }
 
         $data[ 'error' ] = '';
+
+        $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
+        $data[ 'editDrink' ] = null;
+        if( $editDrinks != null ) {
+            $data[ 'editDrink' ][ 'id'      ] = $editDrinks->log_id;
+            $data[ 'editDrink' ][ 'date'    ] = $editDrinks->date;
+            $data[ 'editDrink' ][ 'user_id' ] = $editDrinks->user_id;
+            $data[ 'editDrink' ][ 'beer_id' ] = $editDrinks->beer_id;
+            $data[ 'editDrink' ][ 'brewery' ] = $editDrinks->brewery_id;
+            $data[ 'editDrink' ][ 'size_id' ] = $editDrinks->size_id;
+            $data[ 'editDrink' ][ 'rating'  ] = $editDrinks->rating;
+            $data[ 'editDrink' ][ 'notes'   ] = $editDrinks->notes;
+        }
+        if( $data[ 'editDrink' ] != null and $data[ 'editDrink' ][ 'user_id' ] != $_SESSION[ 'userid' ] ) {
+            redirect( 'log/drink' );
+        }
 
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
         foreach( $allBreweries as $brewery ) {
@@ -262,15 +278,16 @@ class Log extends CI_Controller {
         $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
 
         if( $this->form_validation->run() !== false ) {
+            $drinkID = (int)$this->input->post( 'drink_id' );
             $date = $this->input->post( 'date' );
             $user = $_SESSION[ 'userid' ];
             $beer = $this->input->post( 'beer' );
             $ssize = $this->input->post( 'ssize' );
             $rating = $this->input->post( 'rating' );
             $notes = $this->input->post( 'notes' );
-            $res = $this->drinkers_model->updateLoggedDrink( -1, $date, $user, $beer, $ssize, $rating, $notes );
+            $res = $this->drinkers_model->updateLoggedDrink( $drinkID, $date, $user, $beer, $ssize, $rating, $notes );
             if( $res == 0 ) {
-                 $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
+                $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
             } else {
                 echo 'Drink Logged.';
                 $beerBase = base_url( "index.php/users/totals/" . $user );
@@ -278,7 +295,7 @@ class Log extends CI_Controller {
             }
         }
 
-        $header[ 'title' ] = 'Log Drink';
+        $header[ 'title' ] = $data[ 'editDrink' ] == null ? 'Log Drink' : 'Edit Logged Drink';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_drink', $data );
         $this->load->view( 'templates/footer.php', null );

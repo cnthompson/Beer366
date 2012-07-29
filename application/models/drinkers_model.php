@@ -76,6 +76,20 @@ class Drinkers_Model extends CI_Model {
         }
     }
 
+    public function getLoggedDrink( $id ) {
+        $query = $this
+            ->db
+            ->join( 'beers', 'beers.beer_id = drink_log.beer_id' )
+            ->where( 'log_id', $id )
+            ->limit( 1 )
+            ->get( 'drink_log' );
+        if( $query->num_rows == 1 ) {
+            return $query->row();
+        } else {
+            return null;
+        }
+    }
+    
     public function updateLoggedDrink( $id, $date, $user, $beer, $ssize, $rating, $notes ) {
         $d = strtotime( $date );
         if( ( $d == FALSE || $d == -1 )
