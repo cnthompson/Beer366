@@ -93,7 +93,6 @@ class Log extends CI_Controller {
             if( $res == 0 ) {
                  $data[ 'error' ] = 'An unknown error occurred while adding the brewery.';
             } else {
-                echo 'Brewery Added.';
                 $brewerBase = base_url( "index.php/beer/info/" . $res );
                 redirect( $brewerBase );
             }
@@ -213,7 +212,6 @@ class Log extends CI_Controller {
                 if( $res == 0 ) {
                      $data[ 'error' ] = 'An unknown error occurred while adding the beer.';
                 } else {
-                    echo 'Beer Added.';
                     $beerBase = base_url( "index.php/beer/info/" . $brewery . '/' . $res );
                     redirect( $beerBase );
                 }
@@ -309,7 +307,6 @@ class Log extends CI_Controller {
             if( $res == 0 ) {
                 $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
             } else {
-                echo 'Drink Logged.';
                 $beerBase = base_url( "index.php/users/totals/" . $user );
                 redirect( $beerBase );
             }
