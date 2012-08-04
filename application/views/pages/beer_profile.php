@@ -3,7 +3,7 @@
         echo '<h1 class="dropdown" id="beerMenu">';
         echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#beerMenu" style="text-decoration:none;color:black" >' . $beer[ 'beer_name' ] . '<b class="caret"></b> </a>';
         echo '<ul class="dropdown-menu">';
-        $s1 = base_url( "index.php/log/beer/" . $beer[ 'beer_id' ] );
+        $s1 = base_url( "log/beer/" . $beer[ 'beer_id' ] );
         echo '<li><h5>' . anchor( $s1, "Edit Beer Info" ) . '</h5></li>';
         echo '</ul>';
         echo '</h1>';
@@ -16,14 +16,14 @@
     <p>
     <?php
         $breweryName = $brewery[ 'full_name' ];
-        $s1 = base_url( "index.php/beer/info/" . $brewery[ 'brewery_id' ] );
+        $s1 = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
         $nameAnchor = anchor( $s1, $breweryName );
         echo $nameAnchor;
     ?>
     </p>
     <address>
     <?php
-        $cityBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/";
+        $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
         if( isset( $brewery[ 'region' ] ) ) {
             $cityBase .= $brewery[ 'region' ] ."/";
         } else {
@@ -34,12 +34,12 @@
         $location = $cityAnchor . ", ";
 
         if( isset( $brewery[ 'region' ] ) ) {
-            $rgnBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
+            $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
             $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
             $location .= $rgnAnchor . ", ";
         }
 
-        $countryBase = "index.php/beer/location/" . $brewery[ 'country' ];
+        $countryBase = "beer/location/" . $brewery[ 'country' ];
         $countryAnchor = anchor( base_url( $countryBase ), $brewery[ 'country_name' ] );
         $location .= $countryAnchor;
 
@@ -52,7 +52,7 @@
     <?php echo "<br>" ?>
     <?php
         $style = $beer[ 'substyle_name' ];
-        $s1 = base_url( "index.php/beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
+        $s1 = base_url( "beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
         $ssAnchor = anchor( $s1, $style );
         $abvF  = (float)$beer[ 'beer_abv' ];
         $abvS  = $abvF == 0.0 ? '<unknown>' : sprintf( '%.2f%%', $abvF );

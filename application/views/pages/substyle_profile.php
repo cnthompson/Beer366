@@ -9,9 +9,9 @@
 <body>
 
 <?php
-    $styleBase = base_url( "index.php/beer/styles/" . $family[ 'family_id' ] );
+    $styleBase = base_url( "beer/styles/" . $family[ 'family_id' ] );
     $styleAnchor = anchor( $styleBase, $style[ 'style_name' ] );
-    $substyleBase = base_url( "index.php/beer/styles/" . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] );
+    $substyleBase = base_url( "beer/styles/" . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] );
     $substyleAnchor = anchor( $substyleBase, $substyle[ 'substyle_name' ] );
     echo "<h1>" . $substyleAnchor . " | " . $styleAnchor . "</h1>";
 ?>
@@ -21,11 +21,11 @@
         $this->table->set_heading( 'Beer', 'Brewer', 'ABV', 'BA Rating' );
         foreach( $beers as $beer ) {
             $name  = $beer[ 'beer_name' ];
-            $s1 = base_url( "index.php/beer/info/" . $beer[ 'brewery_id' ] . "/" . $beer[ 'beer_id' ] );
+            $s1 = base_url( "beer/info/" . $beer[ 'brewery_id' ] . "/" . $beer[ 'beer_id' ] );
             $nameAnchor = anchor( $s1, $name );
 
             $brewer = $beer[ 'brewer_name' ];
-            $s1 = base_url( "index.php/beer/info/" . $beer[ 'brewery_id' ] );
+            $s1 = base_url( "beer/info/" . $beer[ 'brewery_id' ] );
             $brewAnchor = anchor( $s1, $brewer );
 
             $abvF  = (float)$beer[ 'beer_abv' ];

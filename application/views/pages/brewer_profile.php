@@ -3,7 +3,7 @@
         echo '<h1 class="dropdown" id="brewerMenu">';
         echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#brewerMenu" style="text-decoration:none;color:black" >' . $brewery[ 'name' ] . '<b class="caret"></b> </a>';
         echo '<ul class="dropdown-menu">';
-        $s1 = base_url( "index.php/log/brewery/" . $brewery[ 'brewery_id' ] );
+        $s1 = base_url( "log/brewery/" . $brewery[ 'brewery_id' ] );
         echo '<li><h5>' . anchor( $s1, "Edit Brewer Info" ) . '</h5></li>';
         echo '</ul>';
         echo '</h1>';
@@ -16,7 +16,7 @@
     <?php echo $brewery[ 'street' ] ?>
     <br>
     <?php
-        $cityBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/";
+        $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
         if( isset( $brewery[ 'region' ] ) ) {
             $cityBase .= $brewery[ 'region' ] ."/";
         } else {
@@ -27,7 +27,7 @@
         $location = $cityAnchor;
 
         if( isset( $brewery[ 'region' ] ) ) {
-            $rgnBase = "index.php/beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
+            $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
             $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
             $location .= ", " . $rgnAnchor;
         }
@@ -66,11 +66,11 @@
         $this->table->set_heading( 'Beer', 'Style', 'ABV', 'BA Rating' );
         foreach( $beers as $beer ) {
             $name  = $beer[ 'beer_name' ];
-            $s1 = base_url( "index.php/beer/info/" . $brewery[ 'brewery_id' ] . "/" . $beer[ 'beer_id' ] );
+            $s1 = base_url( "beer/info/" . $brewery[ 'brewery_id' ] . "/" . $beer[ 'beer_id' ] );
             $nameAnchor = anchor( $s1, $name );
 
             $style = $beer[ 'substyle_name' ];
-            $s1 = base_url( "index.php/beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
+            $s1 = base_url( "beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
             $ssAnchor = anchor( $s1, $style );
 
             $abvF  = (float)$beer[ 'beer_abv' ];

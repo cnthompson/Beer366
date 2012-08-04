@@ -10,7 +10,7 @@
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
         foreach( $allUsers as $user ) {
-            $base = base_url( "index.php/users/totals/" . $user[ 'user_id' ] );
+            $base = base_url( "users/totals/" . $user[ 'user_id' ] );
             $anchor = anchor( $base, $user[ 'display_name' ] );
 
             $totalBeer = $totals[ $user[ 'user_id' ] ][ 'total' ];
@@ -41,9 +41,9 @@
     <?php
         $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
         foreach( $abv as $a ) {
-            $beerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
+            $beerBase = base_url( "beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
             $beerAnchor = anchor( $beerBase, $a[ 'beer_name' ] );
-            $brewerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] );
+            $brewerBase = base_url( "beer/info/" . $a[ 'brewery_id' ] );
             $brewerAnchor = anchor( $brewerBase, $a[ 'brewer_name' ] );
             $percent = sprintf( '%.2f%%', $a[ 'beer_abv' ] );
             $this->table->add_row( $beerAnchor, $brewerAnchor, $percent );
@@ -60,9 +60,9 @@
     <?php
         $this->table->set_heading( 'Date', 'Person', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
         foreach( $drinkLog as $log ) {
-            $beerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
+            $beerBase = base_url( "beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
             $beerAnchor = anchor( $beerBase, $log[ 'beer_name' ] );
-            $brewerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] );
+            $brewerBase = base_url( "beer/info/" . $log[ 'brewery_id' ] );
             $brewerAnchor = anchor( $brewerBase, $log[ 'brewer_name' ] );
             $this->table->add_row( $log[ 'date' ], $log[ 'display_name' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
         }

@@ -19,7 +19,7 @@
 <br>
 
 <?php
-    echo "<h3>" . anchor( base_url( "index.php/authenticate/changepassword/" ),  'Change Password' ) ."</h3>";
+    echo "<h3>" . anchor( base_url( "authenticate/changepassword/" ),  'Change Password' ) ."</h3>";
 ?>
 
 </body>

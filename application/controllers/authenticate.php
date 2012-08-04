@@ -26,7 +26,7 @@ class Authenticate extends CI_Controller {
                 $_SESSION[ 'lastname'    ] = $res->last_name;
                 $_SESSION[ 'displayname' ] = $res->display_name;
                 $_SESSION[ 'email'       ] = $res->email;
-                redirect('users');
+                redirect( 'users' );
             } else {
                 $data[ 'error' ] = 'Login unsuccessful. Please try again.';
             }

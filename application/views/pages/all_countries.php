@@ -14,7 +14,7 @@
         //echo $this->table->generate( $breweries );
         $this->table->set_heading( 'Country' );
         foreach( $countries as $country ) {
-            $s1 = base_url( "index.php/beer/location/" . $country[ '3166_1_id' ] );
+            $s1 = base_url( "beer/location/" . $country[ '3166_1_id' ] );
             $s2 = anchor( $s1, $country[ 'name' ] );
             $numBreweries = " (" . $country[ 'num_brewers' ] . " brewer";
             if( $country[ 'num_brewers' ] == 1 ) {

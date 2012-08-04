@@ -5,9 +5,9 @@
 <ul>
 <?php
     foreach( $fives as $five ) {
-        $beerBase = base_url( "index.php/beer/info/" . $five[ 'brewery_id' ] . "/" . $five[ 'beer_id' ] );
+        $beerBase = base_url( "beer/info/" . $five[ 'brewery_id' ] . "/" . $five[ 'beer_id' ] );
         $beerAnchor = anchor( $beerBase, $five[ 'beer_name' ] );
-        $brewerBase = base_url( "index.php/beer/info/" . $five[ 'brewery_id' ] );
+        $brewerBase = base_url( "beer/info/" . $five[ 'brewery_id' ] );
         $brewerAnchor = anchor( $brewerBase, $five[ 'brewery_name' ] );
         echo '<li>' . $beerAnchor . " [ " . $brewerAnchor . " ]</li>";
     }
@@ -22,9 +22,9 @@
     $this->table->set_template( $tmpl );
     $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
     foreach( $abv as $a ) {
-        $beerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
+        $beerBase = base_url( "beer/info/" . $a[ 'brewery_id' ] . "/" . $a[ 'beer_id' ] );
         $beerAnchor = anchor( $beerBase, $a[ 'beer_name' ] );
-        $brewerBase = base_url( "index.php/beer/info/" . $a[ 'brewery_id' ] );
+        $brewerBase = base_url( "beer/info/" . $a[ 'brewery_id' ] );
         $brewerAnchor = anchor( $brewerBase, $a[ 'brewer_name' ] );
         $percent = sprintf( '%.2f%%', $a[ 'beer_abv' ] );
         $this->table->add_row( $beerAnchor, $brewerAnchor, $percent );
@@ -44,11 +44,11 @@
         $this->table->set_heading( 'Date', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
     }
     foreach( $drinkLog as $log ) {
-        $beerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
+        $beerBase = base_url( "beer/info/" . $log[ 'brewery_id' ] . "/" . $log[ 'beer_id' ] );
         $beerAnchor = anchor( $beerBase, $log[ 'beer_name' ] );
-        $brewerBase = base_url( "index.php/beer/info/" . $log[ 'brewery_id' ] );
+        $brewerBase = base_url( "beer/info/" . $log[ 'brewery_id' ] );
         $brewerAnchor = anchor( $brewerBase, $log[ 'brewer_name' ] );
-        $editBase = base_url( "index.php/log/drink/" . $log[ 'log_id' ] );
+        $editBase = base_url( "log/drink/" . $log[ 'log_id' ] );
         $editAnchor = anchor( $editBase, 'Edit' );
         if( $user[ 'user_id' ] == $_SESSION[ 'userid' ] ) {
             $this->table->add_row( $editAnchor, $log[ 'date' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );

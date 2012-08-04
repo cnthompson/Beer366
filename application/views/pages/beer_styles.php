@@ -22,7 +22,7 @@
         foreach( $families as $family ) {
             echo "<h2>" . $family[ 'family_name' ] ."</h2>";
             foreach( $map[ $family[ 'family_id' ] ] as $style ) {
-                $base = base_url( "index.php/beer/styles/" . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] );
+                $base = base_url( "beer/styles/" . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] );
                 $anchor = anchor( $base, $style[ 'style_name' ] );
                 echo $anchor;
                 echo "<br>";
