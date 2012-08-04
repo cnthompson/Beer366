@@ -70,6 +70,30 @@ class Users_Model extends CI_Model {
             return array();
         }
     }
+    
+    public function getAllBeersByBrewery( $userID = 0 ) {
+        $query = $this
+            ->db
+            ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC', false )
+            ->from( 'drink_log' )
+            ->join( 'beers', 'beers.beer_id = drink_log.beer_id', 'inner' )
+            ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
+            ->group_by( 'drink_log.beer_id, drink_log.user_id' )
+            ->order_by( 'beerC', 'asc' );
+        if( $userID > 0 ) {
+            $query = $this
+                ->db
+                ->where( 'drink_log.user_id', $userID );
+        }
+        $query = $this
+            ->db
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>
