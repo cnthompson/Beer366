@@ -86,7 +86,7 @@ class Beers_Model extends CI_Model {
         $query = $this
             ->db
             ->where( 'brewery_id', $brewerID )
-            ->where( "LOWER( beer_name ) = '" . strtolower( $name ) . "'" )
+            ->where( "LOWER( beer_name ) = '" . str_replace( "'", "\\'", strtolower( $name ) ) . "'" )
             ->where( "beer_id != " . $beerID )
             ->limit( 1 )
             ->get( 'beers' );
