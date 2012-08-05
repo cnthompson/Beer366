@@ -1,4 +1,8 @@
-<h1><?php echo $city[ 'city' ] ?></h1>
+<div class="page-header">
+    <h1>
+        <?php echo $city[ 'city' ] ?>
+    </h1>
+</div>
 <p>
     <?php
         if( $region != NULL ) {

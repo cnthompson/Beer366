@@ -208,6 +208,3 @@
     }
 
 </script>
-
-</body>
-</html>

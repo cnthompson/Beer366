@@ -175,6 +175,3 @@
     }
 
 </script>
-
-</body>
-</html>

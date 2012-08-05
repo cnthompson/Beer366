@@ -100,6 +100,3 @@
         }
     }
 </script>
-
-</body>
-</html>

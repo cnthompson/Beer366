@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title> Beer Sub-Styles | " . $style[ 'style_name' ] . "</title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
+<div class="page-header">
+    <h1>Beer Sub-Styles</h1>
+</div>
 <?php
     $styleBase = base_url( "beer/styles/" . $family[ 'family_id' ] . '/' );
     $styleAnchor = anchor( $styleBase, $style[ 'style_name' ] );
@@ -21,6 +14,3 @@
         echo "<br>";
     }
 ?>
-
-</body>
-</html>

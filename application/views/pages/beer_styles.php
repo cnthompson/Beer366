@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <?php echo "<title> Beer Styles </title>" ?>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>Beer Styles</h1>" ?>
+<div class="page-header">
+    <h1>Beer Styles</h1>
+</div>
 <?php
         $map = NULL;
         foreach( $families as $family ) {
@@ -29,6 +21,3 @@
             }
         }
 ?>
-
-</body>
-</html>

@@ -1,4 +1,6 @@
-<h1>All Breweries</h1>
+<div class="page-header">
+    <h1>All Breweries</h1>
+</div>
 <?php
 $currentLetter = '';
 ?>

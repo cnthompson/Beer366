@@ -30,6 +30,7 @@ class Beer extends CI_Controller {
             $header[ 'title' ] = 'All Breweries';
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/all_breweries', $data );
+            $this->load->view( 'templates/footer.php', null );
         } else if( $beer <= 0 ) {
             $breweries = $this->breweries_model->getBreweries( $brewery, false );
             if( count( $breweries ) == 0 ) {
@@ -40,6 +41,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = 'Brewery Profile - ' . $data[ 'brewery' ][ 'name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/brewer_profile', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         } else {
             $breweries = $this->breweries_model->getBreweries( $brewery );
@@ -53,10 +55,9 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = 'Beer Profile - ' . $data[ 'beer' ][ 'beer_name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/beer_profile', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         }
-
-        $this->load->view( 'templates/footer.php', null );
     }
 
     public function styles( $family = 0, $style = 0, $substyle = 0 ) {
@@ -70,6 +71,7 @@ class Beer extends CI_Controller {
             $header[ 'title' ] = 'Beer Styles';
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/beer_styles', $data );
+            $this->load->view( 'templates/footer.php', null );
         } else if( $substyle <= 0 ) {
             $families = $this->styles_model->getFamilies( $family );
             $styles  = $this->styles_model->getStyles( $family, $style );
@@ -82,6 +84,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = 'Beer Sub Styles';
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/beer_substyles', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         } else {
             $families = $this->styles_model->getFamilies( $family );
@@ -97,6 +100,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = "Beer Sub-Style | " . $styles[ 0 ][ 'style_name' ] . " | " . $substyles[ 0 ][ 'substyle_name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/substyle_profile', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         }
     }
@@ -114,6 +118,7 @@ class Beer extends CI_Controller {
             $header[ 'title' ] = 'All Countries';
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/all_countries', $data );
+            $this->load->view( 'templates/footer.php', null );
         } else if( $regionID <= 0 && $city == NULL ) {
             $countries = $this->location_model->getCountries( $countryID );
             if( count( $countries ) == 0 ) {
@@ -125,6 +130,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = $data[ 'country' ][ 'name' ] . " | " . ( empty( $data[ 'regions' ] ) ? "Cities" : "Regions" );
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/regions_and_cities', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         } else if( $city == NULL ) {
             $countries = $this->location_model->getCountries( $countryID );
@@ -139,6 +145,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = $data[ 'country' ][ 'name' ] . " | " . ( empty( $data[ 'regions' ] ) ? "Cities" : "Regions" );
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/regions_and_cities', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         } else {
             $countries = $this->location_model->getCountries( $countryID );
@@ -154,6 +161,7 @@ class Beer extends CI_Controller {
                 $header[ 'title' ] = $data[ 'city' ][ 'city' ] . " | " . ( $data[ 'region' ] == NULL ? "" : $data[ 'region' ][ 'rgn_name' ] . " | " ) . $data[ 'country' ][ 'name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/city_profile', $data );
+                $this->load->view( 'templates/footer.php', null );
             }
         }
 

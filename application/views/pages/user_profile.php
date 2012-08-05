@@ -58,6 +58,3 @@
     }
     echo $this->table->generate();
 ?>
-
-</body>
-</html>

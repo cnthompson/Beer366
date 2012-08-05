@@ -21,6 +21,3 @@
 <?php
     echo "<h3>" . anchor( base_url( "authenticate/changepassword/" ),  'Change Password' ) ."</h3>";
 ?>
-
-</body>
-</html>
