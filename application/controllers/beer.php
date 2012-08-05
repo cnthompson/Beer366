@@ -111,7 +111,7 @@ class Beer extends CI_Controller {
         }
         $this->load->library( 'table' );
         if( $city != NULL ) {
-            $city = urldecode( $city );
+            $city = html_entity_decode( urldecode( $city ) );
         }
         if( $countryID <= 0 ) {
             $data[ 'countries' ] = $this->location_model->getCountries( $countryID );
