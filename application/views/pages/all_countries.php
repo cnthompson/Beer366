@@ -1,32 +1,33 @@
-<!DOCTYPE html>
+<h1>All Countries</h1>
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+ google.load('visualization', '1', {'packages': ['geochart']});
+ google.setOnLoadCallback(drawRegionsMap);
 
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>All Countries</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
+  function drawRegionsMap() {
+    var data = google.visualization.arrayToDataTable([
+      ['Country', 'Breweries'],
+<?php
+foreach( $countries as $country ):
+?>
+      ['<?php echo $country['name'] ?>', <?php echo $country['num_brewers'] ?>],
+<?php
+endforeach;
+?>
+    ]);
 
-<?php echo "<h1>All Countries</h1>" ?>
-<p>
-    <?php
-        //echo $this->table->generate( $breweries );
-        $this->table->set_heading( 'Country' );
-        foreach( $countries as $country ) {
-            $s1 = base_url( "beer/location/" . $country[ '3166_1_id' ] );
-            $s2 = anchor( $s1, $country[ 'name' ] );
-            $numBreweries = " (" . $country[ 'num_brewers' ] . " brewer";
-            if( $country[ 'num_brewers' ] == 1 ) {
-                $numBreweries .= ")";
-            } else {
-                $numBreweries .= "s)";
-            }
-            $this->table->add_row( $s2 . $numBreweries );
-        }
-        echo $this->table->generate();
-    ?>
-</p>
+    var options = {colorAxis: {maxValue: 30, colors: ['#B1E3AF', '#179E10']}, magnifyingGlass: {enable: true}, legend: 'none'};
 
-</body>
-</html>
+    var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+};
+</script>
+<div id="chart_div" class="span10"></div>
+<?php 
+foreach( $countries as $country ): 
+?>
+    <div class="span3">
+        <a href="<?php echo base_url( 'beer/location/' . $country['3166_1_id'] ) ?>"><?php echo $country['name'] ?></a>
+        &nbsp;(<?php echo $country['num_brewers'] ?>)
+    </div>
+<?php endforeach; ?>
