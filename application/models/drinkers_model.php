@@ -136,7 +136,24 @@ class Drinkers_Model extends CI_Model {
         }
     }
 
-
+    public function getGloballyUniqueCount( $id = 0 ) {
+        $sql = "SELECT u.display_name, u.user_id, COUNT( t.user_id ) AS uniques"
+             . " FROM ( "
+             . "  SELECT dl.user_id FROM drink_log AS dl"
+             . "  LEFT JOIN drink_log AS dl2 ON ( dl.beer_id = dl2.beer_id AND dl.user_id != dl2.user_id )"
+             . "  WHERE dl2.user_id IS NULL"
+             . "  GROUP BY dl.user_id, dl.beer_id ) AS t"
+             . " INNER JOIN users AS u ON ( u.user_id = t.user_id )"
+             . ( ( $id > 0 ) ? ( " WHERE u.user_id = '" . $id . "'" ) : "" )
+             . " GROUP BY t.user_id"
+             . " ORDER BY uniques DESC";
+        $query = $this->db->query( $sql );
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
 }
 
 ?>

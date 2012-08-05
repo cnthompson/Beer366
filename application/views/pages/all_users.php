@@ -52,6 +52,23 @@
     ?>
     </div>
 </section>
+<section id="uniques">
+    <div class="page-header">
+        <h1>Unique Beers</h1>
+    </div>
+    <p>A Globally Unique beer is one that only one user has had.</p>
+    <?php
+        $this->table->set_heading( 'Person', 'Individual Uniques', 'Global Uniques', 'Percent' );
+        foreach( $uniques as $unique ) {
+            $userName = $unique[ 'display_name' ];
+            $iUnique = $totals[ $unique[ 'user_id' ] ][ 'unique' ];
+            $gUnique = $unique[ 'uniques' ];
+            $pUnique = $iUnique == 0 ? 0 : ( 100 * $gUnique / $iUnique );
+            $this->table->add_row( $userName, $iUnique, $gUnique, sprintf( '%.2f%%', $pUnique ) );
+        }
+        echo $this->table->generate();
+    ?>
+</section>
 <section id="recent">
     <div class="page-header">
         <h1> Recent Beers </h1>

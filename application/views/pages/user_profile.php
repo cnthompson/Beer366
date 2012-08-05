@@ -48,8 +48,11 @@
         $beerAnchor = anchor( $beerBase, $log[ 'beer_name' ] );
         $brewerBase = base_url( "beer/info/" . $log[ 'brewery_id' ] );
         $brewerAnchor = anchor( $brewerBase, $log[ 'brewer_name' ] );
-        $editBase = base_url( "log/drink/" . $log[ 'log_id' ] );
-        $editAnchor = anchor( $editBase, 'Edit' );
+        $edit_props = array(
+            'src' => 'img/pencil.png',
+            'alt' => 'Edit',
+        );
+        $editAnchor    = anchor( base_url( 'log/drink/' . $log[ 'log_id' ] ), img( $edit_props ), array( 'title' => 'Edit' ) );
         if( $user[ 'user_id' ] == $_SESSION[ 'userid' ] ) {
             $this->table->add_row( $editAnchor, $log[ 'date' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
         } else {

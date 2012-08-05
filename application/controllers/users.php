@@ -50,8 +50,10 @@ class Users extends CI_Controller {
             $data[ 'totals' ] = $userToTotalsMap;
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 7 );
             $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
+            $data[ 'uniques' ] =$this->drinkers_model->getGloballyUniqueCount();
             $this->load->view( 'pages/all_users', $data );
         } else {
+            $this->load->helper( 'html' );
             $this->load->library( 'table' );
             $allUsers = $this->users_model->getUsers( $userID );
             $data[ 'user' ] = $allUsers[ 0 ];
