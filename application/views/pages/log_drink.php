@@ -14,25 +14,25 @@
 <p>
     <?php
         echo form_label( 'Date:', 'date' );
-        echo form_input( 'date', set_value( 'date', $editDrink == null ? date( 'Y-m-d' ) : $editDrink[ 'date' ] ), 'id="date"' );
+        echo form_input( 'date', set_value( 'date', $editDrink == null ? date( 'Y-m-d' ) : $editDrink[ 'date' ] ), 'id="date" class="span4"' );
 
         echo form_label( 'Brewery', 'brewery' );
-        echo form_dropdown( 'brewery', $breweries, set_value( 'brewery', $editDrink == null ? null : $editDrink[ 'brewery' ] ), 'id="brewery" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'brewery', $breweries, set_value( 'brewery', $editDrink == null ? null : $editDrink[ 'brewery' ] ), 'id="brewery" class="span4" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
 
         $attributes = array(
             'id' => 'beerlabel'
         );
         echo form_label( 'Beer', 'beer', $attributes );
-        echo form_dropdown( 'beer', array(), set_value( 'beer', $editDrink == null ? null : $editDrink[ 'beer_id' ] ), 'id="beer"' );
+        echo form_dropdown( 'beer', array(), set_value( 'beer', $editDrink == null ? null : $editDrink[ 'beer_id' ] ), 'id="beer" class="span4"' );
 
         echo form_label( 'Serving Size', 'ssize' );
-        echo form_dropdown( 'ssize', $sizes,  set_value( 'ssize', $editDrink == null ? 7 : $editDrink[ 'size_id' ] ), 'id="ssize"' );
+        echo form_dropdown( 'ssize', $sizes,  set_value( 'ssize', $editDrink == null ? 7 : $editDrink[ 'size_id' ] ), 'id="ssize" class="span4"' );
 
         echo form_label( 'Rating:', 'rating' );
-        echo form_input( 'rating', set_value( 'rating', $editDrink == null ? null : $editDrink[ 'rating' ] ), 'id="rating"' );
+        echo form_input( 'rating', set_value( 'rating', $editDrink == null ? null : $editDrink[ 'rating' ] ), 'id="rating" class="span4"' );
 
         echo form_label( 'Notes:', 'notes' );
-        echo form_textarea( 'notes', set_value( 'notes', $editDrink == null ? null : $editDrink[ 'notes' ] ), 'id="notes"' );
+        echo form_textarea( 'notes', set_value( 'notes', $editDrink == null ? null : $editDrink[ 'notes' ] ), 'id="notes" class="span4"' );
     ?>
 </p>
 <p>

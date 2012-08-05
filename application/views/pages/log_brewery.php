@@ -13,37 +13,67 @@
 <?php echo form_hidden( 'brewer_id', $editBrewer == null ? -1 : $editBrewer[ 'id' ] ); ?>
 <p>
     <?php
+        $attributes = array(
+            'name'  => 'shortname',
+            'id'    => 'shortname',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'name' ] )
+        );
         echo form_label( 'Brewery Name (Friendly Name):', 'shortname' );
-        echo form_input( 'shortname', set_value( 'shortname', $editBrewer == null ? null : $editBrewer[ 'name' ] ), 'id="shortname"' );
+        echo form_input( $attributes );
     ?>
 </p>
 <p>
     <?php
+        $attributes = array(
+            'name'  => 'fullname',
+            'id'    => 'fullname',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'fName' ] )
+        );
         echo form_label( 'Full Name:', 'fullname' );
-        echo form_input( 'fullname', set_value( 'fullname', $editBrewer == null ? null : $editBrewer[ 'fName' ] ), 'id="fullname"' );
+        echo form_input( $attributes );
     ?>
 </p>
 <p>
     <?php
         echo form_fieldset('Brewery Address');
 
+        $attributes = array(
+            'name'  => 'address',
+            'id'    => 'address',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'street' ] )
+        );
         echo form_label( 'Street Address:', 'address' );
-        echo form_input( 'address', set_value( 'address', $editBrewer == null ? null : $editBrewer[ 'street' ] ), 'id="address"' );
+        echo form_input( $attributes );
 
+        $attributes = array(
+            'name'  => 'city',
+            'id'    => 'city',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'city' ] )
+        );
         echo form_label( 'City:', 'city' );
-        echo form_input( 'city', set_value( 'city', $editBrewer == null ? null : $editBrewer[ 'city' ] ), 'id="city"' );
+        echo form_input( $attributes );
 
+        $attributes = array(
+            'name'  => 'postcode',
+            'id'    => 'postcode',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'postal' ] )
+        );
         echo form_label( 'Postal Code:', 'postcode' );
-        echo form_input( 'postcode', set_value( 'postcode', $editBrewer == null ? null : $editBrewer[ 'postal' ] ), 'id="postcode"' );
+        echo form_input( $attributes );
 
         echo form_label( 'Country', 'country' );
-        echo form_dropdown( 'country', $countries,  set_value( 'country', $editBrewer == null ? '226' : $editBrewer[ 'country' ] ), 'id="country" onChange="changeCountry( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'country', $countries,  set_value( 'country', $editBrewer == null ? '226' : $editBrewer[ 'country' ] ), 'id="country" class="span4" onChange="changeCountry( this.options[ this.selectedIndex ].value );"' );
 
         $attributes = array(
             'id' => 'regionlabel'
         );
         echo form_label( 'Region', 'region', $attributes );
-        echo form_dropdown( 'region', array(), set_value( 'region', $editBrewer == null ? null : $editBrewer[ 'region' ] ), 'id="region"' );
+        echo form_dropdown( 'region', array(), set_value( 'region', $editBrewer == null ? null : $editBrewer[ 'region' ] ), 'id="region" class="span4"' );
 
         echo form_fieldset_close();
     ?>
@@ -52,14 +82,26 @@
     <?php
         echo form_fieldset( 'Miscellaneous' );
 
+        $attributes = array(
+            'name'  => 'homepage',
+            'id'    => 'homepage',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'homepage' ] )
+        );
         echo form_label( 'Web Page:', 'homepage' );
-        echo form_input( 'homepage', set_value( 'homepage', $editBrewer == null ? null : $editBrewer[ 'homepage' ] ), 'id="homepage"' );
+        echo form_input( $attributes );
 
         echo form_label( 'Brewery Type', 'brewerytype' );
-        echo form_dropdown( 'brewerytype', $breweryTypes, set_value( 'brewerytype', $editBrewer == null ? '1' : $editBrewer[ 'type' ] ) );
+        echo form_dropdown( 'brewerytype', $breweryTypes, set_value( 'brewerytype', $editBrewer == null ? '1' : $editBrewer[ 'type' ] ), 'class="span4"' );
 
+        $attributes = array(
+            'name'  => 'notes',
+            'id'    => 'notes',
+            'class' => 'span4',
+            'value' => ( $editBrewer == null ? null : $editBrewer[ 'notes' ] )
+        );
         echo form_label( 'Notes:', 'notes' );
-        echo form_textarea( 'notes', set_value( 'notes', $editBrewer == null ? null : $editBrewer[ 'notes' ] ), 'id="notes"' );
+        echo form_textarea( $attributes );
 
         echo form_fieldset_close();
     ?>

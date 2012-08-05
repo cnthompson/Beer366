@@ -13,35 +13,53 @@
 <?php echo form_hidden( 'beer_id', $editBeer == null ? -1 : $editBeer[ 'id' ] ); ?>
 <p>
     <?php
+        $attributes = array(
+            'name'  => 'beername',
+            'id'    => 'beername',
+            'value' => ( $editBeer == null ? null : $editBeer[ 'name' ] ),
+            'class' => 'span4'
+        );
         echo form_label( 'Beer Name:', 'beername' );
-        echo form_input( 'beername', set_value( 'beername', $editBeer == null ? null : $editBeer[ 'name' ] ), 'id="beername"' );
+        echo form_input( $attributes );
     ?>
 </p>
 <p>
     <?php
         echo form_label( 'Brewery', 'brewery' );
-        echo form_dropdown( 'brewery', $breweries,  set_value( 'brewery', $editBeer == null ? null : $editBeer[ 'brewerID' ] ), 'id="brewery"' );
+        echo form_dropdown( 'brewery', $breweries,  set_value( 'brewery', $editBeer == null ? null : $editBeer[ 'brewerID' ] ), 'id="brewery" class="span4"' );
     ?>
 </p>
 <p>
     <?php
         echo form_label( 'Family', 'family' );
-        echo form_dropdown( 'family', $families, set_value( 'family', -1 ), 'id="family" onChange="changeFamily( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'family', $families, set_value( 'family', -1 ), 'id="family" class="span4" onChange="changeFamily( this.options[ this.selectedIndex ].value );"' );
 
         echo form_label( 'Style', 'style' );
-        echo form_dropdown( 'style', $styles, set_value( 'style', -1 ), 'id="style" onChange="changeStyle( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'style', $styles, set_value( 'style', -1 ), 'id="style" class="span4" onChange="changeStyle( this.options[ this.selectedIndex ].value );"' );
 
         echo form_label( 'Sub-Style', 'substyle' );
-        echo form_dropdown( 'substyle', $substyles, set_value( 'substyle', $editBeer == null ? null : $editBeer[ 'substyle' ] ), 'id="substyle"' );
+        echo form_dropdown( 'substyle', $substyles, set_value( 'substyle', $editBeer == null ? null : $editBeer[ 'substyle' ] ), 'id="substyle" class="span4"' );
     ?>
 </p>
 <p>
     <?php
+        $attributes = array(
+            'name'   => 'abv',
+            'id'     => 'abv',
+            'class'  => 'span4',
+            'value'  => ( $editBeer == null ? null : $editBeer[ 'abv' ] )
+        );
         echo form_label( 'ABV (%):', 'abv' );
-        echo form_input( 'abv', set_value( 'abv', $editBeer == null ? null : $editBeer[ 'abv' ] ), 'id="abv"' );
+        echo form_input( $attributes );
 
+        $attributes = array(
+            'name'   => 'ba',
+            'id'     => 'ba',
+            'class'  => 'span4',
+            'value'  => ( $editBeer == null ? null : $editBeer[ 'ba' ] )
+        );
         echo form_label( 'BA Rating:', 'ba' );
-        echo form_input( 'ba', set_value( 'ba', $editBeer == null ? null : $editBeer[ 'ba' ] ), 'id="ba"' );
+        echo form_input( $attributes );
     ?>
 </p>
 <p>

@@ -18,22 +18,24 @@
 <?php echo form_open('authenticate'); ?>
 <p>
     <?php
+        $attributes = array(
+            'name'  => 'email_address',
+            'id'    => 'email_address',
+            'class' => 'span4'
+        );
         echo form_label( 'Email Address:', 'email_address' );
-        echo form_input( 'email_address', set_value( 'email_address' ), 'id="email_address"', 'size="300"' );
+        echo form_input( $attributes );
     ?>
 </p>
 <p>
     <?php
-        $data = array(
-            'name'        => 'username',
-            'id'          => 'username',
-            'value'       => 'johndoe',
-            'size'        => '50',
-            'style'       => 'width:50%',
+        $attributes = array(
+            'name'        => 'password',
+            'id'          => 'password',
+            'class'        => 'span4'
         );
         echo form_label( 'Password:', 'password' );
-        //echo form_password( 'password', '', 'id="password"' );
-        echo form_password( 'password', '', 'id="password"', 'size="300"', 'style="width:50%"' );
+        echo form_password( $attributes );
     ?>
 </p>
 <p>
