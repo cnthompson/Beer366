@@ -26,7 +26,7 @@ class Users_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getTotalBeerCountForUser( $userID ) {
         $query = $this
             ->db
@@ -48,7 +48,7 @@ class Users_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getUniqueBeerCountForUser( $userID ) {
         $query = $this
             ->db
@@ -70,7 +70,7 @@ class Users_Model extends CI_Model {
             return array();
         }
     }
-    
+
     public function getAllBeersByBrewery( $userID = 0 ) {
         $query = $this
             ->db
@@ -92,6 +92,82 @@ class Users_Model extends CI_Model {
             return $query->result_array();
         } else {
             return array();
+        }
+    }
+
+    public function getScratchpad( $userID, $scratchID = -1 ) {
+        $query = $this
+            ->db
+            ->select( '*' )
+            ->from( 'scratchpad' )
+            ->order_by( 'date', 'asc' )
+            ->where( 'user_id', $userID );
+        if( $scratchID != -1 ) {
+            $query = $this
+                ->db
+                ->where( 'scratchpad_id', $scratchID );
+        }
+        $query = $this
+            ->db
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
+    public function deleteScratch( $id ) {
+        $query = $this
+            ->db
+            ->where( 'scratchpad_id', $id )
+            ->limit( 1 )
+            ->delete( 'scratchpad' );
+    }
+
+    public function updateScratch( $id, $date, $user, $brewery, $beer, $substyle, $size, $rating, $notes ) {
+        if( $user <= 0 ) {
+            return 0;
+        }
+
+        $d = strtotime( $date );
+        $data = array (
+            'date'      => ( $d == FALSE || $d == -1 ) ? null : date( 'Y-m-d', $d ),
+            'user_id'   => $user,
+            'brewer'    => ( $brewery == null  || strlen( $brewery ) == 0  ) ? null : $brewery,
+            'beer'      => ( $beer == null     || strlen( $beer ) == 0     ) ? null : $beer,
+            'substyle'  => ( $substyle == null || strlen( $substyle ) == 0 ) ? null : $substyle,
+            'size'      => ( $size == null     || strlen( $size ) == 0     ) ? null : $size,
+            'rating'    => ( $rating == null   || strlen( $rating ) == 0   ) ? null : $rating,
+            'notes'     => ( $notes == null    || strlen( $notes ) == 0    ) ? null : $notes,
+        );
+        $query = null;
+        if( $id > 0 ) {
+            //updating
+            $query = $this
+                ->db
+                ->where( 'scratchpad_id', $id )
+                ->update( 'scratchpad', $data );
+        } else {
+            //inserting
+            $query = $this
+                ->db
+                ->insert( 'scratchpad', $data );
+        }
+        if( $query == 1 ) {
+            $query = $this
+                ->db
+                ->select( 'scratchpad_id' )
+                ->where( $data )
+                ->get( 'scratchpad' );
+            if( $query->num_rows > 0 ) {
+                $results = $query->result_array();
+                return $results[ 0 ][ 'scratchpad_id' ];
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
         }
     }
 }

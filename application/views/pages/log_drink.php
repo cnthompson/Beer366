@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>
-        <?php echo ( $editDrink == null ? "Log Drink" : "Edit Logged Drink" ); ?>
+        <?php echo ( $scratch != null ? "Convert Scratchpad Drink" : ( $editDrink == null ? "Log Drink" : "Edit Logged Drink" ) ); ?>
     </h1>
 </div>
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
@@ -9,38 +9,62 @@
 <?php endif; ?>
 
 
-<?php echo form_open( 'log/drink' . ( $editDrink == null ? '' : ( '/' . $editDrink[ 'id' ] ) ) ); ?>
+<?php
+    $url = 'log/drink';
+    if( $scratch != null ) {
+        $url = 'log/scratch/' . $scratch[ 'id' ] . '/c';
+    } else if( $editDrink != null ) {
+        $url = 'log/drink/' . $editDrink[ 'id' ];
+    }
+    echo form_open( $url );
+?>
 <?php echo form_hidden( 'drink_id', $editDrink == null ? -1 : $editDrink[ 'id' ] ); ?>
-<p>
     <?php
-        echo form_label( 'Date:', 'date' );
+        echo '<p>';
+        $label = 'Date:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'date' ] . '</font>' ) );
+        echo form_label( $label, 'date' );
         echo form_input( 'date', set_value( 'date', $editDrink == null ? date( 'Y-m-d' ) : $editDrink[ 'date' ] ), 'id="date" class="span4"' );
+        echo '</p>';
 
-        echo form_label( 'Brewery', 'brewery' );
+        echo '<p>';
+        $label = 'Brewery:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'brewery' ] . '</font>' ) );
+        echo form_label( $label, 'brewery' );
         echo form_dropdown( 'brewery', $breweries, set_value( 'brewery', $editDrink == null ? null : $editDrink[ 'brewery' ] ), 'id="brewery" class="span4" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
+        echo '</p>';
 
-        $attributes = array(
-            'id' => 'beerlabel'
-        );
-        echo form_label( 'Beer', 'beer', $attributes );
+        echo '<p>';
+        $label = 'Beer:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'beer' ] . '</font>' ) );
+        echo form_label( $label, 'beer', array( 'id' => 'beerlabel' ) );
         echo form_dropdown( 'beer', array(), set_value( 'beer', $editDrink == null ? null : $editDrink[ 'beer_id' ] ), 'id="beer" class="span4"' );
+        echo '</p>';
 
-        echo form_label( 'Serving Size', 'ssize' );
+        echo '<p>';
+        $label = 'Serving Size:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'size' ] . '</font>' ) );
+        echo form_label( $label, 'ssize' );
         echo form_dropdown( 'ssize', $sizes,  set_value( 'ssize', $editDrink == null ? 7 : $editDrink[ 'size_id' ] ), 'id="ssize" class="span4"' );
+        echo '</p>';
 
-        echo form_label( 'Rating:', 'rating' );
+        echo '<p>';
+        $label = 'Rating:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'rating' ] . '</font>' ) );
+        echo form_label( $label, 'rating' );
         echo form_input( 'rating', set_value( 'rating', $editDrink == null ? null : $editDrink[ 'rating' ] ), 'id="rating" class="span4"' );
-
+        echo '</p>';
+        
+        echo '<p>';
         echo form_label( 'Notes:', 'notes' );
         echo form_textarea( 'notes', set_value( 'notes', $editDrink == null ? null : $editDrink[ 'notes' ] ), 'id="notes" class="span4"' );
+        echo '</p>';
     ?>
-</p>
 <p>
-    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $editDrink == null ? 'Log Drink' : 'Update' ), 'class' => 'btn' ) ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $scratch != null ? 'Convert' : ( $editDrink == null ? 'Log Drink' : 'Update' ) ), 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
-<script type="text/javascript" src="/js/jquery.js"></script>
-<script type="text/javascript" src="/js/jquery-ui-1.8.22.custom.min.js"></script>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/jquery.js"></script>' ;
+    echo '</br>' ;
+    echo '<script type="text/javascript" src="' . $source . '/jquery-ui-1.8.22.custom.min.js"></script>' ;
+?>
 <script type="text/javascript">
     $( "#date" ).datepicker( { dateFormat: "yy-mm-dd" } );
 

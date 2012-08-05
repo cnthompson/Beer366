@@ -9,6 +9,7 @@ class Log extends CI_Controller {
         $this->load->model( 'location_model' );
         $this->load->model( 'styles_model' );
         $this->load->model( 'drinkers_model' );
+        $this->load->model( 'users_model' );
         session_start();
     }
 
@@ -254,6 +255,7 @@ class Log extends CI_Controller {
         }
 
         $data[ 'error' ] = '';
+        $data[ 'scratch' ] = null;
 
         $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
         $data[ 'editDrink' ] = null;
@@ -363,5 +365,151 @@ class Log extends CI_Controller {
             return FALSE;
         }
         return TRUE;
+    }
+
+    function scratch( $id = 0, $extra = '' ) {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+
+        $data[ 'error' ] = '';
+        $data[ 'scratch' ] = null;
+        $data[ 'editDrink' ] = null;
+
+        $editScratch = $this->users_model->getScratchpad( $_SESSION[ 'userid' ], $id );
+        $data[ 'editScratch' ] = null;
+        if( $editScratch != null and count( $editScratch ) > 0 ) {
+            $data[ 'editScratch' ][ 'id'      ] = $editScratch[ 0 ][ 'scratchpad_id' ];
+            $data[ 'editScratch' ][ 'date'    ] = $editScratch[ 0 ][ 'date'          ];
+            $data[ 'editScratch' ][ 'user_id' ] = $editScratch[ 0 ][ 'user_id'       ];
+            $data[ 'editScratch' ][ 'brewery' ] = $editScratch[ 0 ][ 'brewer'        ];
+            $data[ 'editScratch' ][ 'beer'    ] = $editScratch[ 0 ][ 'beer'          ];
+            $data[ 'editScratch' ][ 'sstyle'  ] = $editScratch[ 0 ][ 'substyle'      ];
+            $data[ 'editScratch' ][ 'size'    ] = $editScratch[ 0 ][ 'size'          ];
+            $data[ 'editScratch' ][ 'rating'  ] = $editScratch[ 0 ][ 'rating'        ];
+            $data[ 'editScratch' ][ 'notes'   ] = $editScratch[ 0 ][ 'notes'         ];
+        }
+
+        if( $extra == 'x' and $data[ 'editScratch' ] != null ) {
+            $this->users_model->deleteScratch( $id );
+            redirect( "users/scratch/" );
+        } else if( $extra == 'c' and $data[ 'editScratch' ] != null ) {
+            $data[ 'scratch' ][ 'id'      ] = $data[ 'editScratch' ][ 'id' ];
+            $data[ 'scratch' ][ 'date'    ] = $data[ 'editScratch' ][ 'date'    ];
+            $data[ 'scratch' ][ 'user_id' ] = $data[ 'editScratch' ][ 'user_id' ];
+            $data[ 'scratch' ][ 'brewery' ] = $data[ 'editScratch' ][ 'brewery' ];
+            $data[ 'scratch' ][ 'beer'    ] = $data[ 'editScratch' ][ 'beer'    ];
+            $data[ 'scratch' ][ 'sstyle'  ] = $data[ 'editScratch' ][ 'sstyle'  ];
+            $data[ 'scratch' ][ 'size'    ] = $data[ 'editScratch' ][ 'size'    ];
+            $data[ 'scratch' ][ 'rating'  ] = $data[ 'editScratch' ][ 'rating'  ];
+            $data[ 'scratch' ][ 'notes'   ] = $data[ 'editScratch' ][ 'notes'   ];
+
+            $data[ 'editDrink' ][ 'id'      ] = -1;
+            $d = strtotime( $data[ 'editScratch' ][ 'date' ] );
+            $data[ 'editDrink' ][ 'date'    ] = ( $d == FALSE || $d == -1 ) ? null : date( 'Y-m-d', $d );
+            $data[ 'editDrink' ][ 'user_id' ] = $data[ 'scratch' ][ 'user_id' ];
+            $data[ 'editDrink' ][ 'rating'  ] = null;
+            if( ( is_numeric( $data[ 'scratch' ][ 'rating'  ] ) )
+             && ( $data[ 'scratch' ][ 'rating'  ] > 0 )
+             && ( $data[ 'scratch' ][ 'rating'  ] <= 5 ) ) {
+                $data[ 'editDrink' ][ 'rating'  ] = $data[ 'scratch' ][ 'rating'  ];
+            }
+            $data[ 'editDrink' ][ 'notes'   ] = $data[ 'scratch' ][ 'notes'   ];
+
+            $data[ 'editDrink' ][ 'brewery' ] = -1;
+            $allBreweries = $this->breweries_model->getBreweries( 0, false );
+            foreach( $allBreweries as $brewery ) {
+                $data[ 'breweries' ][ $brewery[ 'brewery_id' ] ] = $brewery[ 'name' ];
+                $data[ 'brew2beerMap' ][ $brewery[ 'brewery_id' ] ] = array();
+                if( ( strtolower( $brewery[ 'name' ] ) == strtolower( $data[ 'scratch' ][ 'brewery' ] ) )
+                 || ( strtolower( $brewery[ 'full_name' ] ) == strtolower( $data[ 'scratch' ][ 'brewery' ] ) ) ) {
+                    $data[ 'editDrink' ][ 'brewery' ] = $brewery[ 'brewery_id' ];
+                }
+            }
+
+            $data[ 'editDrink' ][ 'beer_id' ] = -1;
+            $allBeers = $this->beers_model->getBeers( 0 );
+            foreach( $allBeers as $beer ) {
+                $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
+                if( ( $data[ 'editDrink' ][ 'brewery' ] == $beer[ 'brewery_id' ] )
+                 && ( strtolower( $beer[ 'beer_name' ] ) == strtolower( $data[ 'scratch' ][ 'beer' ] ) ) ) {
+                    $data[ 'editDrink' ][ 'beer_id' ] = $beer[ 'beer_id' ];
+                 }
+            }
+
+            $data[ 'editDrink' ][ 'size_id' ] = -1;
+            $allSizes = $this->beers_model->getServingSizes();
+            foreach( $allSizes as $size ) {
+                $data[ 'sizes' ][ $size[ 'size_id' ] ] = $size[ 'name' ];
+                if( ( strtolower( $size[ 'name' ] ) == strtolower( $data[ 'scratch' ][ 'size' ] ) )
+                 || ( strtolower( $size[ 'ml' ] ) == strtolower( $data[ 'scratch' ][ 'size' ] ) ) ) {
+                    $data[ 'editDrink' ][ 'size_id' ] = $size[ 'size_id' ];
+                 }
+            }
+
+            $this->load->library( 'form_validation' );
+
+            $this->form_validation->set_rules( 'date', 'Date', 'trim|required|callback_checkDate' );
+            $this->form_validation->set_rules( 'beer', 'Beer', 'callback_checkBeer' );
+            $this->form_validation->set_rules( 'ssize', 'Serving Size', 'callback_checkSSize' );
+            $this->form_validation->set_rules( 'rating', 'Rating', 'trim|numeric|callback_checkRating' );
+            $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
+
+            if( $this->form_validation->run() !== false ) {
+                $drinkID = (int)$this->input->post( 'drink_id' );
+                $date = $this->input->post( 'date' );
+                $user = $_SESSION[ 'userid' ];
+                $beer = $this->input->post( 'beer' );
+                $ssize = $this->input->post( 'ssize' );
+                $rating = $this->input->post( 'rating' );
+                $notes = $this->input->post( 'notes' );
+                $res = $this->drinkers_model->updateLoggedDrink( $drinkID, $date, $user, $beer, $ssize, $rating, $notes );
+                if( $res == 0 ) {
+                    $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
+                } else {
+                    $this->users_model->deleteScratch( $id );
+                    redirect( "users/scratch/" );
+                }
+            }
+
+            $header[ 'title' ] = 'Convert Scratchpad Drink';
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/log_drink', $data );
+            $this->load->view( 'templates/footer.php', null );
+        } else if( $extra != '' ) {
+            redirect( "users/scratch/" );
+        } else {
+            $this->load->library( 'form_validation' );
+
+            $this->form_validation->set_rules( 'date',     'Date',     'trim' );
+            $this->form_validation->set_rules( 'brewery',  'Brewery',  'trim' );
+            $this->form_validation->set_rules( 'beer',     'Beer',     'trim' );
+            $this->form_validation->set_rules( 'substyle', 'SubStyle', 'trim' );
+            $this->form_validation->set_rules( 'size',     'Size',     'trim' );
+            $this->form_validation->set_rules( 'rating',   'Rating',   'trim' );
+            $this->form_validation->set_rules( 'notes',    'Notes',    'trim' );
+
+            if( $this->form_validation->run() !== false ) {
+                $scratchID = (int)$this->input->post( 'scratch_id' );
+                $date       = $this->input->post( 'date' );
+                $user       = $_SESSION[ 'userid' ];
+                $brewery    = $this->input->post( 'brewery' );
+                $beer       = $this->input->post( 'beer' );
+                $substyle   = $this->input->post( 'substyle' );
+                $size       = $this->input->post( 'size' );
+                $rating     = $this->input->post( 'rating' );
+                $notes      = $this->input->post( 'notes' );
+                $res = $this->users_model->updateScratch( $scratchID, $date, $user, $brewery, $beer, $substyle, $size, $rating, $notes );
+                if( $res == 0 ) {
+                     $data[ 'error' ] = 'An unknown error occurred while adding the item to your scratchpad.';
+                } else {
+                    redirect( "users/scratch/" );
+                }
+            }
+            $header[ 'title' ] = $data[ 'editScratch' ] == null ? "Add Scratch" : "Edit Scratch";
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/add_scratch', $data );
+            $this->load->view( 'templates/footer.php', null );
+        }
     }
 }

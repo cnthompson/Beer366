@@ -26,7 +26,7 @@ class Users extends CI_Controller {
         $this->load->view( 'pages/user_info.php' );
         $this->load->view( 'templates/footer.php', null );
     }
-    
+
     public function totals( $userID = 0 ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
@@ -63,4 +63,21 @@ class Users extends CI_Controller {
 
         $this->load->view( 'templates/footer.php', null );
     }
+
+    public function scratch() {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $data[ 'user' ] = (int)$_SESSION[ 'userid' ];
+        $data[ 'scratches' ] = $this->users_model->getScratchpad( $data[ 'user' ], -1 );
+
+        $this->load->helper( 'html' );
+        $this->load->library( 'table' );
+
+        $header[ 'title' ] = 'Scratchpad';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/scratchpad.php', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+
 }

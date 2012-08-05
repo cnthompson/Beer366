@@ -27,6 +27,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="<?php echo base_url( "/users/totals/" . $_SESSION['userid'] . "/" ) ?>">My Totals</a></li>
+                                    <li><a href="<?php echo base_url( "/users/scratch/" ) ?>">Scratchpad</a></li>
                                     <li><a href="<?php echo base_url( "/users/info/" ) ?>">User Info</a></li>
                                     <li class="divider"></li>
                                     <li><a href="<?php echo base_url( "/authenticate/logout/" ) ?>">Sign Out</a></li>
