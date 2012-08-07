@@ -5,12 +5,28 @@
         echo '<ul class="dropdown-menu">';
         $s1 = base_url( "log/beer/" . $beer[ 'beer_id' ] );
         echo '<li><h5>' . anchor( $s1, "Edit Beer Info" ) . '</h5></li>';
+        $s1 = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
+        echo '<li><h5>' . anchor( $s1, "Log This Beer" ) . '</h5></li>';
         echo '</ul>';
         echo '</h1>';
     } else {
         echo '<h1>' . $beer[ 'beer_name' ] . '</h1>';
     }
 ?> 
+<?php
+    if( isset( $_SESSION[ 'email' ] ) ) {
+        echo "<p>";
+        $log_props = array(
+            'src' => 'img/checkmark-green.png',
+            'alt' => 'Log This',
+        );
+        $b = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
+        echo anchor( $b, img( $log_props ), array( 'title' => 'Log This' ) );
+        echo "&nbsp";
+        echo anchor( $b, "Log This" );
+        echo "</p>";
+    }
+?>
 <p>
     <b>Brewed By:</b>
     <p>

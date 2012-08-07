@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>
-        <?php echo ( $scratch != null ? "Convert Scratchpad Drink" : ( $editDrink == null ? "Log Drink" : "Edit Logged Drink" ) ); ?>
+        <?php echo ( $scratch != null ? "Convert Scratchpad Drink" : ( ( $editDrink == null || $editDrink[ 'id' ] == -1 ) ? "Log Drink" : "Edit Logged Drink" ) ); ?>
     </h1>
 </div>
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
@@ -56,7 +56,7 @@
         echo '</p>';
     ?>
 <p>
-    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $scratch != null ? 'Convert' : ( $editDrink == null ? 'Log Drink' : 'Update' ) ), 'class' => 'btn' ) ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $scratch != null ? 'Convert' : ( ( $editDrink == null || $editDrink[ 'id' ] == -1 ) ? 'Log Drink' : 'Update' ) ), 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
 <?php

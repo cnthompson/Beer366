@@ -249,7 +249,7 @@ class Log extends CI_Controller {
         return TRUE;
     }
 
-    function drink( $id = 0 ) {
+    function drink( $id = 0, $extra = '' ) {
         if( !isset( $_SESSION[ 'email' ] ) ) {
             redirect( 'authenticate' );
         }
@@ -257,20 +257,34 @@ class Log extends CI_Controller {
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
 
-        $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
-        $data[ 'editDrink' ] = null;
-        if( $editDrinks != null ) {
-            $data[ 'editDrink' ][ 'id'      ] = $editDrinks->log_id;
-            $data[ 'editDrink' ][ 'date'    ] = $editDrinks->date;
-            $data[ 'editDrink' ][ 'user_id' ] = $editDrinks->user_id;
-            $data[ 'editDrink' ][ 'beer_id' ] = $editDrinks->beer_id;
-            $data[ 'editDrink' ][ 'brewery' ] = $editDrinks->brewery_id;
-            $data[ 'editDrink' ][ 'size_id' ] = $editDrinks->size_id;
-            $data[ 'editDrink' ][ 'rating'  ] = $editDrinks->rating;
-            $data[ 'editDrink' ][ 'notes'   ] = $editDrinks->notes;
-        }
-        if( $data[ 'editDrink' ] != null and $data[ 'editDrink' ][ 'user_id' ] != $_SESSION[ 'userid' ] ) {
-            redirect( 'log/drink' );
+        if( $extra == '' ) { 
+            $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
+            $data[ 'editDrink' ] = null;
+            if( $editDrinks != null ) {
+                $data[ 'editDrink' ][ 'id'      ] = $editDrinks->log_id;
+                $data[ 'editDrink' ][ 'date'    ] = $editDrinks->date;
+                $data[ 'editDrink' ][ 'user_id' ] = $editDrinks->user_id;
+                $data[ 'editDrink' ][ 'beer_id' ] = $editDrinks->beer_id;
+                $data[ 'editDrink' ][ 'brewery' ] = $editDrinks->brewery_id;
+                $data[ 'editDrink' ][ 'size_id' ] = $editDrinks->size_id;
+                $data[ 'editDrink' ][ 'rating'  ] = $editDrinks->rating;
+                $data[ 'editDrink' ][ 'notes'   ] = $editDrinks->notes;
+            }
+            if( $data[ 'editDrink' ] != null and $data[ 'editDrink' ][ 'user_id' ] != $_SESSION[ 'userid' ] ) {
+                redirect( 'log/drink' );
+            }
+        } else if( $extra == 'd' ) {
+            $beers = $this->beers_model->getBeers( 0, $id );
+            if( count( $beers ) == 1 ) {
+                $data[ 'editDrink' ][ 'id'      ] = -1;
+                $data[ 'editDrink' ][ 'date'    ] = date( 'Y-m-d' );
+                $data[ 'editDrink' ][ 'user_id' ] = $_SESSION[ 'userid' ];
+                $data[ 'editDrink' ][ 'beer_id' ] = $beers[ 0 ][ 'beer_id'    ];
+                $data[ 'editDrink' ][ 'brewery' ] = $beers[ 0 ][ 'brewery_id' ];
+                $data[ 'editDrink' ][ 'size_id' ] = 7;
+                $data[ 'editDrink' ][ 'rating'  ] = null;
+                $data[ 'editDrink' ][ 'notes'   ] = null;
+            }
         }
 
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
@@ -314,7 +328,7 @@ class Log extends CI_Controller {
             }
         }
 
-        $header[ 'title' ] = $data[ 'editDrink' ] == null ? 'Log Drink' : 'Edit Logged Drink';
+        $header[ 'title' ] = ( $data[ 'editDrink' ] == null or $extra == 'd' ) ? 'Log Drink' : 'Edit Logged Drink';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_drink', $data );
         $this->load->view( 'templates/footer.php', null );

@@ -25,6 +25,7 @@ class Beer extends CI_Controller {
             redirect( 'authenticate' );
         }
         $this->load->library( 'table' );
+        $this->load->helper( 'html' );
         if( $brewery <= 0 ) {
             $data[ 'breweries' ] = $this->breweries_model->getBreweries( $brewery );
             $header[ 'title' ] = 'All Breweries';
