@@ -82,4 +82,16 @@ class Users extends CI_Controller {
         $this->load->view( 'templates/footer.php', null );
     }
 
+    public function uniques() {
+        if( !isset( $_SESSION[ 'email' ] ) ) {
+            redirect( 'authenticate' );
+        }
+        $data[ 'userID' ] = (int)$_SESSION[ 'userid' ];
+        $data[ 'uniques' ] = $this->users_model->getAllUniqueBeersByBrewery( $data[ 'userID' ] );
+
+        $header[ 'title' ] = 'Unique Beers';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/user_uniques.php', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
 }

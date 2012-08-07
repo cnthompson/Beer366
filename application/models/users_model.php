@@ -71,7 +71,7 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getAllBeersByBrewery( $userID = 0 ) {
+    public function getAllUniqueBeersByBrewery( $userID = 0 ) {
         $query = $this
             ->db
             ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC', false )
