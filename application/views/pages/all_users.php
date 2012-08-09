@@ -10,6 +10,10 @@
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
         foreach( $allUsers as $user ) {
+            if( !isset( $totals[ $user[ 'user_id' ] ] ) ) {
+                continue;
+            }
+
             $base = base_url( "users/totals/" . $user[ 'user_id' ] );
             $anchor = anchor( $base, $user[ 'display_name' ] );
 
@@ -24,9 +28,9 @@
             $datediff = $now - $start;
             $daysSinceStart = floor( $datediff / ( 60 * 60 * 24 ) ) + 1;
             $beersPerDay = $uniqueBeer / $daysSinceStart;
-            $daysUntilFinish = ceil( $remaining / $beersPerDay );
-            $finishDate = strftime ( "%m/%d/%Y", mktime( 0, 0, 0, date("n"), date("j") + $daysUntilFinish, date("Y") ) ); 
-            
+            $daysUntilFinish = $beersPerDay == 0 ? '-' : ( ceil( $remaining / $beersPerDay ) );
+            $finishDate = strftime ( "%m/%d/%Y", mktime( 0, 0, 0, date("n"), date("j") + $daysUntilFinish, date("Y") ) );
+
             $this->table->add_row( $anchor, $totalBeer, $uniqueBeer, $remaining, $percent, $finishDate );
         }
         echo $this->table->generate();
