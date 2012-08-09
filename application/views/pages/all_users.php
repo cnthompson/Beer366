@@ -10,7 +10,8 @@
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
         foreach( $allUsers as $user ) {
-            if( !isset( $totals[ $user[ 'user_id' ] ] ) ) {
+            if( ( !isset( $totals[ $user[ 'user_id' ] ] ) )
+             || ( $totals[ $user[ 'user_id' ] ][ 'total' ] == 0 ) ) {
                 continue;
             }
 
