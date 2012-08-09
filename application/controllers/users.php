@@ -36,10 +36,16 @@ class Users extends CI_Controller {
             $userToTotalsMap = NULL;
             foreach( $allUsers as $user ) {
                 $result = $this->users_model->getTotalBeerCountForUser( $user[ 'user_id' ] );
-                $total = $result[ 0 ][ 'beer_count' ];
+                $total = 0;
+                if( count( $result ) > 0 ) {
+                    $total = $result[ 0 ][ 'beer_count' ];
+                }
                 $userToTotalsMap[ $user[ 'user_id' ] ][ 'total' ] = $total;
                 $result = $this->users_model->getUniqueBeerCountForUser( $user[ 'user_id' ] );
-                $unique = $result[ 0 ][ 'unique_count' ];
+                $unique = 0;
+                if( count( $result ) > 0 ) {
+                    $unique = $result[ 0 ][ 'unique_count' ];
+                }
                 $userToTotalsMap[ $user[ 'user_id' ] ][ 'unique' ] = $unique;
             }
             $data[ 'allUsers' ] = $allUsers;
