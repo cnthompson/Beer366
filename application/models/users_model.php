@@ -170,6 +170,23 @@ class Users_Model extends CI_Model {
             return 0;
         }
     }
+
+    public function updateHomepage( $userID, $page ) {
+        if( $userID <= 0 ) {
+            return false;
+        }
+        $data = array(
+            'homepage' => $page,
+            );
+        $q = $this->db
+            ->where( 'user_id', $userID )
+            ->update( 'users', $data );
+        if( $q == 1 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

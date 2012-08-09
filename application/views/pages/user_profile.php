@@ -38,7 +38,7 @@
         'table_open' => '<table class="table table-bordered">'
     );
     $this->table->set_template( $tmpl );
-    if( $user[ 'user_id' ] == $_SESSION[ 'userid' ] ) {
+    if( $user[ 'user_id' ] == $this->authenticator->get_user_id() ) {
         $this->table->set_heading( '', 'Date', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
     } else {
         $this->table->set_heading( 'Date', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
@@ -53,7 +53,7 @@
             'alt' => 'Edit',
         );
         $editAnchor    = anchor( base_url( 'log/drink/' . $log[ 'log_id' ] ), img( $edit_props ), array( 'title' => 'Edit' ) );
-        if( $user[ 'user_id' ] == $_SESSION[ 'userid' ] ) {
+        if( $user[ 'user_id' ] == $this->authenticator->get_user_id() ) {
             $this->table->add_row( $editAnchor, $log[ 'date' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
         } else {
             $this->table->add_row( $log[ 'date' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );

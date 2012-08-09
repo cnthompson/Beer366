@@ -10,7 +10,7 @@
 
 <div id="container">
     <?php
-    $name = $_SESSION[ 'displayname' ];
+    $name = $this->authenticator->get_display_name();
     echo "<h1>Welcome to Beer 366, " . $name . "!</h1>"
     ?>
 </div>

@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Beer366 Login</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
 <div class="page-header">
     <h1>Login</h1>
 </div>
@@ -15,11 +5,12 @@
 <?php if ( $error ): ?>
     <div class="alert alert-error"><?php echo $error ?></div>
 <?php endif; ?>
-<?php echo form_open('authenticate'); ?>
+<?php echo form_open( $page ); ?>
 <p>
     <?php
         $attributes = array(
             'name'  => 'email_address',
+            'value' => set_value( 'email_address' ),
             'id'    => 'email_address',
             'class' => 'span4'
         );
@@ -42,5 +33,3 @@
     <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Login', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
-</body>
-</html>

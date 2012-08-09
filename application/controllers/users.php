@@ -4,23 +4,21 @@ class Users extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        session_start();
         $this->load->model( 'beers_model' );
         $this->load->model( 'users_model' );
         $this->load->model( 'drinkers_model' );
-        session_start();
+        $this->load->library( 'Authenticator' );
     }
 
     public function index() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
-        redirect( 'users/totals' );
+        $redirect = 'users/totals/';
+        $this->authenticator->ensure_auth( $redirect );
+        redirect( $redirect );
     }
 
     public function info() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $header[ 'title' ] = 'User Information';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/user_info.php' );
@@ -28,9 +26,7 @@ class Users extends CI_Controller {
     }
 
     public function totals( $userID = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $data[ 'title' ] = 'All Drinkers';
         $this->load->view( 'templates/header.php', $data );
 
@@ -67,10 +63,8 @@ class Users extends CI_Controller {
     }
 
     public function scratch() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
-        $data[ 'user' ] = (int)$_SESSION[ 'userid' ];
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+        $data[ 'user' ] = (int)$this->authenticator->get_user_id();
         $data[ 'scratches' ] = $this->users_model->getScratchpad( $data[ 'user' ], -1 );
 
         $this->load->helper( 'html' );
@@ -83,15 +77,35 @@ class Users extends CI_Controller {
     }
 
     public function uniques() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
-        $data[ 'userID' ] = (int)$_SESSION[ 'userid' ];
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+        $data[ 'userID' ] = (int)$this->authenticator->get_user_id();
         $data[ 'uniques' ] = $this->users_model->getAllUniqueBeersByBrewery( $data[ 'userID' ] );
 
         $header[ 'title' ] = 'Unique Beers';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/user_uniques.php', $data );
         $this->load->view( 'templates/footer.php', null );
+    }
+
+    public function make_start() {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+        if( !isset( $_GET[ 'page' ] ) ) {
+            if( $this->authenticator->get_homepage() == null ) {
+                redirect( 'users' );
+            } else {
+                redirect( $this->authenticator->get_homepage() );
+            }
+        }
+        $page = $_GET[ 'page' ];
+
+        if( $this->users_model->updateHomepage( (int)$this->authenticator->get_user_id(), $page ) ) {
+            $this->authenticator->set_homepage( $page );
+        }
+
+        if( $this->authenticator->get_homepage() == null ) {
+            redirect( 'users' );
+        } else {
+            redirect( $this->authenticator->get_homepage() );
+        }
     }
 }

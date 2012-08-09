@@ -1,5 +1,5 @@
 <?php
-    if( isset( $_SESSION[ 'email' ] ) ) {
+    if( $this->authenticator->check_auth() ) {
         echo '<h1 class="dropdown" id="beerMenu">';
         echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#beerMenu" style="text-decoration:none;color:black" >' . $beer[ 'beer_name' ] . '<b class="caret"></b> </a>';
         echo '<ul class="dropdown-menu">';
@@ -14,7 +14,7 @@
     }
 ?> 
 <?php
-    if( isset( $_SESSION[ 'email' ] ) ) {
+    if( $this->authenticator->check_auth() ) {
         echo "<p>";
         $log_props = array(
             'src' => 'img/checkmark-green.png',

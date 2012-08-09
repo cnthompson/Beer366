@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1><?php echo $_SESSION[ 'displayname' ] ?>'s Unique Beers</h1>
+    <h1><?php echo $this->authenticator->get_display_name() ?>'s Unique Beers</h1>
 </div>
 
 <ul>

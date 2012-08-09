@@ -1,15 +1,17 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Change Password</title>
-    <style>label { display: block; } .errors { color: red;} </style>
-</head>
-<body>
-
-<?php echo "<h1>Change Password for " . $_SESSION[ 'displayname' ] . "</h1>" ?>
-<?php echo form_open( 'authenticate/changePassword' ); ?>
+<div class="page-header">
+    <?php
+        if( $this->authenticator->is_password_expired() ) {
+            echo "<h1>" . $this->authenticator->get_display_name() . ", your current password has expired and must be changed.</h1>";
+        } else {
+            echo "<h1>Change Password for " . $this->authenticator->get_display_name() . "</h1>";
+        }
+    ?>
+</div>
+<?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
+<?php if ( $error ): ?>
+    <div class="alert alert-error"><?php echo $error ?></div>
+<?php endif; ?>
+<?php echo form_open( $page ); ?>
 <p>
     <?php
         echo form_label( 'Current Password:', 'cur_password' );
@@ -32,7 +34,3 @@
     <?php echo form_submit( 'submit', 'Change' ) ?>
 </p>
 <?php echo form_close(); ?>
-
-<div  class="errors"> <?php echo validation_errors(); ?> </div>
-</body>
-</html>
