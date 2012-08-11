@@ -82,7 +82,7 @@
         $ba = $beer[ 'beer_ba_rating' ];
         $bapage = $beer[ 'ba_page' ];
         $ba = $ba == NULL ? '-' : $ba;
-        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : anchor( $bapage, $ba, 'target="_blank" title="' . $ba . '"' );
+        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : ( anchor( $bapage, $ba, 'target="_blank" title="' . $ba . '"' ) . '<i class="icon-share-alt"></i>' );
         echo $baText;
     ?>
 </p>
