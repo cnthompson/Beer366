@@ -18,7 +18,11 @@ class Authenticate extends CI_Controller {
             $data[ 'page' ] = 'authenticate?page=' . $redirect;
         }
         if( $this->authenticator->check_auth( true ) ) {
-            redirect( $redirect );
+            if( $pageGiven or $this->authenticator->get_homepage() == null ) {
+                redirect( $redirect );
+            } else {
+                redirect( $this->authenticator->get_homepage() );
+            }
         }
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email_address', 'Email Address', 'trim|required|valid_email' );
