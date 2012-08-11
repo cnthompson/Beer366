@@ -1,55 +1,57 @@
+<div class="page-header">
 <?php
     if( $this->authenticator->check_auth() ) {
-        echo '<h1 class="dropdown" id="brewerMenu">';
-        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#brewerMenu" style="text-decoration:none;color:black" >' . $brewery[ 'name' ] . '<b class="caret"></b> </a>';
-        echo '<ul class="dropdown-menu">';
         $s1 = base_url( "log/brewery/" . $brewery[ 'brewery_id' ] );
-        echo '<li><h5>' . anchor( $s1, "Edit Brewer Info" ) . '</h5></li>';
-        echo '</ul>';
-        echo '</h1>';
+        echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . ' </small>';
+        echo anchor( $s1, '<i class="icon-edit" style="vertical-align: middle;"></i>' ) . '</h1>';
     } else {
-        echo '<h1>' . $brewery[ 'name' ] . '</h1>';
+        echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . '</small></h1>';
     }
 ?> 
-<h2><?php echo '[' . $brewery[ 'full_name' ] . ']' ; ?></h2>
-<address>
-    <?php echo $brewery[ 'street' ] ?>
-    <br>
-    <?php
-        $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
-        if( isset( $brewery[ 'region' ] ) ) {
-            $cityBase .= $brewery[ 'region' ] ."/";
-        } else {
-            $cityBase .= "0/";
-        }
-        $cityBase .= rawurlencode( $brewery[ 'city' ] );
-        $cityAnchor = anchor( base_url( $cityBase ), $brewery[ 'city' ] );
-        $location = $cityAnchor;
+</div>
+<div class="row">
+    <div class="span4">
+        <address>
+            <?php echo $brewery[ 'street' ] ?>
+            <br>
+            <?php
+                $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
+                if( isset( $brewery[ 'region' ] ) ) {
+                    $cityBase .= $brewery[ 'region' ] ."/";
+                } else {
+                    $cityBase .= "0/";
+                }
+                $cityBase .= rawurlencode( $brewery[ 'city' ] );
+                $cityAnchor = anchor( base_url( $cityBase ), $brewery[ 'city' ] );
+                $location = $cityAnchor;
 
-        if( isset( $brewery[ 'region' ] ) ) {
-            $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
-            $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
-            $location .= ", " . $rgnAnchor;
-        }
+                if( isset( $brewery[ 'region' ] ) ) {
+                    $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
+                    $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
+                    $location .= ", " . $rgnAnchor;
+                }
 
-        if( isset( $brewery[ 'postal_code' ] ) ) {
-            $location .= " " . $brewery[ 'postal_code' ];
-        }
+                if( isset( $brewery[ 'postal_code' ] ) ) {
+                    $location .= " " . $brewery[ 'postal_code' ];
+                }
 
-        echo $location;
-    ?>
-    <br>
-    <?php
-        $base = "beer/location/" . $brewery[ 'country' ] . "/";
-        $anchor = anchor( base_url( $base ), $brewery[ 'country_name' ] );
-        echo $anchor;
-    ?>
-</address>
-<p>
-    <?php
-        echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
-    ?>
-</p>
+                echo $location;
+            ?>
+            <br>
+            <?php
+                $base = "beer/location/" . $brewery[ 'country' ] . "/";
+                $anchor = anchor( base_url( $base ), $brewery[ 'country_name' ] );
+                echo $anchor;
+            ?>
+        </address>
+    </div>
+    <div class="span4">
+        <i class="icon-home"></i>
+        <?php
+            echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
+        ?>
+    </div>
+</div>
 <p>
     <?php
         if( $brewery[ 'notes' ] != null and strlen( $brewery[ 'notes' ] ) > 0 ) {
