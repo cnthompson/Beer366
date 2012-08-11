@@ -32,7 +32,7 @@ class Beer extends CI_Controller {
         } else if( $beer <= 0 ) {
             $breweries = $this->breweries_model->getBreweries( $brewery, false );
             if( count( $breweries ) == 0 ) {
-                echo 'Meow error occurred!';
+                redirect( 'beer/info/' );
             } else {
                 $data[ 'brewery' ] = $breweries[ 0 ];
                 $data[ 'beers' ] = $this->beers_model->getBeers( $brewery );
@@ -44,8 +44,10 @@ class Beer extends CI_Controller {
         } else {
             $breweries = $this->breweries_model->getBreweries( $brewery );
             $beers = $this->beers_model->getBeers( $brewery, $beer );
-            if( ( count( $breweries ) == 0 ) || ( count( $beers ) == 0 ) ) {
-                echo 'Meow error occurred!';
+            if( count( $breweries ) == 0 ) {
+                redirect( 'beer/info/' );
+            } else if( count( $beers ) == 0 ) {
+                redirect( 'beer/info/' . $brewery . '/' );
             } else {
                 $data[ 'brewery' ] = $breweries[ 0 ];
                 $data[ 'beer' ] = $beers[ 0 ];
@@ -72,8 +74,10 @@ class Beer extends CI_Controller {
         } else if( $substyle <= 0 ) {
             $families = $this->styles_model->getFamilies( $family );
             $styles  = $this->styles_model->getStyles( $family, $style );
-            if( ( count( $families ) == 0 ) || ( count( $styles ) == 0 ) ) {
-                echo 'Meow error occurred!';
+            if( count( $families ) == 0 ) {
+                redirect( 'beer/styles/' );
+            } else if( count( $styles ) == 0 ) {
+                redirect( 'beer/styles/' . $family . '/' );
             } else {
                 $data[ 'family' ] = $families[ 0 ];
                 $data[ 'style' ] = $styles[ 0 ];
@@ -87,8 +91,12 @@ class Beer extends CI_Controller {
             $families = $this->styles_model->getFamilies( $family );
             $styles  = $this->styles_model->getStyles( $family, $style );
             $substyles = $this->styles_model->getSubStyles( $style, $substyle );
-            if( ( count( $families ) == 0 ) || ( count( $styles ) == 0 ) || ( count( $substyles ) == 0 ) ) {
-                echo 'Meow error occurred!';
+            if( count( $families ) == 0 ) {
+                redirect( 'beer/styles/' );
+            } else if( count( $styles ) == 0 ) {
+                redirect( 'beer/styles/' . $family . '/' );
+            } else if( count( $substyles ) == 0 ) {
+                redirect( 'beer/styles/' . $family . '/' . $style . '/' );
             } else {
                 $data[ 'family' ] = $families[ 0 ];
                 $data[ 'style' ] = $styles[ 0 ];
@@ -117,7 +125,7 @@ class Beer extends CI_Controller {
         } else if( $regionID <= 0 && $city == NULL ) {
             $countries = $this->location_model->getCountries( $countryID );
             if( count( $countries ) == 0 ) {
-                echo 'Meow error occurred!';
+                redirect( 'beer/location/' );
             } else {
                 $data[ 'country' ] = $countries[ 0 ];
                 $data[ 'regions' ] = $this->location_model->getRegions( $countryID, $regionID );
@@ -130,8 +138,10 @@ class Beer extends CI_Controller {
         } else if( $city == NULL ) {
             $countries = $this->location_model->getCountries( $countryID );
             $regions   = $this->location_model->getRegions( $countryID, $regionID );
-            if( ( count( $countries ) == 0 ) || ( count( $regions ) == 0 ) ) {
-                echo 'Meow error occurred!';
+            if( count( $countries ) == 0 ) {
+                redirect( 'beer/location/' );
+            } else if( count( $regions ) == 0 ) {
+                redirect( 'beer/location/' . $countryID . '/' );
             } else {
                 $data[ 'country' ] = $countries[ 0 ];
                 $data[ 'regions' ] = NULL;
@@ -146,8 +156,10 @@ class Beer extends CI_Controller {
             $countries = $this->location_model->getCountries( $countryID );
             $regions   = $regionID <= 0 ? NULL : $this->location_model->getRegions( $countryID, $regionID );
             $cities    = $this->location_model->getCities( $countryID, $regionID, $city );
-            if( ( count( $countries ) == 0 ) || ( count( $cities ) == 0 ) ) {
-                echo 'Meow error occurred!';
+            if( count( $countries ) == 0 ) {
+                redirect( 'beer/location/' );
+            } else if ( count( $cities ) == 0 ) {
+                redirect( 'beer/location/' . $countryID . '/' );
             } else {
                 $data[ 'country'   ] = $countries[ 0 ];
                 $data[ 'region'    ] = $regions == NULL ? NULL : $regions[ 0 ];
