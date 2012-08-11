@@ -17,19 +17,21 @@
                 <ul class="nav">
                     <li><a href="<?php echo base_url( "/users/totals/" ) ?>">All Totals</a></li>
                     <?php
-                        if( isset($_SESSION['userid']) ):
+                        if( $this->authenticator->check_auth() ):
                     ?>
                             <li class="dropdown" id="userMenu">
                                 <a href="#"
                                     class="dropdown-toggle"
                                     data-toggle="dropdown"
-                                    data-target="#userMenu"><?php echo $_SESSION['displayname']?> <b class="caret"></b>
+                                    data-target="#userMenu"><?php echo $this->authenticator->get_display_name() ?> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?php echo base_url( "/users/totals/" . $_SESSION['userid'] . "/" ) ?>">My Totals</a></li>
-                                    <li><a href="<?php echo base_url( "/users/scratch/" ) ?>">Scratchpad</a></li>
-                                    <li><a href="<?php echo base_url( "/users/info/" ) ?>">User Info</a></li>
+                                    <li><a href="<?php echo base_url( "/users/totals/" . $this->authenticator->get_user_id() . "/" ) ?>">My Totals</a></li>
+                                    <li><a href="<?php echo base_url( "/users/uniques/" ) ?>">My Unique Beers</a></li>
+                                    <li><a href="<?php echo base_url( "/users/scratch/" ) ?>">My Scratchpad</a></li>
+                                    <li><a href="<?php echo base_url( "/users/info/" )    ?>">My Info</a></li>
                                     <li class="divider"></li>
+                                    <li><a href="<?php echo base_url( "/users/make_start?page=" . $this->uri->uri_string() ) ?>">Set Current Page as Home</a></li>
                                     <li><a href="<?php echo base_url( "/authenticate/logout/" ) ?>">Sign Out</a></li>
                                 </ul>
                             </li>

@@ -4,27 +4,25 @@ class Log extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        session_start();
         $this->load->model( 'breweries_model' );
         $this->load->model( 'beers_model' );
         $this->load->model( 'location_model' );
         $this->load->model( 'styles_model' );
         $this->load->model( 'drinkers_model' );
         $this->load->model( 'users_model' );
-        session_start();
+        $this->load->library( 'Authenticator' );
     }
 
     public function index() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
-        redirect( 'users/totals/' . $_SESSION[ 'userid' ] );
+        $redirect = 'users/totals/' . $this->authenticator->get_user_id();
+        $this->authenticator->ensure_auth( $redirect );
+        redirect( $redirect );
     }
 
 
     public function brewery( $id = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $data[ 'error' ] = '';
 
@@ -105,9 +103,7 @@ class Log extends CI_Controller {
     }
 
     function checkCountry( $country ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->location_model->getCountries( $country, false );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkCountry', 'Your country selection is invalid.' );
@@ -117,9 +113,7 @@ class Log extends CI_Controller {
     }
 
     function checkRegion( $region ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->location_model->getRegions( 0, $region, false );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkRegion', 'Your region selection is invalid.' );
@@ -129,9 +123,7 @@ class Log extends CI_Controller {
     }
 
     function checkBreweryType( $type ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->breweries_model->getBreweryTypes( $type );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkBreweryType', 'Your brewery type selection is invalid.' );
@@ -141,9 +133,7 @@ class Log extends CI_Controller {
     }
 
     public function beer( $id = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $data[ 'error' ] = '';
 
@@ -226,9 +216,7 @@ class Log extends CI_Controller {
     }
 
     function checkBrewery( $brewery ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->breweries_model->getBreweries( $brewery, false );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkBrewery', 'Your brewery selection is invalid.' );
@@ -238,9 +226,7 @@ class Log extends CI_Controller {
     }
 
     function checkSubStyle( $substyle ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->styles_model->getSubStyles( 0, $substyle );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkSubStyle', 'Your sub-style selection is invalid.' );
@@ -249,28 +235,40 @@ class Log extends CI_Controller {
         return TRUE;
     }
 
-    function drink( $id = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+    function drink( $id = 0, $extra = '' ) {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
 
-        $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
-        $data[ 'editDrink' ] = null;
-        if( $editDrinks != null ) {
-            $data[ 'editDrink' ][ 'id'      ] = $editDrinks->log_id;
-            $data[ 'editDrink' ][ 'date'    ] = $editDrinks->date;
-            $data[ 'editDrink' ][ 'user_id' ] = $editDrinks->user_id;
-            $data[ 'editDrink' ][ 'beer_id' ] = $editDrinks->beer_id;
-            $data[ 'editDrink' ][ 'brewery' ] = $editDrinks->brewery_id;
-            $data[ 'editDrink' ][ 'size_id' ] = $editDrinks->size_id;
-            $data[ 'editDrink' ][ 'rating'  ] = $editDrinks->rating;
-            $data[ 'editDrink' ][ 'notes'   ] = $editDrinks->notes;
-        }
-        if( $data[ 'editDrink' ] != null and $data[ 'editDrink' ][ 'user_id' ] != $_SESSION[ 'userid' ] ) {
-            redirect( 'log/drink' );
+        if( $extra == '' ) { 
+            $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
+            $data[ 'editDrink' ] = null;
+            if( $editDrinks != null ) {
+                $data[ 'editDrink' ][ 'id'      ] = $editDrinks->log_id;
+                $data[ 'editDrink' ][ 'date'    ] = $editDrinks->date;
+                $data[ 'editDrink' ][ 'user_id' ] = $editDrinks->user_id;
+                $data[ 'editDrink' ][ 'beer_id' ] = $editDrinks->beer_id;
+                $data[ 'editDrink' ][ 'brewery' ] = $editDrinks->brewery_id;
+                $data[ 'editDrink' ][ 'size_id' ] = $editDrinks->size_id;
+                $data[ 'editDrink' ][ 'rating'  ] = $editDrinks->rating;
+                $data[ 'editDrink' ][ 'notes'   ] = $editDrinks->notes;
+            }
+            if( $data[ 'editDrink' ] != null and $data[ 'editDrink' ][ 'user_id' ] != $this->authenticator->get_user_id() ) {
+                redirect( 'log/drink' );
+            }
+        } else if( $extra == 'd' ) {
+            $beers = $this->beers_model->getBeers( 0, $id );
+            if( count( $beers ) == 1 ) {
+                $data[ 'editDrink' ][ 'id'      ] = -1;
+                $data[ 'editDrink' ][ 'date'    ] = date( 'Y-m-d' );
+                $data[ 'editDrink' ][ 'user_id' ] = $this->authenticator->get_user_id();
+                $data[ 'editDrink' ][ 'beer_id' ] = $beers[ 0 ][ 'beer_id'    ];
+                $data[ 'editDrink' ][ 'brewery' ] = $beers[ 0 ][ 'brewery_id' ];
+                $data[ 'editDrink' ][ 'size_id' ] = 7;
+                $data[ 'editDrink' ][ 'rating'  ] = null;
+                $data[ 'editDrink' ][ 'notes'   ] = null;
+            }
         }
 
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
@@ -300,7 +298,7 @@ class Log extends CI_Controller {
         if( $this->form_validation->run() !== false ) {
             $drinkID = (int)$this->input->post( 'drink_id' );
             $date = $this->input->post( 'date' );
-            $user = $_SESSION[ 'userid' ];
+            $user = $this->authenticator->get_user_id();
             $beer = $this->input->post( 'beer' );
             $ssize = $this->input->post( 'ssize' );
             $rating = $this->input->post( 'rating' );
@@ -314,16 +312,14 @@ class Log extends CI_Controller {
             }
         }
 
-        $header[ 'title' ] = $data[ 'editDrink' ] == null ? 'Log Drink' : 'Edit Logged Drink';
+        $header[ 'title' ] = ( $data[ 'editDrink' ] == null or $extra == 'd' ) ? 'Log Drink' : 'Edit Logged Drink';
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_drink', $data );
         $this->load->view( 'templates/footer.php', null );
     }
 
     function checkDate( $date ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $d = strtotime( $date );
         if( $d == false || $d == -1 ) {
             $this->form_validation->set_message( 'checkDate', "Could not understand date." );
@@ -333,9 +329,7 @@ class Log extends CI_Controller {
     }
 
     function checkBeer( $beer ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->beers_model->getBeers( 0, $beer );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkBeer', 'Your beer selection is invalid.' );
@@ -345,9 +339,7 @@ class Log extends CI_Controller {
     }
 
     function checkSSize( $ssize ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $res = $this->beers_model->getServingSizes( $ssize );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkSSize', 'Your serving size selection is invalid.' );
@@ -357,9 +349,7 @@ class Log extends CI_Controller {
     }
 
     function checkRating( $rating ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         if( $rating < 0 || $rating > 5 ) {
             $this->form_validation->set_message( 'checkRating', 'Your rating must be between 0 and 5, inclusive.' );
             return FALSE;
@@ -368,15 +358,13 @@ class Log extends CI_Controller {
     }
 
     function scratch( $id = 0, $extra = '' ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
         $data[ 'editDrink' ] = null;
 
-        $editScratch = $this->users_model->getScratchpad( $_SESSION[ 'userid' ], $id );
+        $editScratch = $this->users_model->getScratchpad( $this->authenticator->get_user_id(), $id );
         $data[ 'editScratch' ] = null;
         if( $editScratch != null and count( $editScratch ) > 0 ) {
             $data[ 'editScratch' ][ 'id'      ] = $editScratch[ 0 ][ 'scratchpad_id' ];
@@ -458,7 +446,7 @@ class Log extends CI_Controller {
             if( $this->form_validation->run() !== false ) {
                 $drinkID = (int)$this->input->post( 'drink_id' );
                 $date = $this->input->post( 'date' );
-                $user = $_SESSION[ 'userid' ];
+                $user = $this->authenticator->get_user_id();
                 $beer = $this->input->post( 'beer' );
                 $ssize = $this->input->post( 'ssize' );
                 $rating = $this->input->post( 'rating' );
@@ -492,7 +480,7 @@ class Log extends CI_Controller {
             if( $this->form_validation->run() !== false ) {
                 $scratchID = (int)$this->input->post( 'scratch_id' );
                 $date       = $this->input->post( 'date' );
-                $user       = $_SESSION[ 'userid' ];
+                $user       = $this->authenticator->get_user_id();
                 $brewery    = $this->input->post( 'brewery' );
                 $beer       = $this->input->post( 'beer' );
                 $substyle   = $this->input->post( 'substyle' );

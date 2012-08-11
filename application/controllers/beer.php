@@ -4,27 +4,24 @@ class Beer extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        session_start();
         $this->load->model( 'breweries_model' );
         $this->load->model( 'beers_model' );
         $this->load->model( 'drinkers_model' );
         $this->load->model( 'location_model' );
         $this->load->model( 'styles_model' );
-        session_start();
+        $this->load->library( 'Authenticator' );
     }
 
     public function index() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
-        redirect( 'info/' );
+        $this->authenticator->ensure_auth( '/beer/info/' );
+        redirect( '/beer/info/' );
     }
 
-
     public function info( $brewery = 0, $beer = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $this->load->library( 'table' );
+        $this->load->helper( 'html' );
         if( $brewery <= 0 ) {
             $data[ 'breweries' ] = $this->breweries_model->getBreweries( $brewery );
             $header[ 'title' ] = 'All Breweries';
@@ -61,9 +58,7 @@ class Beer extends CI_Controller {
     }
 
     public function styles( $family = 0, $style = 0, $substyle = 0 ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $this->load->library( 'table' );
         if( $family <= 0 || $style <= 0 ) {
             $data[ 'families' ] = $this->styles_model->getFamilies( $family );
@@ -106,9 +101,7 @@ class Beer extends CI_Controller {
     }
 
     public function location( $countryID = 0, $regionID = 0, $city = NULL ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $this->load->library( 'table' );
         if( $city != NULL ) {
             $city = html_entity_decode( urldecode( $city ) );

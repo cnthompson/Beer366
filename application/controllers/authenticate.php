@@ -5,30 +5,41 @@ class Authenticate extends CI_Controller {
     function __construct() {
         parent::__construct();
         session_start();
+        $this->load->library( 'Authenticator' );
     }
 
     public function index() {
-        if( isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'users' );
+        $pageGiven = false;
+        $redirect = 'users';
+        $data[ 'page' ] = 'authenticate';
+        if( isset( $_GET[ 'page' ] ) ) {
+            $pageGiven = true;
+            $redirect = $_GET[ 'page' ];
+            $data[ 'page' ] = 'authenticate?page=' . $redirect;
+        }
+        if( $this->authenticator->check_auth( true ) ) {
+            redirect( $redirect );
         }
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('email_address', 'Email Address', 'required|valid_email' );
-        $this->form_validation->set_rules('password', 'Password', 'required' );
+        $this->form_validation->set_rules('email_address', 'Email Address', 'trim|required|valid_email' );
+        $this->form_validation->set_rules('password', 'Password', 'trim|required' );
 
         $data[ 'error' ] = '';
 
         if( $this->form_validation->run() !== false ) {
             $this->load->model('authenticate_model');
             $res = $this->authenticate_model->verify_user( $this->input->post( 'email_address' ), $this->input->post( 'password' ) );
-            if( $res !== false ) {
-                $_SESSION[ 'userid'      ] = $res->user_id;
-                $_SESSION[ 'firstname'   ] = $res->first_name;
-                $_SESSION[ 'lastname'    ] = $res->last_name;
-                $_SESSION[ 'displayname' ] = $res->display_name;
-                $_SESSION[ 'email'       ] = $res->email;
-                redirect( 'users' );
-            } else {
+            if( $res == false ) {
+                // unsuccessful login
                 $data[ 'error' ] = 'Login unsuccessful. Please try again.';
+            } else {
+                // save the user information from the query
+                $this->authenticator->save_info( $res->user_id, $res->first_name, $res->last_name, $res->display_name, $res->email, $res->homepage, $res->temp != 1 );
+                if( $pageGiven or $this->authenticator->get_homepage() == null ) {
+                    redirect( $redirect );
+                } else {
+                    redirect( $this->authenticator->get_homepage() );
+                }
             }
         }
 
@@ -44,34 +55,50 @@ class Authenticate extends CI_Controller {
     }
 
     public function changePassword() {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
+        $pageGiven = false;
+        $redirect = 'users';
+        $data[ 'page' ] = 'authenticate/changePassword';
+        if( isset( $_GET[ 'page' ] ) ) {
+            $pageGiven = true;
+            $redirect = $_GET[ 'page' ];
+            $data[ 'page' ] = 'authenticate/changePassword?page=' . $redirect;
         }
+        $this->authenticator->ensure_auth( $this->uri->uri_string(), true );
+
+        $data[ 'error' ] = '';
 
         $this->load->library( 'form_validation' );
-        $this->form_validation->set_rules( 'cur_password', 'Current Password', 'required|callback_cur_pw_check' );
-        $this->form_validation->set_rules( 'new_password', 'New Password', 'required|matches[confirm_password]|callback_new_pw_check' );
-        $this->form_validation->set_rules( 'confirm_password', 'Confirm Password', 'required' );
+        $this->form_validation->set_rules( 'cur_password', 'Current Password', 'trim|required|callback_cur_pw_check' );
+        $this->form_validation->set_rules( 'new_password', 'New Password', 'trim|required|matches[confirm_password]|callback_new_pw_check' );
+        $this->form_validation->set_rules( 'confirm_password', 'Confirm Password', 'trim|required' );
         if( $this->form_validation->run() !== false ) {
-            $this->load->model( 'authenticate_model' );
-            $res = $this->authenticate_model->change_pw( $_SESSION[ 'email' ], $this->input->post( 'cur_password' ), $this->input->post( 'new_password' ) );
-            if( $res == FALSE ) {
-                echo 'Password not changed.';
+            if( $this->input->post( 'cur_password' ) == $this->input->post( 'new_password' ) ) {
+                $data[ 'error' ] = 'Your new password cannot be the same as your old one.';
             } else {
-                echo 'Password successfully changed.';
+                $this->load->model( 'authenticate_model' );
+                $res = $this->authenticate_model->change_pw( $this->authenticator->get_email(), $this->input->post( 'cur_password' ), $this->input->post( 'new_password' ) );
+                if( $res == FALSE ) {
+                    $data[ 'error' ] = 'Password not changed.';
+                } else {
+                    $this->authenticator->set_password_expired( false );
+                    if( $pageGiven or $this->authenticator->get_homepage() == null ) {
+                        redirect( $redirect );
+                    } else {
+                        redirect( $this->authenticator->get_homepage() );
+                    }
+                }
             }
         }
         $header[ 'title' ] = 'Change Password';
         $this->load->view( 'templates/header.php', $header );
-        $this->load->view( 'change_pw_view' );
+        $this->load->view( 'change_pw_view', $data );
+        $this->load->view( 'templates/footer.php', null );
     }
 
     public function cur_pw_check( $pw ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string(), true );
         $this->load->model('authenticate_model');
-        $res = $this->authenticate_model->verify_user( $_SESSION[ 'email' ], $pw );
+        $res = $this->authenticate_model->verify_user( $this->authenticator->get_email(), $pw );
         if( $res == false ) {
             $this->form_validation->set_message( 'cur_pw_check', 'Your current password is not correct.' );
             return FALSE;
@@ -80,13 +107,15 @@ class Authenticate extends CI_Controller {
     }
 
     public function new_pw_check( $pw ) {
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string(), true );
         if( $pw == 'meow' ) {
             $this->form_validation->set_message( 'new_pw_check', 'The %s field can not be the word "meow"' );
             return FALSE;
+        } else if( $pw == 'beer366' ) {
+            $this->form_validation->set_message( 'new_pw_check', 'The %s field can not be the phrase "beer366"' );
+            return FALSE;
         }
+        return TRUE;
     }
 
 }

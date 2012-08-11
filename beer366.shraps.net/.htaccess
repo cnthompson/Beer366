@@ -14,3 +14,10 @@
 
     ErrorDocument 404 /index.php
 </IfModule>
+
+# protect phpinfo
+<Files php-info.php>
+    Order Deny,Allow
+    Deny from all
+    Allow from 65.28.10.89
+</Files>

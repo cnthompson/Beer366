@@ -1,11 +1,11 @@
 <div class="page-header">
-    <h1><?php echo $_SESSION[ 'displayname' ] ?>'s Info</h1>
+    <h1><?php echo $this->authenticator->get_display_name() ?>'s Info</h1>
 </div>
 <h2> User Name </h2>
 
 <ul>
 <?php
-    echo $_SESSION[ 'displayname' ];
+    echo $this->authenticator->get_display_name();
 ?>
 </ul>
 <br>
@@ -13,7 +13,7 @@
 <h2> Email </h2>
 <ul>
 <?php
-    echo $_SESSION[ 'email' ];
+    echo $this->authenticator->get_email();
 ?>
 </ul>
 <br>

@@ -21,10 +21,7 @@ class Welcome extends CI_Controller {
     public function __construct() {
         session_start();
         parent::__construct();
-        
-        if( !isset( $_SESSION[ 'email' ] ) ) {
-            redirect( 'authenticate' );
-        }
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
     }
 
     public function index() {

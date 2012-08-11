@@ -1,5 +1,5 @@
 <?php
-    if( isset( $_SESSION[ 'email' ] ) ) {
+    if( $this->authenticator->check_auth() ) {
         echo '<h1 class="dropdown" id="brewerMenu">';
         echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#brewerMenu" style="text-decoration:none;color:black" >' . $brewery[ 'name' ] . '<b class="caret"></b> </a>';
         echo '<ul class="dropdown-menu">';

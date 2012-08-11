@@ -71,7 +71,7 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getAllBeersByBrewery( $userID = 0 ) {
+    public function getAllUniqueBeersByBrewery( $userID = 0 ) {
         $query = $this
             ->db
             ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC', false )
@@ -168,6 +168,23 @@ class Users_Model extends CI_Model {
             }
         } else {
             return 0;
+        }
+    }
+
+    public function updateHomepage( $userID, $page ) {
+        if( $userID <= 0 ) {
+            return false;
+        }
+        $data = array(
+            'homepage' => $page,
+            );
+        $q = $this->db
+            ->where( 'user_id', $userID )
+            ->update( 'users', $data );
+        if( $q == 1 ) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
