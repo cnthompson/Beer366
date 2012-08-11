@@ -80,11 +80,14 @@
     <?php echo "<br>" ?>
     <?php
         $ba = $beer[ 'beer_ba_rating' ];
+        $bapage = $beer[ 'ba_page' ];
         $ba = $ba == NULL ? '-' : $ba;
-        echo $ba;
+        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : anchor( $bapage, $ba, 'target="_blank" title="' . $ba . '"' );
+        echo $baText;
     ?>
 </p>
 <h2> Logged Drinks </h2>
+<p>
 <?php
     if( $drinkLog != false ) {
         $tmpl = array(
@@ -97,6 +100,24 @@
         }
         echo $this->table->generate();
     } else {
-        echo 'No one has logged this beer yet';
+        echo 'No one has logged this beer yet</br>';
     }
 ?>
+</p>
+<p>
+<?php
+    if( count( $fridgeBeers ) > 0 ) {
+        echo '<h2>In Fridges</h2>';
+        $tmpl = array(
+            'table_open' => '<table class="table table-bordered">'
+        );
+        $this->table->set_template( $tmpl );
+        $this->table->set_heading( 'Person', 'Serving', 'Quantity', 'Will Trade' );
+        foreach( $fridgeBeers as $fridge ) {
+            $u = anchor( base_url( "users/fridge/" . $fridge[ 'user_id' ] . "/" ), $fridge[ 'user_name' ] );
+            $this->table->add_row( $u, $fridge[ 'size_name' ], $fridge[ 'quantity' ], $fridge[ 'will_trade' ] );
+        }
+        echo $this->table->generate();
+    }
+?>
+</p>

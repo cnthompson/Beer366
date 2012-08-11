@@ -1,6 +1,16 @@
 <div class="page-header">
     <h1>
-        <?php echo ( $scratch != null ? "Convert Scratchpad Drink" : ( ( $editDrink == null || $editDrink[ 'id' ] == -1 ) ? "Log Drink" : "Edit Logged Drink" ) ); ?>
+        <?php
+            if( $scratch != null ) {
+                echo 'Convert Scratchpad Drink';
+            } else if( isset( $editFridge ) and $editFridge != null ) {
+                echo 'Log Beer From Your Fridge';
+            } else if( $editDrink == null or $editDrink[ 'id' ] == -1 ) {
+                echo 'Log Drink';
+            } else {
+                echo 'Edit Logged Drink';
+            }
+        ?>
     </h1>
 </div>
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
@@ -13,6 +23,8 @@
     $url = 'log/drink';
     if( $scratch != null ) {
         $url = 'log/scratch/' . $scratch[ 'id' ] . '/c';
+    } else if( isset( $editFridge ) and $editFridge != null ) {
+        $url = 'log/fridge/' . $editFridge[ 'id' ] . '/l';
     } else if( $editDrink != null ) {
         $url = 'log/drink/' . $editDrink[ 'id' ];
     }

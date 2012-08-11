@@ -10,6 +10,7 @@ class Beer extends CI_Controller {
         $this->load->model( 'drinkers_model' );
         $this->load->model( 'location_model' );
         $this->load->model( 'styles_model' );
+        $this->load->model( 'users_model' );
         $this->load->library( 'Authenticator' );
     }
 
@@ -49,6 +50,7 @@ class Beer extends CI_Controller {
                 $data[ 'brewery' ] = $breweries[ 0 ];
                 $data[ 'beer' ] = $beers[ 0 ];
                 $data[ 'drinkLog' ] = $this->drinkers_model->getLoggedDrinks( $beer );
+                $data[ 'fridgeBeers' ] = $this->users_model->getFridgesWithBeer( $beer );
                 $header[ 'title' ] = 'Beer Profile - ' . $data[ 'beer' ][ 'beer_name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/beer_profile', $data );

@@ -88,12 +88,19 @@ class Log extends CI_Controller {
             $homepage = $this->input->post( 'homepage' );
             $type = $this->input->post( 'brewerytype' );
             $notes = $this->input->post( 'notes' );
-            $res = $this->breweries_model->updateBrewery( $brewerID, $sName, $fName, $address, $city, $post, $country, $region, $homepage, $type, $notes );
-            if( $res == 0 ) {
-                 $data[ 'error' ] = 'An unknown error occurred while adding the brewery.';
+            $dbSName = $this->breweries_model->checkIfBreweryExistsByFullName( $fName );
+            if( $this->breweries_model->checkIfBreweryExistsByName( $sName ) ) {
+                $data[ 'error' ] = 'The brewery "' . $sName . '" already exists in the database.';
+            } else if( $dbSName ) {
+                $data[ 'error' ] = 'The brewery "' . $fName . '" already exists in the database as "' . $dbSName . '".';
             } else {
-                $brewerBase = base_url( "beer/info/" . $res );
-                redirect( $brewerBase );
+                $res = $this->breweries_model->updateBrewery( $brewerID, $sName, $fName, $address, $city, $post, $country, $region, $homepage, $type, $notes );
+                if( $res == 0 ) {
+                     $data[ 'error' ] = 'An unknown error occurred while adding the brewery.';
+                } else {
+                    $brewerBase = base_url( "beer/info/" . $res );
+                    redirect( $brewerBase );
+                }
             }
         }
         $header[ 'title' ] = $data[ 'editBrewer' ] == null ? "Add Brewery" : ( "Edit Brewery - " . $data[ 'editBrewer' ][ 'name' ] ) ;
@@ -152,6 +159,7 @@ class Log extends CI_Controller {
                 $data[ 'editBeer' ][ 'substyle' ] = $editBeers[ 0 ][ 'substyle_id'    ];
                 $data[ 'editBeer' ][ 'abv'      ] = $editBeers[ 0 ][ 'beer_abv'       ];
                 $data[ 'editBeer' ][ 'ba'       ] = $editBeers[ 0 ][ 'beer_ba_rating' ];
+                $data[ 'editBeer' ][ 'bapage'   ] = $editBeers[ 0 ][ 'ba_page'        ];
             }
         }
 
@@ -188,6 +196,7 @@ class Log extends CI_Controller {
         $this->form_validation->set_rules( 'substyle', 'Sub-Style', 'required|callback_checkSubStyle' );
         $this->form_validation->set_rules( 'abv', 'ABV', 'trim|numeric' );
         $this->form_validation->set_rules( 'ba', 'BA Rating', 'trim|integer' );
+        $this->form_validation->set_rules( 'apage', 'BA Page', 'trim' );
 
         if( $this->form_validation->run() !== false ) {
             $beerID = (int)$this->input->post( 'beer_id' );
@@ -196,10 +205,13 @@ class Log extends CI_Controller {
             $substyle = $this->input->post( 'substyle' );
             $abv = $this->input->post( 'abv' );
             $ba = $this->input->post( 'ba' );
+            $bapage = $this->input->post( 'bapage' );
             if( $this->beers_model->checkIfBeerExistsByNameAndBrewer( (int)$brewery, $beerName, $beerID ) ) {
                 $data[ 'error' ] = 'The name "' . $beerName . '" already exists for this brewery.';
+            } else if( is_numeric( $ba ) and ( $bapage == null || strlen( $bapage ) == 0 ) ) {
+                $data[ 'error' ] = 'If you found a BA rating, you must record the beer\'s page.';
             } else {
-                $res = $this->beers_model->updateBeer( $beerID, $beerName, $brewery, $substyle, $abv, $ba );
+                $res = $this->beers_model->updateBeer( $beerID, $beerName, $brewery, $substyle, $abv, $ba, $bapage );
                 if( $res == 0 ) {
                      $data[ 'error' ] = 'An unknown error occurred while adding the beer.';
                 } else {
@@ -241,7 +253,7 @@ class Log extends CI_Controller {
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
 
-        if( $extra == '' ) { 
+        if( $extra == '' ) {
             $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
             $data[ 'editDrink' ] = null;
             if( $editDrinks != null ) {
@@ -497,6 +509,135 @@ class Log extends CI_Controller {
             $header[ 'title' ] = $data[ 'editScratch' ] == null ? "Add Scratch" : "Edit Scratch";
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/add_scratch', $data );
+            $this->load->view( 'templates/footer.php', null );
+        }
+    }
+
+    function fridge( $id = 0, $extra = '' ) {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+
+        $data[ 'error' ] = '';
+        $data[ 'scratch' ] = null;
+        $data[ 'editFridge' ] = null;
+        $editFridge = $this->users_model->getFridgeBeers( $this->authenticator->get_user_id(), $this->authenticator->get_user_id(), $id );
+        if( $editFridge != null and count( $editFridge ) > 0 ) {
+            $data[ 'editFridge' ][ 'id'       ] = $editFridge[ 0 ][ 'id'         ];
+            $data[ 'editFridge' ][ 'user_id'  ] = $editFridge[ 0 ][ 'user_id'    ];
+            $data[ 'editFridge' ][ 'beer_id'  ] = $editFridge[ 0 ][ 'beer_id'    ];
+            $data[ 'editFridge' ][ 'brewery'  ] = $editFridge[ 0 ][ 'brewery_id' ];
+            $data[ 'editFridge' ][ 'size_id'  ] = $editFridge[ 0 ][ 'size_id'    ];
+            $data[ 'editFridge' ][ 'quantity' ] = $editFridge[ 0 ][ 'quantity'   ];
+            $data[ 'editFridge' ][ 'trade'    ] = $editFridge[ 0 ][ 'will_trade' ];
+            $data[ 'editFridge' ][ 'notes'    ] = $editFridge[ 0 ][ 'notes'      ];
+        }
+
+        $allBreweries = $this->breweries_model->getBreweries( 0, false );
+        foreach( $allBreweries as $brewery ) {
+            $data[ 'breweries' ][ $brewery[ 'brewery_id' ] ] = $brewery[ 'name' ];
+            $data[ 'brew2beerMap' ][ $brewery[ 'brewery_id' ] ] = array();
+        }
+
+        $allBeers = $this->beers_model->getBeers( 0 );
+        foreach( $allBeers as $beer ) {
+            $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
+        }
+
+        $allSizes = $this->beers_model->getServingSizes();
+        foreach( $allSizes as $size ) {
+            $data[ 'sizes' ][ $size[ 'size_id' ] ] = $size[ 'name' ];
+        }
+
+        if( $extra == 'x' and $data[ 'editFridge' ] != null ) {
+            $this->users_model->deleteFridgeBeer( $id );
+            redirect( "users/fridge/" );
+        } else if( $extra == 'l' and $data[ 'editFridge' ] != null ) {
+            $data[ 'editDrink' ][ 'id'      ] = -1;
+            $data[ 'editDrink' ][ 'date'    ] = date( 'Y-m-d' );
+            $data[ 'editDrink' ][ 'user_id' ] = $this->authenticator->get_user_id();
+            $data[ 'editDrink' ][ 'beer_id' ] = $data[ 'editFridge' ][ 'beer_id' ];
+            $data[ 'editDrink' ][ 'brewery' ] = $data[ 'editFridge' ][ 'brewery' ];
+            $data[ 'editDrink' ][ 'size_id' ] = $data[ 'editFridge' ][ 'size_id' ];
+            $data[ 'editDrink' ][ 'rating'  ] = null;
+            $data[ 'editDrink' ][ 'notes'   ] = $data[ 'editFridge' ][ 'notes' ];
+
+            $this->load->library( 'form_validation' );
+            $this->form_validation->set_rules( 'date', 'Date', 'trim|required|callback_checkDate' );
+            $this->form_validation->set_rules( 'beer', 'Beer', 'callback_checkBeer' );
+            $this->form_validation->set_rules( 'ssize', 'Serving Size', 'callback_checkSSize' );
+            $this->form_validation->set_rules( 'rating', 'Rating', 'trim|numeric|callback_checkRating' );
+            $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
+
+            if( $this->form_validation->run() !== false ) {
+                $drinkID = (int)$this->input->post( 'drink_id' );
+                $date = $this->input->post( 'date' );
+                $user = $this->authenticator->get_user_id();
+                $beer = $this->input->post( 'beer' );
+                $ssize = $this->input->post( 'ssize' );
+                $rating = $this->input->post( 'rating' );
+                $notes = $this->input->post( 'notes' );
+                $res = $this->drinkers_model->updateLoggedDrink( $drinkID, $date, $user, $beer, $ssize, $rating, $notes );
+                if( $res == 0 ) {
+                    $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
+                } else {
+                    $data[ 'editFridge' ][ 'quantity' ]--;
+                    if( $data[ 'editFridge' ][ 'trade' ] > 0 ) {
+                        $data[ 'editFridge' ][ 'trade' ]--;
+                    }
+                    if( $data[ 'editFridge' ][ 'quantity' ] > 0 ) {
+                        $fridgeID = $data[ 'editFridge' ][ 'id'       ];
+                        $user     = $data[ 'editFridge' ][ 'user_id'  ];
+                        $beer     = $data[ 'editFridge' ][ 'beer_id'  ];
+                        $ssize    = $data[ 'editFridge' ][ 'size_id'  ];
+                        $quantity = $data[ 'editFridge' ][ 'quantity' ];
+                        $trade    = $data[ 'editFridge' ][ 'trade'    ];
+                        $notes    = $data[ 'editFridge' ][ 'notes'    ];
+                        $res = $this->users_model->updateFridgeBeer( $data[ 'editFridge' ][ 'id' ], $user, $beer, $ssize, $quantity, $trade, $notes );
+                    } else {
+                        $this->users_model->deleteFridgeBeer( $id );
+                    }
+                    redirect( "users/fridge/" );
+                }
+            }
+
+            $header[ 'title' ] = 'Convert Scratchpad Drink';
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/log_drink', $data );
+            $this->load->view( 'templates/footer.php', null );
+        } else if( $extra != '' ) {
+            redirect( "users/fridge/" );
+        } else {
+            $this->load->library( 'form_validation' );
+
+            $this->form_validation->set_rules( 'brewery', 'Brewery', 'required|callback_checkBrewery' );
+            $this->form_validation->set_rules( 'beer', 'Beer', 'callback_checkBeer' );
+            $this->form_validation->set_rules( 'ssize', 'Serving Size', 'callback_checkSSize' );
+            $this->form_validation->set_rules( 'quantity', 'Quantity', 'trim|integer|greater_than[ 0 ]' );
+            $this->form_validation->set_rules( 'trade', 'Will Trade', 'trim|integer|greater_than[ 0 ]' );
+            $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
+
+            if( $this->form_validation->run() !== false ) {
+                $fridgeID = (int)$this->input->post( 'fridge_id' );
+                $user = $this->authenticator->get_user_id();
+                $beer = $this->input->post( 'beer' );
+                $ssize = $this->input->post( 'ssize' );
+                $quantity = $this->input->post( 'quantity' );
+                $trade = $this->input->post( 'trade' );
+                $notes = $this->input->post( 'notes' );
+                if( $trade > $quantity ) {
+                    $data[ 'error' ] = "The number you're willing to trade must be less than or equal to your total number.";
+                } else {
+                    $res = $this->users_model->updateFridgeBeer( $fridgeID, $user, $beer, $ssize, $quantity, $trade, $notes );
+                    if( $res == 0 ) {
+                        $data[ 'error' ] = 'An unknown error occurred while adding a beer to your fridge.';
+                    } else {
+                        redirect( "users/fridge/" );
+                    }
+                }
+            }
+
+            $header[ 'title' ] = $data[ 'editFridge' ] == null ? "Add Fridge Beer" : "Edit Fridge Beer";
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/add_fridge', $data );
             $this->load->view( 'templates/footer.php', null );
         }
     }

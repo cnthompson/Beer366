@@ -16,7 +16,7 @@
         $attributes = array(
             'name'  => 'beername',
             'id'    => 'beername',
-            'value' => ( $editBeer == null ? null : $editBeer[ 'name' ] ),
+            'value' => set_value( 'beername', ( $editBeer == null ? null : $editBeer[ 'name' ] ) ),
             'class' => 'span4'
         );
         echo form_label( 'Beer Name:', 'beername' );
@@ -47,7 +47,7 @@
             'name'   => 'abv',
             'id'     => 'abv',
             'class'  => 'span4',
-            'value'  => ( $editBeer == null ? null : $editBeer[ 'abv' ] )
+            'value'  => set_value( 'abv', ( $editBeer == null ? null : $editBeer[ 'abv' ] ) )
         );
         echo form_label( 'ABV (%):', 'abv' );
         echo form_input( $attributes );
@@ -56,9 +56,18 @@
             'name'   => 'ba',
             'id'     => 'ba',
             'class'  => 'span4',
-            'value'  => ( $editBeer == null ? null : $editBeer[ 'ba' ] )
+            'value'  => set_value( 'ba', ( $editBeer == null ? null : $editBeer[ 'ba' ] ) )
         );
         echo form_label( 'BA Rating:', 'ba' );
+        echo form_input( $attributes );
+
+        $attributes = array(
+            'name'   => 'bapage',
+            'id'     => 'bapage',
+            'class'  => 'span4',
+            'value'  => set_value( 'bapage', ( $editBeer == null ? null : $editBeer[ 'bapage' ] ) )
+        );
+        echo form_label( 'BA Page:', 'bapage' );
         echo form_input( $attributes );
     ?>
 </p>
@@ -187,7 +196,7 @@
                 $jsAllSubStyles.push( $jsSStyles[ i ] );
             }
         }
-        $jsAllSubStyles.sort( compareStyles );
+        $jsAllSubStyles.sort( compareSubStyles );
         if( $jsAllSubStyles.length == 0 ) {
             elem.style.visibility = 'hidden';
         } else {

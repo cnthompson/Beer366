@@ -45,11 +45,14 @@
             ?>
         </address>
     </div>
-    <div class="span4">
-        <i class="icon-home"></i>
-        <?php
+    <?php
+        $homepage = $brewery[ 'homepage' ];
+        if( $homepage != null && strlen( $homepage ) > 0 ) {
+            echo '<div class="span4">';
+            echo '<i class="icon-home"></i>';
             echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
-        ?>
+        }
+    ?>
     </div>
 </div>
 <p>

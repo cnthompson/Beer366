@@ -96,7 +96,7 @@ class Beers_Model extends CI_Model {
         return false;
     }
 
-    function updateBeer( $id, $name, $brewer, $substyle, $abv, $ba ) {
+    function updateBeer( $id, $name, $brewer, $substyle, $abv, $ba, $bapage ) {
         if( ( $name == null || strlen( $name ) == 0 )
          || ( $brewer <= 0 )
          || ( $substyle <= 0 ) ) {
@@ -108,6 +108,7 @@ class Beers_Model extends CI_Model {
             'substyle_id'   => $substyle,
             'beer_abv'      => ( $abv == null || strlen( $abv ) == 0 ) ? null : $abv,
             'beer_ba_rating'=> ( $ba == null || strlen( $ba ) == 0 ) ? null : $ba,
+            'ba_page'       => ( $bapage == null || strlen( $bapage ) == 0 ) ? null : $bapage,
         );
         $query = null;
         if( $id > 0 ) {

@@ -45,6 +45,11 @@ class Authenticator {
         return -1;
     }
 
+    // Get whether or not a given user is the current user
+    public function is_current_user( $id ) {
+        return $id == $this->get_user_id();
+    }
+
     // Get the current session preferred homepage or NULL
     public function get_homepage() {
         if( isset( $_SESSION[ 'homepage' ] ) ) {

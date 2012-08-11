@@ -62,6 +62,8 @@ class Users extends CI_Controller {
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 10 );
             $data[ 'fives' ] = $this->beers_model->getBeersByRating( $userID, 5 );
             $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
+            $data[ 'fridgeCount' ] = $this->users_model->getFridgeBeerCount( $userID );
+            $data[ 'tradeCount'  ] = $this->users_model->getFridgeBeerTradeCount( $userID );
             $this->load->view( 'pages/user_profile', $data );
         }
 
@@ -82,10 +84,30 @@ class Users extends CI_Controller {
         $this->load->view( 'templates/footer.php', null );
     }
 
+    public function fridge( $userID = 0 ) {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+
+        $uid = $userID <= 0 ? (int)$this->authenticator->get_user_id() : $userID;
+        $allUsers = $this->users_model->getUsers( $uid );
+        if( count( $allUsers ) == 0 ) {
+            redirect( 'users/fridge/' );
+        }
+        $data[ 'user' ] = $allUsers[ 0 ];
+
+        $data[ 'fridge_beers' ] = $this->users_model->getFridgeBeers( $data[ 'user' ][ 'user_id' ], (int)$this->authenticator->get_user_id(), -1 );
+
+        $this->load->helper( 'html' );
+        $this->load->library( 'table' );
+
+        $header[ 'title' ] = $this->authenticator->is_current_user( $data[ 'user' ][ 'user_id' ] ) ? 'My Fridge' : ( $data[ 'user' ][ 'display_name' ] . '\'s Fridge' );
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/user_fridge.php', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+
     public function uniques() {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
-        $data[ 'userID' ] = (int)$this->authenticator->get_user_id();
-        $data[ 'uniques' ] = $this->users_model->getAllUniqueBeersByBrewery( $data[ 'userID' ] );
+        $data[ 'uniques' ] = $this->users_model->getAllUniqueBeersByBrewery( $this->authenticator->get_user_id() );
 
         $header[ 'title' ] = 'Unique Beers';
         $this->load->view( 'templates/header.php', $header );

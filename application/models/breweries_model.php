@@ -153,6 +153,30 @@ class Breweries_Model extends CI_Model {
             return 0;
         }
     }
+
+    public function checkIfBreweryExistsByName( $name ) {
+        $query = $this
+            ->db
+            ->where( "LOWER( name ) = '" . str_replace( "'", "\\'", strtolower( $name ) ) . "'" )
+            ->limit( 1 )
+            ->get( 'breweries' );
+        if( $query->num_rows > 0 ) {
+            return true;
+        }
+        return false;
+    }
+
+    public function checkIfBreweryExistsByFullName( $name ) {
+        $query = $this
+            ->db
+            ->where( "LOWER( full_name ) = '" . str_replace( "'", "\\'", strtolower( $name ) ) . "'" )
+            ->limit( 1 )
+            ->get( 'breweries' );
+        if( $query->num_rows > 0 ) {
+            return $query->row()->name;
+        }
+        return null;
+    }
 }
 
 ?>

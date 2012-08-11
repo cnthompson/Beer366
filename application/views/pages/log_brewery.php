@@ -17,7 +17,7 @@
             'name'  => 'shortname',
             'id'    => 'shortname',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'name' ] )
+            'value' => set_value( 'shortname', ( $editBrewer == null ? null : $editBrewer[ 'name' ] ) )
         );
         echo form_label( 'Brewery Name (Friendly Name):', 'shortname' );
         echo form_input( $attributes );
@@ -29,7 +29,7 @@
             'name'  => 'fullname',
             'id'    => 'fullname',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'fName' ] )
+            'value' => set_value( 'fullname', ( $editBrewer == null ? null : $editBrewer[ 'fName' ] ) )
         );
         echo form_label( 'Full Name:', 'fullname' );
         echo form_input( $attributes );
@@ -43,7 +43,7 @@
             'name'  => 'address',
             'id'    => 'address',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'street' ] )
+            'value' => set_value( 'address', ( $editBrewer == null ? null : $editBrewer[ 'street' ] ) )
         );
         echo form_label( 'Street Address:', 'address' );
         echo form_input( $attributes );
@@ -52,7 +52,7 @@
             'name'  => 'city',
             'id'    => 'city',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'city' ] )
+            'value' => set_value( 'city', ( $editBrewer == null ? null : $editBrewer[ 'city' ] ) )
         );
         echo form_label( 'City:', 'city' );
         echo form_input( $attributes );
@@ -61,7 +61,7 @@
             'name'  => 'postcode',
             'id'    => 'postcode',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'postal' ] )
+            'value' => set_value( 'postcode', ( $editBrewer == null ? null : $editBrewer[ 'postal' ] ) )
         );
         echo form_label( 'Postal Code:', 'postcode' );
         echo form_input( $attributes );
@@ -86,7 +86,7 @@
             'name'  => 'homepage',
             'id'    => 'homepage',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'homepage' ] )
+            'value' => set_value( 'homepage', ( $editBrewer == null ? null : $editBrewer[ 'homepage' ] ) )
         );
         echo form_label( 'Web Page:', 'homepage' );
         echo form_input( $attributes );
@@ -98,7 +98,7 @@
             'name'  => 'notes',
             'id'    => 'notes',
             'class' => 'span4',
-            'value' => ( $editBrewer == null ? null : $editBrewer[ 'notes' ] )
+            'value' => set_value( 'notes', ( $editBrewer == null ? null : $editBrewer[ 'notes' ] ) )
         );
         echo form_label( 'Notes:', 'notes' );
         echo form_textarea( $attributes );
