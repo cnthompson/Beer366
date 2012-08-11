@@ -611,8 +611,8 @@ class Log extends CI_Controller {
             $this->form_validation->set_rules( 'brewery', 'Brewery', 'required|callback_checkBrewery' );
             $this->form_validation->set_rules( 'beer', 'Beer', 'callback_checkBeer' );
             $this->form_validation->set_rules( 'ssize', 'Serving Size', 'callback_checkSSize' );
-            $this->form_validation->set_rules( 'quantity', 'Quantity', 'trim|integer|greater_than[ 0 ]' );
-            $this->form_validation->set_rules( 'trade', 'Will Trade', 'trim|integer|greater_than[ 0 ]' );
+            $this->form_validation->set_rules( 'quantity', 'Quantity', 'trim|integer|greater_than[0]' );
+            $this->form_validation->set_rules( 'trade', 'Willing to Trade', 'trim|integer' );
             $this->form_validation->set_rules( 'notes', 'Notes', 'trim' );
 
             if( $this->form_validation->run() !== false ) {
@@ -623,7 +623,9 @@ class Log extends CI_Controller {
                 $quantity = $this->input->post( 'quantity' );
                 $trade = $this->input->post( 'trade' );
                 $notes = $this->input->post( 'notes' );
-                if( $trade > $quantity ) {
+                if( $quantity <= 0 ) {
+                    $data[ 'error' ] = "You cannot enter a quantity of " . $quantity . ". Delete this entry instead";
+                } else if( $trade > $quantity ) {
                     $data[ 'error' ] = "The number you're willing to trade must be less than or equal to your total number.";
                 } else {
                     $res = $this->users_model->updateFridgeBeer( $fridgeID, $user, $beer, $ssize, $quantity, $trade, $notes );
