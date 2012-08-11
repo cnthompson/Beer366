@@ -13,7 +13,7 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="<?php echo base_url( "/" ) ?>">Beer366</a>
+                <a class="brand" href="<?php echo base_url( "/" ) ?>"><img src="<?php echo base_url( "/" ) ?>/img/pint_32_txt.png" height="24" />Beer366</a>
                 <ul class="nav">
                     <li><a href="<?php echo base_url( "/users/totals/" ) ?>">All Totals</a></li>
                     <?php
