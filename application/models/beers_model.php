@@ -96,6 +96,23 @@ class Beers_Model extends CI_Model {
         return false;
     }
 
+    public function checkIfPageExistsByBeer( $page, $beerID ) {
+        $starter = 'http://beeradvocate.com/beer/profile/';
+        if( $page != null and ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+            $page = substr( $page, strlen( $starter ) );
+        }
+        $query = $this
+            ->db
+            ->where( "LOWER( ba_page ) = '" . str_replace( "'", "\\'", strtolower( $page ) ) . "'" )
+            ->where( "beer_id != " . $beerID )
+            ->limit( 1 )
+            ->get( 'beers' );
+        if( $query->num_rows > 0 ) {
+            return true;
+        }
+        return false;
+    }
+
     function updateBeer( $id, $name, $brewer, $substyle, $abv, $ba, $bapage ) {
         if( ( $name == null || strlen( $name ) == 0 )
          || ( $brewer <= 0 )

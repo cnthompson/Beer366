@@ -213,6 +213,8 @@ class Log extends CI_Controller {
                 $data[ 'error' ] = 'The name "' . $beerName . '" already exists for this brewery.';
             } else if( is_numeric( $ba ) and ( $bapage == null || strlen( $bapage ) == 0 ) ) {
                 $data[ 'error' ] = 'If you found a BA rating, you must record the beer\'s page.';
+            } else if( $this->beers_model->checkIfPageExistsByBeer( $bapage, $beerID ) ) {
+                $data[ 'error' ] = 'The BA page you\'ve specified is already being used by a different beer. Make sure you\'re not duplicating beers.';
             } else {
                 $res = $this->beers_model->updateBeer( $beerID, $beerName, $brewery, $substyle, $abv, $ba, $bapage );
                 if( $res == 0 ) {
