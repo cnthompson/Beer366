@@ -290,6 +290,17 @@ class Users_Model extends CI_Model {
             ->delete( 'fridge' );
     }
 
+    public function checkIfInFridge( $userID, $beerID, $sizeID ) {
+        $query = $this
+            ->db
+            ->where( 'user_id', $userID )
+            ->where( 'beer_id', $beerID )
+            ->where( 'size_id', $sizeID )
+            ->limit( 1 )
+            ->get( 'fridge' );
+        return $query->num_rows() == 1;
+    }
+    
     public function updateFridgeBeer( $id, $user, $beer, $size, $number, $trade, $notes ) {
         if( ( $user <= 0 )
          || ( $beer <= 0 )

@@ -519,16 +519,31 @@ class Log extends CI_Controller {
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
         $data[ 'editFridge' ] = null;
-        $editFridge = $this->users_model->getFridgeBeers( $this->authenticator->get_user_id(), $this->authenticator->get_user_id(), $id );
-        if( $editFridge != null and count( $editFridge ) > 0 ) {
-            $data[ 'editFridge' ][ 'id'       ] = $editFridge[ 0 ][ 'id'         ];
-            $data[ 'editFridge' ][ 'user_id'  ] = $editFridge[ 0 ][ 'user_id'    ];
-            $data[ 'editFridge' ][ 'beer_id'  ] = $editFridge[ 0 ][ 'beer_id'    ];
-            $data[ 'editFridge' ][ 'brewery'  ] = $editFridge[ 0 ][ 'brewery_id' ];
-            $data[ 'editFridge' ][ 'size_id'  ] = $editFridge[ 0 ][ 'size_id'    ];
-            $data[ 'editFridge' ][ 'quantity' ] = $editFridge[ 0 ][ 'quantity'   ];
-            $data[ 'editFridge' ][ 'trade'    ] = $editFridge[ 0 ][ 'will_trade' ];
-            $data[ 'editFridge' ][ 'notes'    ] = $editFridge[ 0 ][ 'notes'      ];
+        if( $extra == 'a' ) {
+            $beers = $this->beers_model->getBeers( 0, $id );
+            if( count( $beers ) != 1 ) {
+                redirect( 'users/fridge/' );
+            }
+            $data[ 'editFridge' ][ 'id'       ] = -1;
+            $data[ 'editFridge' ][ 'user_id'  ] = $this->authenticator->get_user_id();
+            $data[ 'editFridge' ][ 'beer_id'  ] = $id;
+            $data[ 'editFridge' ][ 'brewery'  ] = $beers[ 0 ][ 'brewery_id' ];
+            $data[ 'editFridge' ][ 'size_id'  ] = 7;
+            $data[ 'editFridge' ][ 'quantity' ] = 1;
+            $data[ 'editFridge' ][ 'trade'    ] = 0;
+            $data[ 'editFridge' ][ 'notes'    ] = null;
+        } else {
+            $editFridge = $this->users_model->getFridgeBeers( $this->authenticator->get_user_id(), $this->authenticator->get_user_id(), $id );
+            if( $editFridge != null and count( $editFridge ) > 0 ) {
+                $data[ 'editFridge' ][ 'id'       ] = $editFridge[ 0 ][ 'id'         ];
+                $data[ 'editFridge' ][ 'user_id'  ] = $editFridge[ 0 ][ 'user_id'    ];
+                $data[ 'editFridge' ][ 'beer_id'  ] = $editFridge[ 0 ][ 'beer_id'    ];
+                $data[ 'editFridge' ][ 'brewery'  ] = $editFridge[ 0 ][ 'brewery_id' ];
+                $data[ 'editFridge' ][ 'size_id'  ] = $editFridge[ 0 ][ 'size_id'    ];
+                $data[ 'editFridge' ][ 'quantity' ] = $editFridge[ 0 ][ 'quantity'   ];
+                $data[ 'editFridge' ][ 'trade'    ] = $editFridge[ 0 ][ 'will_trade' ];
+                $data[ 'editFridge' ][ 'notes'    ] = $editFridge[ 0 ][ 'notes'      ];
+            }
         }
 
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
@@ -603,7 +618,7 @@ class Log extends CI_Controller {
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/log_drink', $data );
             $this->load->view( 'templates/footer.php', null );
-        } else if( $extra != '' ) {
+        } else if( $extra != '' and $extra != 'a' ) {
             redirect( "users/fridge/" );
         } else {
             $this->load->library( 'form_validation' );
@@ -627,6 +642,8 @@ class Log extends CI_Controller {
                     $data[ 'error' ] = "You cannot enter a quantity of " . $quantity . ". Delete this entry instead";
                 } else if( $trade > $quantity ) {
                     $data[ 'error' ] = "The number you're willing to trade must be less than or equal to your total number.";
+                } else if( $fridgeID == -1 and $this->users_model->checkIfInFridge( $user, $beer, $ssize ) ) {
+                    $data[ 'error' ] = "This beer is already in your fridge. You should edit the other entry to change things like quantity.";
                 } else {
                     $res = $this->users_model->updateFridgeBeer( $fridgeID, $user, $beer, $ssize, $quantity, $trade, $notes );
                     if( $res == 0 ) {

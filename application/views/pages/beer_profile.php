@@ -1,14 +1,8 @@
 <?php
     if( $this->authenticator->check_auth() ) {
-        echo '<h1 class="dropdown" id="beerMenu">';
-        echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-target="#beerMenu" style="text-decoration:none;color:black" >' . $beer[ 'beer_name' ] . '<b class="caret"></b> </a>';
-        echo '<ul class="dropdown-menu">';
         $s1 = base_url( "log/beer/" . $beer[ 'beer_id' ] );
-        echo '<li><h5>' . anchor( $s1, "Edit Beer Info" ) . '</h5></li>';
-        $s1 = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
-        echo '<li><h5>' . anchor( $s1, "Log This Beer" ) . '</h5></li>';
-        echo '</ul>';
-        echo '</h1>';
+        echo '<h1>' . $beer[ 'beer_name' ] . '&nbsp;';
+        echo anchor( $s1, '<i class="icon-edit" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Beer Info' ) ) . '</h1>';
     } else {
         echo '<h1>' . $beer[ 'beer_name' ] . '</h1>';
     }
@@ -24,6 +18,15 @@
         echo anchor( $b, img( $log_props ), array( 'title' => 'Log This' ) );
         echo "&nbsp";
         echo anchor( $b, "Log This" );
+        echo "&nbsp&nbsp;";
+        $fridge_props = array(
+            'src' => 'img/bottle.png',
+            'alt' => 'Add to Fridge',
+        );
+        $b = base_url( 'log/fridge/' . $beer[ 'beer_id' ] . '/a' );
+        echo anchor( $b, img( $fridge_props ), array( 'title' => 'Add to Fridge' ) );
+        echo "&nbsp";
+        echo anchor( $b, "Add to My Fridge" );
         echo "</p>";
     }
 ?>

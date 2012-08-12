@@ -3,7 +3,7 @@
     if( $this->authenticator->check_auth() ) {
         $s1 = base_url( "log/brewery/" . $brewery[ 'brewery_id' ] );
         echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . ' </small>';
-        echo anchor( $s1, '<i class="icon-edit" style="vertical-align: middle;"></i>' ) . '</h1>';
+        echo anchor( $s1, '<i class="icon-edit" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Brewery Info' ) ) . '</h1>';
     } else {
         echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . '</small></h1>';
     }
