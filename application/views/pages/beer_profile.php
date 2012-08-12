@@ -84,8 +84,8 @@
     <?php
         $ba = $beer[ 'beer_ba_rating' ];
         $bapage = $beer[ 'ba_page' ];
-        $ba = $ba == NULL ? '-' : $ba;
-        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : ( anchor( 'http://beeradvocate.com/beer/profile/' . $bapage, $ba, 'target="_blank" title="' . $ba . '"' ) . '<i class="icon-share-alt"></i>' );
+        $ba = $ba == NULL ? 'N/A' : $ba;
+        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : ( anchor( 'http://beeradvocate.com/beer/profile/' . $bapage, $ba . '<i class="icon-share-alt"></i>', 'target="_blank" title="Beer Advocate Page"' ) );
         echo $baText;
     ?>
 </p>

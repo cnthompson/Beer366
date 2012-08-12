@@ -160,6 +160,9 @@ class Log extends CI_Controller {
                 $data[ 'editBeer' ][ 'abv'      ] = $editBeers[ 0 ][ 'beer_abv'       ];
                 $data[ 'editBeer' ][ 'ba'       ] = $editBeers[ 0 ][ 'beer_ba_rating' ];
                 $data[ 'editBeer' ][ 'bapage'   ] = $editBeers[ 0 ][ 'ba_page'        ];
+                if( $data[ 'editBeer' ][ 'bapage' ] != null and strlen( $data[ 'editBeer' ][ 'bapage' ] ) > 0 ) {
+                    $data[ 'editBeer' ][ 'bapage' ] = 'http://beeradvocate.com/beer/profile/' . $data[ 'editBeer' ][ 'bapage' ];
+                }
             }
         }
 
