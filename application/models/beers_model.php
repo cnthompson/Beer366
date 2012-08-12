@@ -102,13 +102,18 @@ class Beers_Model extends CI_Model {
          || ( $substyle <= 0 ) ) {
             return FALSE;
         }
+        $starter = 'http://beeradvocate.com/beer/profile/';
+        $page = ( $bapage == null || strlen( $bapage ) == 0 ) ? null : $bapage;
+        if( $page != null and ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+            $page = substr( $page, strlen( $starter ) );
+        }
         $data = array (
             'beer_name'     => $name,
             'brewery_id'    => $brewer,
             'substyle_id'   => $substyle,
             'beer_abv'      => ( $abv == null || strlen( $abv ) == 0 ) ? null : $abv,
             'beer_ba_rating'=> ( $ba == null || strlen( $ba ) == 0 ) ? null : $ba,
-            'ba_page'       => ( $bapage == null || strlen( $bapage ) == 0 ) ? null : $bapage,
+            'ba_page'       => $page,
         );
         $query = null;
         if( $id > 0 ) {
