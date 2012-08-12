@@ -5,7 +5,7 @@
     <div>
     <?php
         $tmpl = array (
-            'table_open' => '<table class="table table-bordered">'
+            'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
@@ -92,3 +92,7 @@
     ?>
     </div>
 </section>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
+?>

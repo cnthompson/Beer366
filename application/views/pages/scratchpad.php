@@ -4,7 +4,7 @@
 <?php
     if( count( $scratches ) > 0 ) {
         $tmpl = array(
-            'table_open' => '<table class="table table-bordered">'
+            'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( '', '', '', 'Date', 'Brewery', 'Beer', 'Size', 'Rating', 'Notes' );
@@ -39,3 +39,7 @@
     }
 ?>
 </p>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
+?>

@@ -94,7 +94,7 @@
 <?php
     if( $drinkLog != false ) {
         $tmpl = array(
-            'table_open' => '<table class="table table-bordered">'
+            'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Date', 'Person', 'Serving', 'Rating', 'Notes' );
@@ -112,7 +112,7 @@
     if( count( $fridgeBeers ) > 0 ) {
         echo '<h2>In Fridges</h2>';
         $tmpl = array(
-            'table_open' => '<table class="table table-bordered">'
+            'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Person', 'Serving', 'Quantity', 'Will Trade' );
@@ -124,3 +124,7 @@
     }
 ?>
 </p>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
+?>

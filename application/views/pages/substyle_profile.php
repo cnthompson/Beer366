@@ -1,13 +1,27 @@
-<?php
-    $styleBase = base_url( "beer/styles/" . $family[ 'family_id' ] );
-    $styleAnchor = anchor( $styleBase, $style[ 'style_name' ] );
-    $substyleBase = base_url( "beer/styles/" . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] );
-    $substyleAnchor = anchor( $substyleBase, $substyle[ 'substyle_name' ] );
-    echo "<h1>" . $substyleAnchor . " | " . $styleAnchor . "</h1>";
-?>
+<ul class="breadcrumb">
+  <li>
+    <?php echo anchor( base_url( 'beer/styles/' ), 'All Styles' ); ?>
+  </li>
+  <span class="divider">/</span>
+  <li>
+    <?php echo anchor( base_url( 'beer/styles/' . $family[ 'family_id' ] . '/' ), $family[ 'family_name' ] ); ?>
+  </li>
+  <span class="divider">/</span>
+  <li>
+    <?php echo anchor( base_url( 'beer/styles/' . $family[ 'family_id' ] . '/' . $style[ 'style_id' ] . '/' ), $style[ 'style_name' ] ); ?>
+  </li>
+  <span class="divider">/</span>
+  <li>
+    <?php echo $substyle[ 'substyle_name' ]; ?>
+  </li>
+</ul>
+<h2>Beers</h2>
 </p>
-    <?php echo "<h2> Beers </h2>" ?>
     <?php
+        $tmpl = array(
+            'table_open' => '<table class="table table-bordered sortable">'
+        );
+        $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Beer', 'Brewer', 'ABV', 'BA Rating' );
         foreach( $beers as $beer ) {
             $name  = $beer[ 'beer_name' ];
@@ -28,3 +42,7 @@
         echo $this->table->generate();
     ?>
 </p>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
+?>

@@ -17,7 +17,7 @@
 <ul>
 <?php
     $tmpl = array(
-        'table_open' => '<table class="table table-bordered">'
+        'table_open' => '<table class="table table-bordered sortable">'
     );
     $this->table->set_template( $tmpl );
     $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
@@ -47,7 +47,7 @@
 <h2> Recent Beers </h2>
 <?php
     $tmpl = array(
-        'table_open' => '<table class="table table-bordered">'
+        'table_open' => '<table class="table table-bordered sortable">'
     );
     $this->table->set_template( $tmpl );
     if( $user[ 'user_id' ] == $this->authenticator->get_user_id() ) {
@@ -72,4 +72,8 @@
         }
     }
     echo $this->table->generate();
+?>
+<?php
+    $source = base_url( "/js/" );
+    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
 ?>
