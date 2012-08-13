@@ -4,6 +4,36 @@ class Drinkers_Model extends CI_Model {
     function __construct() {
     }
 
+    public function getCompleteLog( $userID = 0 ) {
+        $query = $this
+            ->db
+            ->select( 'dl.*, dl2.log_id AS original, beers.beer_name AS beer_name, beers.brewery_id, breweries.name AS brewery_name, beers.substyle_id, beer_sub_style.substyle_name, beer_sub_style.style_id, beer_style.family_id, serving_size.name AS ssize, users.display_name' )
+            ->from( 'drink_log dl' )
+            ->join( 'drink_log dl2', 'dl.user_id = dl2.user_id AND dl.beer_id = dl2.beer_id AND ( dl2.date < dl.date OR ( dl2.date = dl.date AND dl2.log_id < dl.log_id ) )', 'left' )
+            ->join( 'beers', 'beers.beer_id = dl.beer_id', 'inner' )
+            ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
+            ->join( 'beer_sub_style', 'beer_sub_style.substyle_id = beers.substyle_id', 'inner' )
+            ->join( 'beer_style', 'beer_sub_style.style_id = beer_style.style_id', 'inner' )
+            ->join( 'serving_size', 'dl.size_id = serving_size.size_id', 'inner' )
+            ->join( 'users', 'users.user_id = dl.user_id', 'inner' )
+            ->group_by( 'dl.log_id' )
+            ->order_by( 'dl.date, dl.log_id', 'asc' );
+            
+        if( $userID > 0 ) {
+            $query = $this
+                ->db
+                ->where( 'dl.user_id', $userID );
+        }
+        $query = $this
+            ->db
+            ->get();
+        if( $query->num_rows > 0 ) {
+            return $query->result_array();
+        } else {
+            return array();
+        }
+    }
+
     public function getLoggedDrinks( $beerID ) {
         $query = $this
             ->db
@@ -89,7 +119,7 @@ class Drinkers_Model extends CI_Model {
             return null;
         }
     }
-    
+
     public function updateLoggedDrink( $id, $date, $user, $beer, $ssize, $rating, $notes ) {
         $d = strtotime( $date );
         if( ( $d == FALSE || $d == -1 )

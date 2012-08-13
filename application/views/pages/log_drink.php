@@ -26,7 +26,7 @@
     } else if( isset( $editFridge ) and $editFridge != null ) {
         $url = 'log/fridge/' . $editFridge[ 'id' ] . '/l';
     } else if( $editDrink != null ) {
-        $url = 'log/drink/' . $editDrink[ 'id' ];
+        $url = 'log/drink/' . $editDrink[ 'id' ] . '/' . $extra;
     }
     echo form_open( $url );
 ?>

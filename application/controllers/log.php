@@ -257,8 +257,9 @@ class Log extends CI_Controller {
 
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
+        $data[ 'extra' ] = $extra;
 
-        if( $extra == '' ) {
+        if( $extra == '' or $extra == 'l' ) {
             $editDrinks = $this->drinkers_model->getLoggedDrink( $id );
             $data[ 'editDrink' ] = null;
             if( $editDrinks != null ) {
@@ -324,8 +325,12 @@ class Log extends CI_Controller {
             if( $res == 0 ) {
                 $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
             } else {
-                $beerBase = base_url( "users/totals/" . $user );
-                redirect( $beerBase );
+                if( $extra == 'l' ) {
+                    redirect( 'users/log/' . $user . '/' );
+                } else {
+                    $beerBase = base_url( "users/totals/" . $user . '/' );
+                    redirect( $beerBase );
+                }
             }
         }
 
@@ -380,6 +385,7 @@ class Log extends CI_Controller {
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
         $data[ 'editDrink' ] = null;
+        $data[ 'extra' ] = $extra;
 
         $editScratch = $this->users_model->getScratchpad( $this->authenticator->get_user_id(), $id );
         $data[ 'editScratch' ] = null;
@@ -524,6 +530,8 @@ class Log extends CI_Controller {
         $data[ 'error' ] = '';
         $data[ 'scratch' ] = null;
         $data[ 'editFridge' ] = null;
+        $data[ 'extra' ] = $extra;
+
         if( $extra == 'a' ) {
             $beers = $this->beers_model->getBeers( 0, $id );
             if( count( $beers ) != 1 ) {

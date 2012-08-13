@@ -136,4 +136,24 @@ class Users extends CI_Controller {
             redirect( $this->authenticator->get_homepage() );
         }
     }
+
+    public function log( $userID = 0 ) {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+
+        $allUsers = $this->users_model->getUsers( $userID );
+        if( count( $allUsers ) == 0 ) {
+            redirect( 'users/log/' );
+        }
+        $data[ 'user' ] = $userID <= 0 ? null : $allUsers[ 0 ];
+
+        $data[ 'loggedBeers' ] = $this->drinkers_model->getCompleteLog( $userID );
+
+        $this->load->helper( 'html' );
+        $this->load->library( 'table' );
+
+        $header[ 'title' ] = 'Beer Log';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'pages/user_log.php', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
 }
