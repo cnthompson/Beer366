@@ -1,31 +1,33 @@
-<div class="page-header">
-    <h1>
-        <?php echo $city[ 'city' ] ?>
-    </h1>
-</div>
-<p>
-    <?php
-        if( $region != NULL ) {
-            $s1 = base_url( "beer/location/" . $country[ '3166_1_id' ] . "/" . $region[ '3166_2_id' ] );
-            $s2 = anchor( $s1, $region[ 'rgn_name' ] );
-            echo $s2;
-            echo "<br>";
-        }
-        $s1 = base_url( "beer/location/" . $country[ '3166_1_id' ] );
-        $s2 = anchor( $s1, $country[ 'name' ] );
-        echo $s2;
-    ?>
+<ul class="breadcrumb">
+  <li>
+    <a href="<?php echo base_url('beer/location') ?>">Countries</a>
+  </li>
+  <span class="divider">/</span>
+  <li>
+    <?php echo anchor( base_url( "beer/location/" . $country[ '3166_1_id' ] ), $country[ 'name' ] ); ?>
+  </li>
+  <span class="divider">/</span>
+  <?php
+    if( $region != null ) {
+        echo '<li>';
+        echo anchor( base_url( "beer/location/" . $country[ '3166_1_id' ] . '/' . $region[ '3166_2_id' ] . '/' ), $region[ 'rgn_name' ] );
+        echo '</li>';
+        echo '<span class="divider">/</span>';
+    }
+  ?>
+  <li>
+    <?php echo $city[ 'city' ]; ?>
+  </li>
+</ul>
 </p>
-</p>
-    <?php echo "<h2> Breweries </h2>" ?>
+    <h2><?php echo $city[ 'city' ] . ' Breweries' ?></h2>
+    <ul>
     <?php
-        $this->table->set_heading( 'Brewery' );
         foreach( $breweries as $brewery ) {
-            $name  = $brewery[ 'full_name' ];
-            $s1 = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
-            $nameAnchor = anchor( $s1, $name );
-            $this->table->add_row( $nameAnchor );
+            echo '<li>';
+            echo anchor( base_url( "beer/info/" . $brewery[ 'brewery_id' ] ), $brewery[ 'full_name' ] );
+            echo '</li>';
         }
-        echo $this->table->generate();
     ?>
+    </ul>
 </p>
