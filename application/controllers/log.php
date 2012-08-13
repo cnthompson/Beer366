@@ -607,9 +607,13 @@ class Log extends CI_Controller {
                 if( $res == 0 ) {
                     $data[ 'error' ] = 'An unknown error occurred while logging your drink.';
                 } else {
-                    $data[ 'editFridge' ][ 'quantity' ]--;
-                    if( $data[ 'editFridge' ][ 'trade' ] > 0 ) {
-                        $data[ 'editFridge' ][ 'trade' ]--;
+                    if( $data[ 'editFridge' ][ 'quantity' ] > $data[ 'editFridge' ][ 'trade' ] ) {
+                        $data[ 'editFridge' ][ 'quantity' ]--;
+                    } else {
+                        $data[ 'editFridge' ][ 'quantity' ]--;
+                        if( $data[ 'editFridge' ][ 'trade' ] > 0 ) {
+                            $data[ 'editFridge' ][ 'trade' ]--;
+                        }
                     }
                     if( $data[ 'editFridge' ][ 'quantity' ] > 0 ) {
                         $fridgeID = $data[ 'editFridge' ][ 'id'       ];
