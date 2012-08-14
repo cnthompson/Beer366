@@ -88,8 +88,8 @@ class Log extends CI_Controller {
             $homepage = $this->input->post( 'homepage' );
             $type = $this->input->post( 'brewerytype' );
             $notes = $this->input->post( 'notes' );
-            $dbSName = $this->breweries_model->checkIfBreweryExistsByFullName( $fName );
-            if( $this->breweries_model->checkIfBreweryExistsByName( $sName ) ) {
+            $dbSName = $this->breweries_model->checkIfBreweryExistsByFullName( $brewerID, $fName );
+            if( $this->breweries_model->checkIfBreweryExistsByName( $brewerID, $sName ) ) {
                 $data[ 'error' ] = 'The brewery "' . $sName . '" already exists in the database.';
             } else if( $dbSName ) {
                 $data[ 'error' ] = 'The brewery "' . $fName . '" already exists in the database as "' . $dbSName . '".';

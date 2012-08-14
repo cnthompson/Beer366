@@ -154,10 +154,11 @@ class Breweries_Model extends CI_Model {
         }
     }
 
-    public function checkIfBreweryExistsByName( $name ) {
+    public function checkIfBreweryExistsByName( $brewerID, $name ) {
         $query = $this
             ->db
             ->where( "LOWER( name ) = '" . str_replace( "'", "\\'", strtolower( $name ) ) . "'" )
+            ->where( "brewery_id != " . $brewerID )
             ->limit( 1 )
             ->get( 'breweries' );
         if( $query->num_rows > 0 ) {
@@ -166,10 +167,11 @@ class Breweries_Model extends CI_Model {
         return false;
     }
 
-    public function checkIfBreweryExistsByFullName( $name ) {
+    public function checkIfBreweryExistsByFullName( $brewerID, $name ) {
         $query = $this
             ->db
             ->where( "LOWER( full_name ) = '" . str_replace( "'", "\\'", strtolower( $name ) ) . "'" )
+            ->where( "brewery_id != " . $brewerID )
             ->limit( 1 )
             ->get( 'breweries' );
         if( $query->num_rows > 0 ) {
