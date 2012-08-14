@@ -64,7 +64,7 @@
         foreach( $brew2beerMap as $breweryID => $beerInfo ) {
             echo '$jsBreweryToBeerMap[ ' . $breweryID . ' ] = new Array();';
             foreach( $beerInfo as $beerID => $beer ) {
-                echo '$jsBreweryToBeerMap[ ' . $breweryID . ' ].push(  new BeerObj( ' . $beerID . ', "' . $beer . '", ' . $breweryID . ' ) );';
+                echo '$jsBreweryToBeerMap[ ' . $breweryID . ' ].push(  new BeerObj( ' . $beerID . ', "' . str_replace( '"', '\\"', $beer ) . '", ' . $breweryID . ' ) );';
             }
         }
     ?>
@@ -92,6 +92,9 @@
     }
     function changeBrewery( $curBrewery ) {
         var $jsBeers = $jsBreweryToBeerMap[ $curBrewery ];
+        if( typeof $jsBeers === "undefined" ) {
+            return;
+        }
         var elem = document.getElementById( "beer" );
         var prevValue = '';
         if( elem.selectedIndex >= 0 ) {
