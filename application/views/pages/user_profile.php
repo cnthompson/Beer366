@@ -64,7 +64,7 @@
             'src' => 'img/pencil.png',
             'alt' => 'Edit',
         );
-        $editAnchor    = anchor( base_url( 'log/drink/' . $log[ 'log_id' ] ), img( $edit_props ), array( 'title' => 'Edit' ) );
+        $editAnchor = '<a href="' . base_url( 'log/drink/' . $log[ 'log_id' ] ) . '" title="Edit"><i class="icon-pencil"></i></a>';
         if( $user[ 'user_id' ] == $this->authenticator->get_user_id() ) {
             $this->table->add_row( $editAnchor, $log[ 'date' ], $beerAnchor, $brewerAnchor, $log[ 'ss_name' ], $log[ 'rating' ], $log[ 'notes' ] );
         } else {
