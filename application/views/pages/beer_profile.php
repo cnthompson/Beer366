@@ -1,94 +1,79 @@
 <?php
-    if( $this->authenticator->check_auth() ) {
-        $s1 = base_url( "log/beer/" . $beer[ 'beer_id' ] );
-        echo '<h1>' . $beer[ 'beer_name' ] . '&nbsp;';
-        echo anchor( $s1, '<i class="icon-edit" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Beer Info' ) ) . '</h1>';
-    } else {
-        echo '<h1>' . $beer[ 'beer_name' ] . '</h1>';
-    }
-?> 
-<?php
-    if( $this->authenticator->check_auth() ) {
-        echo "<p>";
-        $log_props = array(
-            'src' => 'img/checkmark-green.png',
-            'alt' => 'Log This',
-        );
-        $b = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
-        echo anchor( $b, img( $log_props ), array( 'title' => 'Log This' ) );
-        echo "&nbsp";
-        echo anchor( $b, "Log This" );
-        echo "&nbsp&nbsp;";
-        $fridge_props = array(
-            'src' => 'img/bottle.png',
-            'alt' => 'Add to Fridge',
-        );
-        $b = base_url( 'log/fridge/' . $beer[ 'beer_id' ] . '/a' );
-        echo anchor( $b, img( $fridge_props ), array( 'title' => 'Add to Fridge' ) );
-        echo "&nbsp";
-        echo anchor( $b, "Add to My Fridge" );
-        echo "</p>";
-    }
+    // Authentication result
+    $auth = $this->authenticator->check_auth();
+
+    // URLs used later on the page
+    $edit_url   = base_url( "log/beer/" . $beer[ 'beer_id' ] );
+    $log_url    = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
+    $fridge_url = base_url( 'log/fridge/' . $beer[ 'beer_id' ] . '/a' );
+    $info_url   = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
 ?>
-<p>
-    <b>Brewed By:</b>
-    <p>
-    <?php
-        $breweryName = $brewery[ 'full_name' ];
-        $s1 = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
-        $nameAnchor = anchor( $s1, $breweryName );
-        echo $nameAnchor;
-    ?>
-    </p>
-    <address>
-    <?php
-        $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
-        if( isset( $brewery[ 'region' ] ) ) {
-            $cityBase .= $brewery[ 'region' ] ."/";
-        } else {
-            $cityBase .= "0/";
-        }
-        $cityBase .= rawurlencode( $brewery[ 'city' ] );
-        $cityAnchor = anchor( base_url( $cityBase ), $brewery[ 'city' ] );
-        $location = $cityAnchor . ", ";
+<div class="page-header">
+    <h1>
+        <?php echo $beer[ 'beer_name' ]; ?>
+        <?php if( $auth ): ?>
+            <?php echo anchor( $edit_url, '<i class="icon-pencil" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Beer Info' ) ); ?>
+        <?php endif; ?>
+    </h1>
+</div>
+<?php if( $auth ): ?>
+    <ul class="nav nav-pills">
+        <li><?php echo anchor( $log_url, "<i class='icon-plus'></i> Log This" ); ?></li>
+        <li><?php echo anchor( $fridge_url, "<i class='icon-calendar'></i> Add to My Fridge" ); ?></li>
+    </ul>
+<?php endif; ?>
+<div class="row">
+    <div class="span4">
+        <h3>Brewed By</h3>
+        <?php echo anchor( $info_url, $brewery[ 'full_name' ] ); ?>
+        <address>
+        <?php
+            $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
+            if( isset( $brewery[ 'region' ] ) ) {
+                $cityBase .= $brewery[ 'region' ] ."/";
+            } else {
+                $cityBase .= "0/";
+            }
+            $cityBase .= rawurlencode( $brewery[ 'city' ] );
+            $cityAnchor = anchor( base_url( $cityBase ), $brewery[ 'city' ] );
+            $location = $cityAnchor . ", ";
 
-        if( isset( $brewery[ 'region' ] ) ) {
-            $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
-            $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
-            $location .= $rgnAnchor . ", ";
-        }
+            if( isset( $brewery[ 'region' ] ) ) {
+                $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
+                $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
+                $location .= $rgnAnchor . ", ";
+            }
 
-        $countryBase = "beer/location/" . $brewery[ 'country' ];
-        $countryAnchor = anchor( base_url( $countryBase ), $brewery[ 'country_name' ] );
-        $location .= $countryAnchor;
+            $countryBase = "beer/location/" . $brewery[ 'country' ];
+            $countryAnchor = anchor( base_url( $countryBase ), $brewery[ 'country_name' ] );
+            $location .= $countryAnchor;
 
-        echo $location;
-    ?>
-    </address>
-</p>
-<p>
-    <?php echo "<b>" . "Style:" ."</b>" ?>
-    <?php echo "<br>" ?>
-    <?php
-        $style = $beer[ 'substyle_name' ];
-        $s1 = base_url( "beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
-        $ssAnchor = anchor( $s1, $style );
-        $abvF  = (float)$beer[ 'beer_abv' ];
-        $abvS  = $abvF == 0.0 ? '<unknown>' : sprintf( '%.2f%%', $abvF );
-        echo $ssAnchor . " (" . $abvS . " ABV)";
-    ?>
-</p>
-<p>
-    <?php echo "<b>" . "BA Rating:" ."</b>" ?>
-    <?php echo "<br>" ?>
-    <?php
-        $ba = $beer[ 'beer_ba_rating' ];
-        $bapage = $beer[ 'ba_page' ];
-        $ba = $ba == NULL ? 'N/A' : $ba;
-        $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : ( anchor( 'http://beeradvocate.com/beer/profile/' . $bapage, $ba . '<i class="icon-share-alt"></i>', 'target="_blank" title="Beer Advocate Page"' ) );
-        echo $baText;
-    ?>
-</p>
+            echo $location;
+        ?>
+        </address>
+    </div>
+    <div class="span4">
+        <h3>Style</h3>
+        <?php
+            $style = $beer[ 'substyle_name' ];
+            $s1 = base_url( "beer/styles/" . $beer[ 'family_id' ] . "/" . $beer[ 'style_id' ] . "/" . $beer[ 'substyle_id' ] );
+            $ssAnchor = anchor( $s1, $style );
+            $abvF  = (float)$beer[ 'beer_abv' ];
+            $abvS  = $abvF == 0.0 ? '<unknown>' : sprintf( '%.2f%%', $abvF );
+            echo $ssAnchor . " (" . $abvS . " ABV)";
+        ?>
+    </div>
+    <div class="span4">
+        <h3>BA Rating</h3>
+        <?php
+            $ba = $beer[ 'beer_ba_rating' ];
+            $bapage = $beer[ 'ba_page' ];
+            $ba = $ba == NULL ? 'N/A' : $ba;
+            $baText = ( $bapage == null or strlen( $bapage ) == 0 ) ? $ba : ( anchor( 'http://beeradvocate.com/beer/profile/' . $bapage, $ba . '<i class="icon-share-alt"></i>', 'target="_blank" title="Beer Advocate Page"' ) );
+            echo $baText;
+        ?>
+    </div>
+</div>
 <h2> Logged Drinks </h2>
 <p>
 <?php
@@ -128,3 +113,4 @@
     $source = base_url( "/js/" );
     echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>' ;
 ?>
+</div>
