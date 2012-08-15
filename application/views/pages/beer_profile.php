@@ -9,18 +9,14 @@
     $info_url   = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
 ?>
 <div class="page-header">
-    <h1>
-        <?php echo $beer[ 'beer_name' ]; ?>
-        <?php if( $auth ): ?>
-            <?php echo anchor( $edit_url, '<i class="icon-pencil" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Beer Info' ) ); ?>
-        <?php endif; ?>
-    </h1>
+    <h1><?php echo $beer[ 'beer_name' ]; ?></h1>
 </div>
 <?php if( $auth ): ?>
-    <ul class="nav nav-pills">
-        <li><?php echo anchor( $log_url, "<i class='icon-plus'></i> Log This" ); ?></li>
-        <li><?php echo anchor( $fridge_url, "<i class='icon-calendar'></i> Add to My Fridge" ); ?></li>
-    </ul>
+    <div class="btn-group">
+        <?php echo anchor( $log_url, "<i class='icon-plus'></i> Log This", array( 'class' => 'btn' ) ); ?>
+        <?php echo anchor( $fridge_url, "<i class='icon-calendar'></i> Add to My Fridge", array( 'class' => 'btn' ) ); ?>
+        <?php echo anchor( $edit_url, "<i class='icon-pencil'></i> Edit Beer", array( 'class' => 'btn' ) ); ?>
+    </div>
 <?php endif; ?>
 <div class="row">
     <div class="span4">

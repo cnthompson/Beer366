@@ -2,4 +2,6 @@ body {
 	padding-top: 50px;
 }
 
+.row { margin-top: 10px; }
+
 a.brand img { padding: 0px 4px; margin: -3px 0 0 0; vertical-align: middle; }
