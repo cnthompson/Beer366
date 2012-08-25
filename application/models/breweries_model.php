@@ -10,17 +10,18 @@ class Breweries_Model extends CI_Model {
             ->from( 'breweries' )
             ->join( 'iso_3166_1', 'iso_3166_1.3166_1_id = breweries.country', 'inner' )
             ->join( 'iso_3166_2', 'iso_3166_2.3166_2_id = breweries.region', 'left' )
+            ->join( 'subcontinents', 'subcontinents.subcontinent_id = iso_3166_1.subcontinent_id', 'inner' )
             ->group_by( 'breweries.brewery_id' )
             ->order_by( 'breweries.name', 'asc' );
         if( $withBeer ) {
             $query = $this
                 ->db
-                ->select( 'COUNT( beers.beer_id ) AS num_beers, iso_3166_1.name AS country_name, iso_3166_2.rgn_name, breweries.*' )
+                ->select( 'COUNT( beers.beer_id ) AS num_beers, iso_3166_1.name AS country_name, iso_3166_2.rgn_name, iso_3166_1.subcontinent_id, subcontinents.continent_id, breweries.*' )
                 ->join( 'beers', 'beers.brewery_id = breweries.brewery_id', 'inner' );
         } else {
             $query = $this
                 ->db
-                ->select( 'COUNT( breweries.brewery_id ) AS num_beers, iso_3166_1.name AS country_name, iso_3166_2.rgn_name, breweries.*' );
+                ->select( 'COUNT( breweries.brewery_id ) AS num_beers, iso_3166_1.name AS country_name, iso_3166_2.rgn_name, iso_3166_1.subcontinent_id, subcontinents.continent_id, breweries.*' );
         }
         if( $brewerID <= 0 ) {
             $query = $this

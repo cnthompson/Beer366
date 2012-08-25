@@ -24,7 +24,7 @@
         <?php echo anchor( $info_url, $brewery[ 'full_name' ] ); ?>
         <address>
         <?php
-            $cityBase = "beer/location/" . $brewery[ 'country' ] . "/";
+            $cityBase = 'beer/location/' . $brewery[ 'continent_id' ] . '/' . $brewery[ 'subcontinent_id' ] . '/' . $brewery[ 'country' ] . '/';
             if( isset( $brewery[ 'region' ] ) ) {
                 $cityBase .= $brewery[ 'region' ] ."/";
             } else {
@@ -35,12 +35,12 @@
             $location = $cityAnchor . ", ";
 
             if( isset( $brewery[ 'region' ] ) ) {
-                $rgnBase = "beer/location/" . $brewery[ 'country' ] . "/" .$brewery[ 'region' ];
+                $rgnBase = 'beer/location/' . $brewery[ 'continent_id' ] . '/' . $brewery[ 'subcontinent_id' ] . '/' . $brewery[ 'country' ] . '/' .$brewery[ 'region' ];
                 $rgnAnchor = anchor( base_url( $rgnBase ), $brewery[ 'rgn_name' ] );
                 $location .= $rgnAnchor . ", ";
             }
 
-            $countryBase = "beer/location/" . $brewery[ 'country' ];
+            $countryBase = 'beer/location/' . $brewery[ 'continent_id' ] . '/' . $brewery[ 'subcontinent_id' ] . '/' . $brewery[ 'country' ] . '/';
             $countryAnchor = anchor( base_url( $countryBase ), $brewery[ 'country_name' ] );
             $location .= $countryAnchor;
 
