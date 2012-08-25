@@ -84,7 +84,7 @@
         }
         echo $this->table->generate();
     } else {
-        echo 'No one has logged this beer yet</br>';
+        echo 'No one has logged this beer yet<br>';
     }
 ?>
 </p>
