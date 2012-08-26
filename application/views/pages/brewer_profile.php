@@ -1,14 +1,20 @@
-<div class="page-header">
 <?php
-    if( $this->authenticator->check_auth() ) {
-        $s1 = base_url( "log/brewery/" . $brewery[ 'brewery_id' ] );
-        echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . ' </small>';
-        echo anchor( $s1, '<i class="icon-pencil" style="vertical-align: middle;"></i>', array( 'title' => 'Edit Brewery Info' ) ) . '</h1>';
-    } else {
-        echo '<h1>' . $brewery[ 'name' ] . ' <small>' . $brewery['full_name'] . '</small></h1>';
-    }
+    // Authentication result
+    $auth = $this->authenticator->check_auth();
+
+    // URLs used later on the page
+    $edit_url = base_url( "log/brewery/" . $brewery[ 'brewery_id' ] . '/' );
+    $add_url  = base_url( "log/beer/" . $brewery[ 'brewery_id' ] . '/b/'  );
 ?>
+<div class="page-header">
+    <h1> <?php echo $brewery[ 'name' ]; ?> <small> <?php echo $brewery['full_name']; ?> </small></h1>
 </div>
+<?php if( $auth ): ?>
+    <div class="btn-group">
+        <?php echo anchor( $add_url,  "<i class='icon-plus'></i> Add Beer", array( 'class' => 'btn' ) ); ?>
+        <?php echo anchor( $edit_url, "<i class='icon-pencil'></i> Edit Brewery", array( 'class' => 'btn' ) ); ?>
+    </div>
+<?php endif; ?>
 <div class="row">
     <div class="span4">
         <address>

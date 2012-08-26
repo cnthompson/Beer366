@@ -1,15 +1,25 @@
 <div class="page-header">
-    <h1>
-        <?php echo ( $editBeer == null ? "Add Beer" : ( "Edit Beer - " . $editBeer[ 'brewerN' ] . ': ' . $editBeer[ 'name' ] ) ) ; ?>
-    </h1>
+    <h1><?php
+        $url = 'log/beer/';
+        if( $editBeer == null ) {
+            $url = 'log/beer/';
+            echo 'Add Beer';
+        } else if( $editBeer[ 'id' ] == -1 ) {
+            $url = 'log/beer/' . $editBeer[ 'brewerID' ] . '/b/';
+            echo 'Add Beer';
+        } else {
+            $url = 'log/beer/' . $editBeer[ 'id' ] . '/';
+            echo "Edit Beer - " . $editBeer[ 'brewerN' ] . ': ' . $editBeer[ 'name' ];
+        }
+    ?></h1>
 </div>
+
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
 <?php if ( $error ): ?>
     <div class="alert alert-error"><?php echo $error ?></div>
 <?php endif; ?>
 
-
-<?php echo form_open( 'log/beer' . ( $editBeer == null ? '' : ( '/' . $editBeer[ 'id' ] ) ) ); ?>
+<?php echo form_open( $url ); ?>
 <?php echo form_hidden( 'beer_id', $editBeer == null ? -1 : $editBeer[ 'id' ] ); ?>
 <p>
     <?php
@@ -72,7 +82,7 @@
     ?>
 </p>
 <p>
-    <?php echo form_submit( array( 'type' => 'submit', 'value' => $editBeer == null ? 'Add Beer' : 'Update', 'class' => 'btn' ) ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $editBeer == null or $editBeer[ 'id' ] == -1 ) ? 'Add Beer' : 'Update', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
 
