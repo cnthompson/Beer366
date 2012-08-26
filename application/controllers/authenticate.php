@@ -47,10 +47,10 @@ class Authenticate extends CI_Controller {
             }
         }
 
-        $header[ 'title' ] = 'Beer366 Login';
-        $this->load->view( 'templates/header.php', $header );
+        $data[ 'title' ] = 'Beer366 Login';
+        //$this->load->view( 'templates/header.php', $header );
         $this->load->view( 'login_view', $data );
-        $this->load->view( 'templates/footer.php', null );
+        //$this->load->view( 'templates/footer.php', null );
     }
 
     public function logout() {
