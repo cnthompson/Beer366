@@ -54,7 +54,7 @@
             </div>
             <div class="row">
                 <div class="span2 offset1">
-                    <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Login', 'class' => 'btn span2' ) ) ?>
+                    <?php echo form_submit( array( 'type' => 'submit', 'value' => 'Login', 'class' => 'btn btn-inverse span2' ) ) ?>
                 </div>
             </div>
         </div>
