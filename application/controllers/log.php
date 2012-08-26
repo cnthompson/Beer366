@@ -20,7 +20,6 @@ class Log extends CI_Controller {
         redirect( $redirect );
     }
 
-
     public function brewery( $id = 0 ) {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
@@ -139,31 +138,51 @@ class Log extends CI_Controller {
         return TRUE;
     }
 
-    public function beer( $id = 0 ) {
+    public function beer( $id = 0, $extra = '' ) {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $data[ 'error' ] = '';
-
-        $editBeers = array();
-        if( $id > 0 ) {
-            $editBeers = $this->beers_model->getBeers( 0, $id );
-        }
+        $data[ 'extra' ] = $extra;
         $data[ 'editBeer' ] = null;
-        if( count( $editBeers ) == 1 ) {
-            $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id'     ], false );
-            if( count( $editBrewer ) == 1 ) {
-                $data[ 'editBeer' ][ 'id'       ] = $editBeers[ 0 ][ 'beer_id'        ];
-                $data[ 'editBeer' ][ 'name'     ] = $editBeers[ 0 ][ 'beer_name'      ];
-                $data[ 'editBeer' ][ 'brewerID' ] = $editBeers[ 0 ][ 'brewery_id'     ];
-                $data[ 'editBeer' ][ 'brewerN'  ] = $editBrewer[ 0 ][ 'name'          ];
-                $data[ 'editBeer' ][ 'substyle' ] = $editBeers[ 0 ][ 'substyle_id'    ];
-                $data[ 'editBeer' ][ 'abv'      ] = $editBeers[ 0 ][ 'beer_abv'       ];
-                $data[ 'editBeer' ][ 'ba'       ] = $editBeers[ 0 ][ 'beer_ba_rating' ];
-                $data[ 'editBeer' ][ 'bapage'   ] = $editBeers[ 0 ][ 'ba_page'        ];
-                if( $data[ 'editBeer' ][ 'bapage' ] != null and strlen( $data[ 'editBeer' ][ 'bapage' ] ) > 0 ) {
-                    $data[ 'editBeer' ][ 'bapage' ] = 'http://beeradvocate.com/beer/profile/' . $data[ 'editBeer' ][ 'bapage' ];
+
+        if( $id > 0 and $extra == '' ) {
+            $editBeers = $this->beers_model->getBeers( 0, $id );
+            if( count( $editBeers ) == 1 ) {
+                $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id' ], false );
+                if( count( $editBrewer ) == 1 ) {
+                    $data[ 'editBeer' ][ 'id'       ] = $editBeers[ 0 ][ 'beer_id'        ];
+                    $data[ 'editBeer' ][ 'name'     ] = $editBeers[ 0 ][ 'beer_name'      ];
+                    $data[ 'editBeer' ][ 'brewerID' ] = $editBeers[ 0 ][ 'brewery_id'     ];
+                    $data[ 'editBeer' ][ 'brewerN'  ] = $editBrewer[ 0 ][ 'name'          ];
+                    $data[ 'editBeer' ][ 'substyle' ] = $editBeers[ 0 ][ 'substyle_id'    ];
+                    $data[ 'editBeer' ][ 'abv'      ] = $editBeers[ 0 ][ 'beer_abv'       ];
+                    $data[ 'editBeer' ][ 'ba'       ] = $editBeers[ 0 ][ 'beer_ba_rating' ];
+                    $data[ 'editBeer' ][ 'bapage'   ] = $editBeers[ 0 ][ 'ba_page'        ];
+                    if( $data[ 'editBeer' ][ 'bapage' ] != null and strlen( $data[ 'editBeer' ][ 'bapage' ] ) > 0 ) {
+                        $data[ 'editBeer' ][ 'bapage' ] = 'http://beeradvocate.com/beer/profile/' . $data[ 'editBeer' ][ 'bapage' ];
+                    }
                 }
             }
+            if( $data[ 'editBeer' ] == null ) {
+                redirect( 'log/beer/' );
+            }
+        } else if( $id > 0 and $extra == 'b' ) {
+            $editBrewer = $this->breweries_model->getBreweries( $id, false );
+            if( count( $editBrewer ) == 1 ) {
+                $data[ 'editBeer' ][ 'id'       ] = -1;
+                $data[ 'editBeer' ][ 'name'     ] = null;
+                $data[ 'editBeer' ][ 'brewerID' ] = $editBrewer[ 0 ][ 'brewery_id' ];
+                $data[ 'editBeer' ][ 'brewerN'  ] = $editBrewer[ 0 ][ 'name'       ];
+                $data[ 'editBeer' ][ 'substyle' ] = null;
+                $data[ 'editBeer' ][ 'abv'      ] = null;
+                $data[ 'editBeer' ][ 'ba'       ] = null;
+                $data[ 'editBeer' ][ 'bapage'   ] = null;
+            }
+            if( $data[ 'editBeer' ] == null ) {
+                redirect( 'log/beer/' );
+            }
+        } else if( $id > 0 ) {
+            redirect( 'log/beer/' );
         }
 
         $allBreweries = $this->breweries_model->getBreweries( 0, false );
@@ -226,7 +245,7 @@ class Log extends CI_Controller {
             }
         }
 
-        $header[ 'title' ] = $data[ 'editBeer' ] == null ? 'Add Beer' : ( 'Edit Beer - ' . $data[ 'editBeer' ][ 'brewerN' ] . ': ' . $data[ 'editBeer' ][ 'name' ] );
+        $header[ 'title' ] = ( $data[ 'editBeer' ] == null or $data[ 'editBeer' ][ 'id' ] == -1 ) ? 'Add Beer' : ( 'Edit Beer - ' . $data[ 'editBeer' ][ 'brewerN' ] . ': ' . $data[ 'editBeer' ][ 'name' ] );
         $this->load->view( 'templates/header.php', $header );
         $this->load->view( 'pages/log_beer', $data );
         $this->load->view( 'templates/footer.php', null );

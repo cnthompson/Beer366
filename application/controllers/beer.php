@@ -110,15 +110,161 @@ class Beer extends CI_Controller {
         }
     }
 
-    public function location( $countryID = 0, $regionID = 0, $city = NULL ) {
+    public function location( $continentID = 0, $subContinentID = 0, $countryID = 0, $regionID = 0, $city = NULL ) {
+        // First, make sure we're properly authenticated
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
-        $this->load->library( 'table' );
+
+        // Clean up the city name parameter
         if( $city != NULL ) {
             $city = html_entity_decode( urldecode( $city ) );
         }
-        if( $countryID <= 0 ) {
-            $data[ 'countries' ] = $this->location_model->getCountries( $countryID );
+
+        // Check for which parameters are defaulted and redirect to clean
+        // up the provided URL. With the exception of the region, once
+        // any parameter is defaulted, all the remaining must also be
+        // defaulted or the URL is not valid.
+        if( $continentID <= 0 and ( $subContinentID != 0 or $countryID != 0 or $regionID != 0 or $city != NULL ) ) {
+            redirect( 'beer/location/' );
+        } else if( $subContinentID <= 0 and ( $countryID != 0 or $regionID != 0 or $city != NULL ) ) {
+            if( $continentID == 0 ) {
+                redirect( 'beer/location/' );
+            } else {
+                redirect( 'beer/location/' . $continentID . '/' );
+            }
+        } else if( $countryID <= 0 and ( $regionID != 0 or $city != NULL ) ) {
+            if( $continentID == 0 ) {
+                redirect( 'beer/location/' );
+            } else if( $subContinentID == 0 ) {
+                redirect( 'beer/location/' . $continentID . '/' );
+            } else {
+                redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' );
+            }
+        }
+
+        // Fetch all the specified information, making sure it's only locations with breweries
+        // After the data is fetched, sanitize the remaining data accordingly
+        $continents = $this->location_model->getContinents( $continentID, true );
+        if( ( count( $continents ) == 0 )
+         or ( ( $continentID != 0 ) and ( count( $continents ) > 1 ) ) ) {
+            // We must have been passed an invalid continent id, or an id for a continent
+            // that doesn't contain any breweries. In that case, redirect back to this
+            // controller with no parameters, giving us the complete world view.
+            redirect( 'beer/location/' );
+        }
+
+        $subcontinents = $this->location_model->getSubContinents( $continentID, $subContinentID, true );
+        if( ( count( $subcontinents ) == 0 )
+         or ( ( $subContinentID != 0 ) and ( count( $subcontinents ) > 1 ) ) ) {
+            // We were passed an invalid subcontinent id, or an id for a subcontinent
+            // that doesn't have any breweries. Redirect back to this controller using
+            // our provided continent id, if it doesn't equal 0, otherwise fall back
+            // on the no-parameters url and the world view.
+            if( $continentID == 0 ) {
+                redirect( 'beer/location/' );
+            } else {
+                redirect( 'beer/location/' . $continentID . '/' );
+            }
+        }
+        $countries = $this->location_model->getCountries( $countryID, true );
+        if( ( count( $countries ) == 0 )
+         or (  ( $countryID != 0 ) and ( count( $countries ) > 1 ) ) ) {
+            // We were passed an invalid country id, or an id for a country that
+            // has no logged breweries. Redirect back to this page, sanitizing
+            // the url based on the other parameters.
+            if( $continentID == 0 ) {
+                redirect( 'beer/location/' );
+            } else if( $subContinentID == 0 ) {
+                redirect( 'beer/location/' . $continentID . '/' );
+            } else {
+                redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' );
+            }
+        }
+        // We only need region and city information if we have a valid country, so there's
+        // no reason to load them otherwise.
+        $regions = null;
+        $cities = null;
+        if( $countryID > 0 ) {
+            $regions = $regionID <= 0 ? NULL : $this->location_model->getRegions( $countryID, $regionID, true );
+            if( ( $regions != NULL and count( $regions ) == 0 )
+             or ( $regionID != 0 and count( $regions ) != 1 ) ) {
+                if( $continentID == 0 ) {
+                    redirect( 'beer/location/' );
+                } else if( $subContinentID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' );
+                } else if( $countryID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' );
+                } else {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' . $countryID . '/' );
+                }
+            }
+        }
+
+        if( $regionID > 0 or $city != NULL ) {
+            $regions = $regionID <= 0 ? NULL : $this->location_model->getRegions( $countryID, $regionID, true );
+            if(  $regions != NULL and count( $regions ) == 0 ) {
+                if( $continentID == 0 ) {
+                    redirect( 'beer/location/' );
+                } else if( $subContinentID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' );
+                } else if( $countryID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' );
+                } else {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' . $countryID . '/' );
+                }
+            }
+
+            $cities = $this->location_model->getCities( $countryID, $regionID, $city );
+            if( ( count( $cities ) == 0 )
+             or ( ( $city != NULL and count( $cities ) != 1 ) ) ) {
+                if( $continentID == 0 ) {
+                    redirect( 'beer/location/' );
+                } else if( $subContinentID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' );
+                } else if( $countryID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' );
+                } else if( $regionID == 0 ) {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' . $countryID . '/' );
+                } else {
+                    redirect( 'beer/location/' . $continentID . '/' . $subContinentID . '/' . $countryID . '/' . $regionID . '/' );
+                }
+            }
+        }
+
+        // Make sure that the table library has been loaded
+        $this->load->library( 'table' );
+
+        //Now, sort out what we specifically want based on what parameters weren't defaulted
+        if( $continentID <= 0 ) {
+            // No contininent id? Just show all countries.
+            $data[ 'continents'    ] = $continents;
+            $data[ 'subcontinents' ] = $subcontinents;
+            $data[ 'countries'     ] = $countries;
+            $data[ 'mode'          ] = 'world';
             $header[ 'title' ] = 'All Countries';
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/all_countries', $data );
+            $this->load->view( 'templates/footer.php', null );
+        } else if( $subContinentID <= 0 ) {
+            // Continent specified, but no sub-continent. Show the continent that
+            // was given and a list of all the sub-continents and then countries
+            // that are found on it.
+            $data[ 'continents'    ] = $continents;
+            $data[ 'subcontinents' ] = $subcontinents;
+            $data[ 'countries'     ] = $countries;
+            $data[ 'mode'          ] = 'continent';
+            $header[ 'title' ] = $continents[ 0 ][ 'name' ];
+            $this->load->view( 'templates/header.php', $header );
+            $this->load->view( 'pages/all_countries', $data );
+            $this->load->view( 'templates/footer.php', null );
+        } else if( $countryID <= 0 ) {
+            // Valid continent and sub-continent, so show the sub-continent
+            // that was given and a list of all the countries found on it
+            // This should use the all_countries page.
+            $data[ 'continents'    ] = $continents;
+            $data[ 'subcontinents' ] = $subcontinents;
+            $data[ 'countries'     ] = $countries;
+            $data[ 'mode'          ] = 'subcontinent';
+            $header[ 'title' ] = $continents[ 0 ][ 'name' ] . ' | ' . $subcontinents[ 0 ][ 'name' ];
             $this->load->view( 'templates/header.php', $header );
             $this->load->view( 'pages/all_countries', $data );
             $this->load->view( 'templates/footer.php', null );
@@ -127,6 +273,8 @@ class Beer extends CI_Controller {
             if( count( $countries ) == 0 ) {
                 redirect( 'beer/location/' );
             } else {
+                $data[ 'continent'    ] = $continents[ 0 ];
+                $data[ 'subcontinent' ] = $subcontinents[ 0 ];
                 $data[ 'country' ] = $countries[ 0 ];
                 $data[ 'regions' ] = $this->location_model->getRegions( $countryID, $regionID );
                 $data[ 'cities'  ] = $this->location_model->getCities( $countryID, $regionID );
@@ -143,6 +291,8 @@ class Beer extends CI_Controller {
             } else if( count( $regions ) == 0 ) {
                 redirect( 'beer/location/' . $countryID . '/' );
             } else {
+                $data[ 'continent'    ] = $continents[ 0 ];
+                $data[ 'subcontinent' ] = $subcontinents[ 0 ];
                 $data[ 'country' ] = $countries[ 0 ];
                 $data[ 'regions' ] = NULL;
                 $data[ 'region'  ] = $regions[ 0 ];
@@ -161,6 +311,8 @@ class Beer extends CI_Controller {
             } else if ( count( $cities ) == 0 ) {
                 redirect( 'beer/location/' . $countryID . '/' );
             } else {
+                $data[ 'continent'    ] = $continents[ 0 ];
+                $data[ 'subcontinent' ] = $subcontinents[ 0 ];
                 $data[ 'country'   ] = $countries[ 0 ];
                 $data[ 'region'    ] = $regions == NULL ? NULL : $regions[ 0 ];
                 $data[ 'city'      ] = $cities[ 0 ];

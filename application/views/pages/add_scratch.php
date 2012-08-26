@@ -43,7 +43,7 @@
 <?php
     $source = base_url( "/js/" );
     echo '<script type="text/javascript" src="' . $source . '/jquery.js"></script>' ;
-    echo '</br>' ;
+    echo '<br>' ;
     echo '<script type="text/javascript" src="' . $source . '/jquery-ui-1.8.22.custom.min.js"></script>' ;
 ?>
 

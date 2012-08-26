@@ -4,11 +4,20 @@
 ?>
         <ul class="breadcrumb">
             <li>
-                <a href="<?php echo base_url('beer/location') ?>">Countries</a>
-                <span class="divider">/</span>
+                <?php echo anchor( base_url( 'beer/location/' ), 'Countries' ); ?>
+            </li>
+            <span class="divider">/</span>
+            <li>
+                <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' ), $continent[ 'name' ] ); ?>
+            </li>
+            <span class="divider">/</span>
+            <li>
+                <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' ), $subcontinent[ 'name' ] ); ?>
+            </li>
+            <span class="divider">/</span>
             <?php if (isset($region)): ?>
                 <li>
-                    <a href="<?php echo base_url('beer/location/' . $country['3166_1_id']) ?>"><?php echo $country['name'] ?></a>
+                    <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' . $country['3166_1_id'] ), $country['name'] ); ?>
                     <span class="divider">/</span>
                 </li>
                 <li>
@@ -43,20 +52,20 @@
                 displayMode: 'markers',
                 colorAxis: {colors: ['#B1E3AF', '#179E10']},
                 sizeAxis: {minSize: 5},
-                magnifyingGlass: {enable: true}, 
+                magnifyingGlass: {enable: true},
                 legend: 'none',
                 enableRegionInteractivity: true
                 };
 
             var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
             chart.draw(data, options);
-            
+
             var handleClick = function() {
                 // Mapping of data entries to urls
                 var url_map = [
                     <?php
                     foreach( $cities as $city ) {
-                        $city_url = base_url( "beer/location/" . $country[ '3166_1_id' ] . "/" . ( isset( $region ) ? $region[ '3166_2_id' ] : "0" ) . "/" . rawurlencode( $city[ 'city' ] ) );
+                        $city_url = base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' . $country[ '3166_1_id' ] . '/' . ( isset( $region ) ? $region[ '3166_2_id' ] : '0' ) . '/' . rawurlencode( $city[ 'city' ] ) );
                         echo '\'' . $city_url . '\',' . "\n";
                     }
                     ?>
@@ -65,7 +74,7 @@
                 item = chart.getSelection();
                 window.location.href = url_map[ item[0].row ];
             };
-        
+
             google.visualization.events.addListener( chart, 'select', handleClick );
         };
         </script>
@@ -78,7 +87,7 @@
 ?>
             <div class="span2 offset1">
             <?php
-                $url = base_url( "beer/location/" . $country[ '3166_1_id' ] . "/" . ( isset( $region ) ? $region[ '3166_2_id' ] : "0" ) . "/" . rawurlencode( $city[ 'city' ] ) );
+                $url = base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' . $country[ '3166_1_id' ] . '/' . ( isset( $region ) ? $region[ '3166_2_id' ] : '0' ) . '/' . rawurlencode( $city[ 'city' ] ) );
                 echo anchor( $url, $city[ 'city' ] ) . ' (' . $city['num_brewers'] . ')';
             ?>
             </div>
@@ -111,19 +120,19 @@
                 region: '<?php echo $country['alpha_2'] ?>',
                 resolution: 'provinces',
                 colorAxis: {colors: ['#B1E3AF', '#179E10']},
-                magnifyingGlass: {enable: true}, 
+                magnifyingGlass: {enable: true},
                 legend: 'none'
                 };
 
             var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
             chart.draw(data, options);
-            
+
             var handleClick = function() {
                 // Mapping of data entries to urls
                 var url_map = [
                     <?php
                     foreach( $regions as $region ) {
-                        $region_url = base_url( 'beer/location/' . $country['3166_1_id'] . '/' . $region['3166_2_id'] );
+                        $region_url = base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' . $country[ '3166_1_id' ] . '/' . $region[ '3166_2_id' ] . '/' );
                         echo '\'' . $region_url . '\',' . "\n";
                     }
                     ?>
@@ -138,8 +147,17 @@
         </script>
         <ul class="breadcrumb">
             <li>
-                <a href="<?php echo base_url('beer/location') ?>">Countries</a>
-                <span class="divider">/</span>
+                <?php echo anchor( base_url( 'beer/location/' ), 'Countries' ); ?>
+            </li>
+            <span class="divider">/</span>
+            <li>
+                <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' ), $continent[ 'name' ] ); ?>
+            </li>
+            <span class="divider">/</span>
+            <li>
+                <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' ), $subcontinent[ 'name' ] ); ?>
+            </li>
+            <span class="divider">/</span>
             <li>
                 <?php echo $country['name'] ?></a>
             </li>
@@ -152,7 +170,7 @@
         foreach( $regions as $region ):
 ?>
             <div class="span2 offset1">
-                <a href="<?php echo base_url( 'beer/location/' . $country['3166_1_id'] . '/' . $region['3166_2_id'] ) ?>"><?php echo $region['rgn_name'] ?></a>
+                <?php echo anchor( base_url( 'beer/location/' . $continent[ 'continent_id' ] . '/' . $subcontinent[ 'subcontinent_id' ] . '/' . $country[ '3166_1_id' ] . '/' . $region[ '3166_2_id' ] ), $region['rgn_name'] );?>
                 &nbsp(<?php echo $region['num_brewers'] ?>)
             </div>
 <?php
