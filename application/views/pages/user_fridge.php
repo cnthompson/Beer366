@@ -55,10 +55,11 @@
             $trade   = (int)$fridge[ 'will_trade' ];
             $notes   = $fridge[ 'notes' ];
             $haveHad = is_numeric( $fridge[ 'have_had' ] ) ? 'X' : '';
+            $inMyFridge = is_numeric( $fridge[ 'in_my_fridge' ] ) ? 'F' : '';
             if( $myFridge ) {
                 $this->table->add_row( $edit, $log, $delete, $brewery, $beer, $sstyle, $size, $ba, $number, $trade, $notes, $haveHad );
             } else {
-                $this->table->add_row( $brewery, $beer, $sstyle, $size, $ba, $number, $trade, $notes, $haveHad );
+                $this->table->add_row( $brewery, $beer, $sstyle, $size, $ba, $number, $trade, $notes, $haveHad . $inMyFridge );
             }
         }
         echo $this->table->generate();

@@ -35,7 +35,7 @@ class Beer extends CI_Controller {
                 redirect( 'beer/info/' );
             } else {
                 $data[ 'brewery' ] = $breweries[ 0 ];
-                $data[ 'beers' ] = $this->beers_model->getBeers( $brewery );
+                $data[ 'beers' ] = $this->beers_model->getBeers( $brewery, (int)$this->authenticator->get_user_id() );
                 $header[ 'title' ] = 'Brewery Profile - ' . $data[ 'brewery' ][ 'name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/brewer_profile', $data );
@@ -43,7 +43,7 @@ class Beer extends CI_Controller {
             }
         } else {
             $breweries = $this->breweries_model->getBreweries( $brewery );
-            $beers = $this->beers_model->getBeers( $brewery, $beer );
+            $beers = $this->beers_model->getBeers( $brewery, (int)$this->authenticator->get_user_id(), $beer );
             if( count( $breweries ) == 0 ) {
                 redirect( 'beer/info/' );
             } else if( count( $beers ) == 0 ) {

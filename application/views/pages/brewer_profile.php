@@ -74,7 +74,7 @@
             'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
-        $this->table->set_heading( 'Beer', 'Style', 'ABV', 'BA Rating' );
+        $this->table->set_heading( 'Beer', 'Style', 'ABV', 'BA Rating', 'I\'ve Had' );
         foreach( $beers as $beer ) {
             $name  = $beer[ 'beer_name' ];
             $s1 = base_url( "beer/info/" . $brewery[ 'brewery_id' ] . "/" . $beer[ 'beer_id' ] );
@@ -89,7 +89,10 @@
             $ba    = $beer[ 'beer_ba_rating' ];
             $ba    = $ba == NULL ? '-' : $ba;
 
-            $this->table->add_row( $nameAnchor, $ssAnchor, $abvS, $ba );
+            $haveHad = is_numeric( $beer[ 'have_had' ] ) ? 'X' : '';
+            $inMyFridge = is_numeric( $beer[ 'in_my_fridge' ] ) ? 'F' : '';
+
+            $this->table->add_row( $nameAnchor, $ssAnchor, $abvS, $ba, $haveHad . $inMyFridge );
         }
         echo $this->table->generate();
     ?>

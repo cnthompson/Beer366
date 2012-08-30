@@ -211,7 +211,7 @@ class Users_Model extends CI_Model {
     public function getFridgeBeers( $userID, $curUser, $fridgeID = -1 ) {
         $query = $this
             ->db
-            ->select( 'fridge.*, beers.beer_name, beers.brewery_id, beers.beer_ba_rating, breweries.name AS brewery_name, beer_style.family_id, beer_sub_style.style_id, beer_sub_style.substyle_id, beer_sub_style.substyle_name, serving_size.name AS size_name, drink_log.log_id AS have_had' )
+            ->select( 'fridge.*, beers.beer_name, beers.brewery_id, beers.beer_ba_rating, breweries.name AS brewery_name, beer_style.family_id, beer_sub_style.style_id, beer_sub_style.substyle_id, beer_sub_style.substyle_name, serving_size.name AS size_name, drink_log.log_id AS have_had, f2.id AS in_my_fridge' )
             ->from( 'fridge' )
             ->join( 'beers', 'beers.beer_id = fridge.beer_id', 'inner' )
             ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
@@ -219,6 +219,7 @@ class Users_Model extends CI_Model {
             ->join( 'beer_style', 'beer_sub_style.style_id = beer_style.style_id', 'inner' )
             ->join( 'serving_size', 'serving_size.size_id = fridge.size_id', 'inner' )
             ->join( 'drink_log', 'fridge.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $curUser, 'left' )
+            ->join( 'fridge AS f2', 'fridge.beer_id = f2.beer_id AND f2.user_id = ' . $curUser, 'left' )
             ->order_by( 'breweries.name, beers.beer_name, fridge.size_id', 'asc' )
             ->group_by( 'fridge.id' )
             ->where( 'fridge.user_id', $userID );

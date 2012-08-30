@@ -146,7 +146,7 @@ class Log extends CI_Controller {
         $data[ 'editBeer' ] = null;
 
         if( $id > 0 and $extra == '' ) {
-            $editBeers = $this->beers_model->getBeers( 0, $id );
+            $editBeers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id(), $id );
             if( count( $editBeers ) == 1 ) {
                 $editBrewer = $this->breweries_model->getBreweries( $editBeers[ 0 ][ 'brewery_id' ], false );
                 if( count( $editBrewer ) == 1 ) {
@@ -295,7 +295,7 @@ class Log extends CI_Controller {
                 redirect( 'log/drink' );
             }
         } else if( $extra == 'd' ) {
-            $beers = $this->beers_model->getBeers( 0, $id );
+            $beers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id(), $id );
             if( count( $beers ) == 1 ) {
                 $data[ 'editDrink' ][ 'id'      ] = -1;
                 $data[ 'editDrink' ][ 'date'    ] = date( 'Y-m-d' );
@@ -314,7 +314,7 @@ class Log extends CI_Controller {
             $data[ 'brew2beerMap' ][ $brewery[ 'brewery_id' ] ] = array();
         }
 
-        $allBeers = $this->beers_model->getBeers( 0 );
+        $allBeers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id() );
         foreach( $allBeers as $beer ) {
             $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
         }
@@ -371,7 +371,7 @@ class Log extends CI_Controller {
 
     function checkBeer( $beer ) {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
-        $res = $this->beers_model->getBeers( 0, $beer );
+        $res = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id(), $beer );
         if( count( $res ) == 0 ) {
             $this->form_validation->set_message( 'checkBeer', 'Your beer selection is invalid.' );
             return FALSE;
@@ -458,7 +458,7 @@ class Log extends CI_Controller {
             }
 
             $data[ 'editDrink' ][ 'beer_id' ] = -1;
-            $allBeers = $this->beers_model->getBeers( 0 );
+            $allBeers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id() );
             foreach( $allBeers as $beer ) {
                 $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
                 if( ( $data[ 'editDrink' ][ 'brewery' ] == $beer[ 'brewery_id' ] )
@@ -552,7 +552,7 @@ class Log extends CI_Controller {
         $data[ 'extra' ] = $extra;
 
         if( $extra == 'a' ) {
-            $beers = $this->beers_model->getBeers( 0, $id );
+            $beers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id(), $id );
             if( count( $beers ) != 1 ) {
                 redirect( 'users/fridge/' );
             }
@@ -584,7 +584,7 @@ class Log extends CI_Controller {
             $data[ 'brew2beerMap' ][ $brewery[ 'brewery_id' ] ] = array();
         }
 
-        $allBeers = $this->beers_model->getBeers( 0 );
+        $allBeers = $this->beers_model->getBeers( 0, (int)$this->authenticator->get_user_id() );
         foreach( $allBeers as $beer ) {
             $data[ 'brew2beerMap' ][ $beer[ 'brewery_id' ] ][ $beer[ 'beer_id' ] ] = $beer[ 'beer_name' ];
         }

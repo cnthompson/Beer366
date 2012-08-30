@@ -4,14 +4,17 @@ class Beers_Model extends CI_Model {
     function __construct() {
     }
 
-    public function getBeers( $brewerID, $beerID=0 ) {
+    public function getBeers( $brewerID, $userID, $beerID=0 ) {
         $query = $this
             ->db
-            ->select( 'beers.*, beer_sub_style.substyle_name, beer_style.style_id, beer_style.family_id' )
+            ->select( 'beers.*, beer_sub_style.substyle_name, beer_style.style_id, beer_style.family_id, drink_log.log_id AS have_had, fridge.id AS in_my_fridge' )
             ->from( 'beers' )
             ->join( 'beer_sub_style', 'beers.substyle_id = beer_sub_style.substyle_id' )
             ->join( 'beer_style', 'beer_sub_style.style_id = beer_style.style_id' )
-            ->order_by( 'beers.beer_name', 'asc' );
+            ->join( 'drink_log', 'beers.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $userID, 'left' )
+            ->join( 'fridge', 'beers.beer_id = fridge.beer_id AND fridge.user_id = ' . $userID, 'left' )
+            ->order_by( 'beers.beer_name', 'asc' )
+            ->group_by( 'beers.beer_id' );
         if( $brewerID <= 0 ) {
             if( $beerID > 0 ) {
                 $query = $this
