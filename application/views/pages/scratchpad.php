@@ -24,7 +24,7 @@
             $deleteUrl = base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] . '/x/' );
             $edit      = anchor( base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] ), '<i class="icon-pencil"></i>', array( 'title' => 'Edit' ) );
             $convert   = anchor( base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] . "/c/" ), '<i class="icon-ok"></i>', array( 'title' => 'Convert' ) );
-            $delete    = anchor( '#confirmationModal', '<i class="icon-remove"></i>', array( 'title' => 'Delete', 'onClick' => 'confirmMessage( \'Confirm Delete\', \'' . $message . '\', \'' . $deleteUrl .'\', \'Delete\');', 'data-toggle' => 'modal'));
+            $delete    = anchor( '#', '<i class="icon-remove"></i>', array( 'title' => 'Delete', 'onClick' => 'confirmMessage( \'Confirm Delete\', \'' . $message . '\', \'' . $deleteUrl .'\', \'Delete\'); return false;'));
             $this->table->add_row( $edit, $convert, $delete, $date, $brewery, $beer, $size, $rating, $notes );
         }
         echo $this->table->generate();
@@ -37,7 +37,7 @@
     <div class="modal-header"><h3>Test</h3></div>
     <div class="modal-body">blah</div>
     <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Close</a>
+        <a class="btn" data-dismiss="modal">Cancel</a>
         <a class="btn btn-primary" id="modal-link" href="#">Confirm</a>
     </div>
 </div>

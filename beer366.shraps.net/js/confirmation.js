@@ -3,4 +3,5 @@ confirmMessage = function( title, body, link, linkText ) {
 		$('.modal-body').html(body);
 		$('#modal-link').attr('href', link);
 		$('#modal-link').html(linkText);
+		$('#confirmationModal').modal();
 };
