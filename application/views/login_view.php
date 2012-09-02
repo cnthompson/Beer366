@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title ?></title>
     <link href='http://fonts.googleapis.com/css?family=Puritan' rel='stylesheet' type='text/css'>
-    <link href="<?php echo base_url(); ?>/css/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap-override.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>/css/doc.css" rel="stylesheet">
     <style>
         body { padding-top: 0; background-color: #fff; color: #d0d1d3; font-family: 'Puritan',Helvetia,sans-serif; }

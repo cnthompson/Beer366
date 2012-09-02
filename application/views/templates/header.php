@@ -2,18 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title ?></title>
     <style>label { display: block; } .errors { color: red;} </style>
-    <link href="<?php echo base_url(); ?>/css/bootstrap.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap-override.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>/css/smoothness/jquery-ui-1.8.22.custom.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>/css/doc.css" rel="stylesheet">
 </head>
-<body data-offset="25">
-    <div class="navbar navbar-fixed-top">
+<body data-offset="50">
+    <div class="navbar navbar-fixed-top navbar-inverse">
         <div class="navbar-inner">
             <div class="container">
+                <a class="btn btn-navbar btn-inverse" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
                 <a class="brand" href="<?php echo base_url( "/" ) ?>"><img src="<?php echo base_url( "/" ) ?>/img/pint_32_txt.png" height="24" />Beer366</a>
+                <div class="nav-collapse">
                 <ul class="nav">
                     <li><a href="<?php echo base_url( "/users/totals/" ) ?>">All Totals</a></li>
                     <?php
@@ -57,6 +65,7 @@
                     <li><a href="<?php echo base_url( "/beer/location/" ) ?>">Locations</a></li>
                     <li><a href="<?php echo base_url( "/beer/styles/" ) ?>">Styles</a></li>
                 </ul>
+                </div>
             </div>
         </div>
     </div>
