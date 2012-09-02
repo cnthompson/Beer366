@@ -1,11 +1,18 @@
 <section id="totals">
-    <div class="page-header">
-        <h1>Totals</h1>
-    </div>
+    <h1>Drinker Summary</h1>
     <div>
+        <table class="table table-bordered table-hover sortable">
+            <tr>
+                <th>Drinker</th>
+                <th>Total Beers</th>
+                <th>Unique Beers</th>
+                <th class="hidden-phone">Remaining</th>
+                <th class="hidden-phone">Percent</th>
+                <th>Finish Date</th>
+            </tr>
     <?php
         $tmpl = array (
-            'table_open' => '<table class="table table-bordered sortable">'
+            'table_open' => '<table class="table table-bordered table-hover sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Drinker', 'Total Beers', 'Unique Beers', 'Remaining', 'Percent', 'Finish?' );
@@ -31,17 +38,23 @@
             $beersPerDay = $uniqueBeer / $daysSinceStart;
             $daysUntilFinish = $beersPerDay == 0 ? '-' : ( ceil( $remaining / $beersPerDay ) );
             $finishDate = strftime ( "%m/%d/%Y", mktime( 0, 0, 0, date("n"), date("j") + $daysUntilFinish, date("Y") ) );
-
-            $this->table->add_row( $anchor, $totalBeer, $uniqueBeer, $remaining, $percent, $finishDate );
+?>
+            <tr>
+                <td><?php echo $anchor ?></td>
+                <td><?php echo $totalBeer ?></td>
+                <td><?php echo $uniqueBeer ?></td>
+                <td class="hidden-phone"><?php echo $remaining ?></td>
+                <td class="hidden-phone"><?php echo $percent ?></td>
+                <td><?php echo $finishDate ?></td>
+            </tr>
+<?php
         }
-        echo $this->table->generate();
     ?>
+        </table>
     </div>
 </section>
-<section id="abv">
-    <div class="page-header">
-        <h1> Strongest Beers </h1>
-    </div>
+<section id="Strongest Beers">
+    <h1>Strongest Beers</h1>
     <div>
     <?php
         $this->table->set_heading( 'Beer', 'Brewery', 'ABV' );
@@ -57,10 +70,8 @@
     ?>
     </div>
 </section>
-<section id="uniques">
-    <div class="page-header">
-        <h1>Unique Beers</h1>
-    </div>
+<section id="Uniques">
+    <h1>Unique Beer Statistics</h1>
     <p>A Globally Unique beer is one that only one user has had.</p>
     <?php
         $this->table->set_heading( 'Person', 'Individual Uniques', 'Global Uniques', 'Percent' );
@@ -75,9 +86,7 @@
     ?>
 </section>
 <section id="recent">
-    <div class="page-header">
-        <h1> Recent Beers </h1>
-    </div>
+    <h1>Recent Activity</h1>
     <div>
     <?php
         $this->table->set_heading( 'Date', 'Person', 'Beer', 'Brewery', 'Serving', 'Rating', 'Notes' );
