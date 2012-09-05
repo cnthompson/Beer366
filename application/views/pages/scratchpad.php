@@ -20,7 +20,7 @@
             $size      = $scratch[ 'size' ];
             $rating    = $scratch[ 'rating' ];
             $notes     = $scratch[ 'notes' ];
-            $message   = 'Are you sure you want to delete ' . $beer . ' from your scratchpad?';
+            $message   = 'Are you sure you want to delete ' . addslashes( $beer ) . ' from your scratchpad?';
             $deleteUrl = base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] . '/x/' );
             $edit      = anchor( base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] ), '<i class="icon-pencil"></i>', array( 'title' => 'Edit' ) );
             $convert   = anchor( base_url( 'log/scratch/' . $scratch[ 'scratchpad_id' ] . "/c/" ), '<i class="icon-ok"></i>', array( 'title' => 'Convert' ) );
@@ -46,5 +46,5 @@
     echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>';
 ?>
     <script type="text/javascript" src="<?php echo $source . '/jquery.js' ?>"></script>
-    <script type="text/javascript" src="<?php echo $source . '/bootstrap-modal.js' ?>"></script>
-    <script type="text/javascript" src="<?php echo $source . '/confirmation.js' ?>"></script></head>
+    <script type="text/javascript" src="<?php echo $source . '/bootstrap.min.js' ?>"></script>
+    <script type="text/javascript" src="<?php echo $source . '/confirmation.js' ?>"></script>
