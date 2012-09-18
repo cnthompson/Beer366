@@ -41,7 +41,7 @@ foreach( $countries as $country ):
     if( ( $mode == 'world' )
      || ( $mode == 'continent' and $country[ 'continent_id' ] == $continents[ 0 ][ 'continent_id' ] )
      || ( $mode == 'subcontinent' and $country[ 'subcontinent_id' ] == $subcontinents[ 0 ][ 'subcontinent_id' ] ) ) {
-        echo '[\'' . $country[ 'name' ] . '\', ' . $country[ 'num_brewers' ] . '],';
+        echo '[\'' . mysql_real_escape_string( $country[ 'name' ] ) . '\', ' . $country[ 'num_brewers' ] . '],';
     }
 endforeach;
 ?>
