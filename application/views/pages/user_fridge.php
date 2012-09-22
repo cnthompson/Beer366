@@ -90,8 +90,6 @@ if( $this->authenticator->is_current_user( $user[ 'user_id' ] ) ) {
 </div>
 <?php
     $source = base_url( "/js/" );
-    echo '<script type="text/javascript" src="' . $source . '/sorttable.js"></script>';
 ?>
-    <script type="text/javascript" src="<?php echo $source . '/jquery.js' ?>"></script>
-    <script type="text/javascript" src="<?php echo $source . '/bootstrap.min.js' ?>"></script>
-    <script type="text/javascript" src="<?php echo $source . '/confirmation.js' ?>"></script>
+<script type="text/javascript" src="<?php echo $source . '/sorttable.js'    ?>"></script>
+<script type="text/javascript" src="<?php echo $source . '/confirmation.js' ?>"></script>
