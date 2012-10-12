@@ -34,6 +34,8 @@
                         'name'        => 'email_address',
                         'value'       => set_value( 'email_address' ),
                         'id'          => 'email_address',
+                        'type'        => 'email',
+                        'autofocus'   => 'autofocus',
                         'class'       => 'span4',
                         'placeholder' => 'email address'
                     );
