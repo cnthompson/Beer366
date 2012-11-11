@@ -35,7 +35,19 @@
         echo '<p>';
         $label = 'Date:' . ( $scratch == null ? '' : ( ' <font color="red">' . $scratch[ 'date' ] . '</font>' ) );
         echo form_label( $label, 'date' );
-        echo form_input( 'date', set_value( 'date', $editDrink == null ? date( 'Y-m-d' ) : $editDrink[ 'date' ] ), 'id="date" class="span4"' );
+        if($editDrink == null) {
+            $val = date('Y-m-d');
+        } else {
+            $val = $editDrink['date'];
+        }
+        $attributes = array(
+            'name'  => 'date',
+            'type'  => 'date',
+            'value' => $val,
+            'id'    => 'date',
+            'class' => 'span4'
+        );
+        echo form_input( $attributes );
         echo '</p>';
 
         echo '<p>';
@@ -73,13 +85,16 @@
 <?php echo form_close(); ?>
 <?php
     $source = base_url( "/js/" );
-    echo '<script type="text/javascript" src="' . $source . '/jquery.js"></script>' ;
-    echo '<br>' ;
-    echo '<script type="text/javascript" src="' . $source . '/jquery-ui-1.8.22.custom.min.js"></script>' ;
+    echo '<script type="text/javascript" src="' . $source . '/jquery.js"></script>';
+    echo '<script type="text/javascript" src="' . $source . '/jquery-ui-1.8.22.custom.min.js"></script>';
+    echo '<script type="text/javascript" src="' . $source . '/modernizer.js"></script>';
 ?>
 <script type="text/javascript">
-    $( "#date" ).datepicker( { dateFormat: "yy-mm-dd" } );
-
+if(Modernizr.inputtypes.date === false) {
+   $('input[type=date]').datepicker({dateFormat: 'yy-mm-dd'});
+}
+</script>
+<script type="text/javascript">
     <?php
         //First, we'll create a javascript mapping of breweries to beers
         echo 'var $jsBreweryToBeerMap = {};';
