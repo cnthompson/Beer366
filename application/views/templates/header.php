@@ -36,7 +36,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="<?php echo base_url( "/users/totals/" . $this->authenticator->get_user_id() . "/" ) ?>">My Totals</a></li>
                                     <li><a href="<?php echo base_url( "/users/uniques/" ) ?>">My Unique Beers</a></li>
-                                    <li><a href="<?php echo base_url( "/users/fridge/" )  ?>">My Fridge</a></li>
+                                    <li><a href="<?php echo base_url( "/users/cellar/" )  ?>">My Cellar</a></li>
                                     <li><a href="<?php echo base_url( "/users/scratch/" ) ?>">My Scratchpad</a></li>
                                     <li><a href="<?php echo base_url( "/users/log/" . $this->authenticator->get_user_id() . "/" ) ?>">My Complete Log</a></li>
                                     <li><a href="<?php echo base_url( "/users/info/" )    ?>">My Info</a></li>

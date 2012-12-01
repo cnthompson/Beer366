@@ -1,6 +1,6 @@
 <div class="page-header">
     <h1>
-        <?php echo ( $editFridge == null || $editFridge[ 'id' ] == -1 ) ? "Add Fridge Beer" : "Edit Fridge Beer"; ?>
+        <?php echo ( $editCellar == null || $editCellar[ 'id' ] == -1 ) ? "Add Cellar Beer" : "Edit Cellar Beer"; ?>
     </h1>
 </div>
 <?php echo validation_errors('<div class="alert alert-error">', '</div>'); ?>
@@ -9,51 +9,51 @@
 <?php endif; ?>
 
 <?php
-    $url = 'log/fridge';
-    if( $editFridge != null ) {
-        $url = 'log/fridge/' . $editFridge[ 'id' ];
+    $url = 'log/cellar';
+    if( $editCellar != null ) {
+        $url = 'log/cellar/' . $editCellar[ 'id' ];
     }
     echo form_open( $url );
 ?>
-<?php echo form_hidden( 'fridge_id', $editFridge == null ? -1 : $editFridge[ 'id' ] ); ?>
+<?php echo form_hidden( 'cellar_id', $editCellar == null ? -1 : $editCellar[ 'id' ] ); ?>
     <?php
         echo '<p>';
         $label = 'Brewery:';
         echo form_label( $label, 'brewery' );
-        echo form_dropdown( 'brewery', $breweries, set_value( 'brewery', $editFridge == null ? null : $editFridge[ 'brewery' ] ), 'id="brewery" class="span4" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
+        echo form_dropdown( 'brewery', $breweries, set_value( 'brewery', $editCellar == null ? null : $editCellar[ 'brewery' ] ), 'id="brewery" class="span4" onChange="changeBrewery( this.options[ this.selectedIndex ].value );"' );
         echo '</p>';
 
         echo '<p>';
         $label = 'Beer:';
         echo form_label( $label, 'beer', array( 'id' => 'beerlabel' ) );
-        echo form_dropdown( 'beer', array(), set_value( 'beer', $editFridge == null ? null : $editFridge[ 'beer_id' ] ), 'id="beer" class="span4"' );
+        echo form_dropdown( 'beer', array(), set_value( 'beer', $editCellar == null ? null : $editCellar[ 'beer_id' ] ), 'id="beer" class="span4"' );
         echo '</p>';
 
         echo '<p>';
         $label = 'Serving Size:';
         echo form_label( $label, 'ssize' );
-        echo form_dropdown( 'ssize', $sizes,  set_value( 'ssize', $editFridge == null ? 7 : $editFridge[ 'size_id' ] ), 'id="ssize" class="span4"' );
+        echo form_dropdown( 'ssize', $sizes,  set_value( 'ssize', $editCellar == null ? 7 : $editCellar[ 'size_id' ] ), 'id="ssize" class="span4"' );
         echo '</p>';
 
         echo '<p>';
         $label = 'Quantity:';
         echo form_label( $label, 'quantity' );
-        echo form_input( 'quantity', set_value( 'quantity', $editFridge == null ? null : $editFridge[ 'quantity' ] ), 'id="quantity" class="span4"' );
+        echo form_input( 'quantity', set_value( 'quantity', $editCellar == null ? null : $editCellar[ 'quantity' ] ), 'id="quantity" class="span4"' );
         echo '</p>';
 
         echo '<p>';
         $label = 'Willing to Trade:';
         echo form_label( $label, 'trade' );
-        echo form_input( 'trade', set_value( 'trade', $editFridge == null ? null : $editFridge[ 'trade' ] ), 'id="trade" class="span4"' );
+        echo form_input( 'trade', set_value( 'trade', $editCellar == null ? null : $editCellar[ 'trade' ] ), 'id="trade" class="span4"' );
         echo '</p>';
 
         echo '<p>';
         echo form_label( 'Notes:', 'notes' );
-        echo form_textarea( 'notes', set_value( 'notes', $editFridge == null ? null : $editFridge[ 'notes' ] ), 'id="notes" class="span4"' );
+        echo form_textarea( 'notes', set_value( 'notes', $editCellar == null ? null : $editCellar[ 'notes' ] ), 'id="notes" class="span4"' );
         echo '</p>';
     ?>
 <p>
-    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $editFridge == null || $editFridge[ 'id' ] == -1 ) ? 'Add' : 'Update', 'class' => 'btn' ) ) ?>
+    <?php echo form_submit( array( 'type' => 'submit', 'value' => ( $editCellar == null || $editCellar[ 'id' ] == -1 ) ? 'Add' : 'Update', 'class' => 'btn' ) ) ?>
 </p>
 <?php echo form_close(); ?>
 
@@ -74,10 +74,10 @@
 
     <?php
         // And make sure that the drink we're editing has been selected
-        if( $editFridge != null ) {
+        if( $editCellar != null ) {
             echo 'var elem = document.getElementById( "beer" );';
             echo 'for( i = 0; i < elem.options.length; i++ ) {';
-            echo '    if( elem.options[ i ].value == "' . $editFridge[ 'beer_id' ] . '") {';
+            echo '    if( elem.options[ i ].value == "' . $editCellar[ 'beer_id' ] . '") {';
             echo '        elem.options[ i ].selected = true;';
             echo '        break;';
             echo '    }';

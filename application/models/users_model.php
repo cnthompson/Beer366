@@ -75,7 +75,7 @@ class Users_Model extends CI_Model {
     $allBeers = array();
     $query = $this
         ->db
-        ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC, \'0\' AS fridge', false )
+        ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC, \'0\' AS cellar', false )
         ->from( 'drink_log' )
         ->join( 'beers', 'beers.beer_id = drink_log.beer_id', 'inner' )
         ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
@@ -97,18 +97,18 @@ class Users_Model extends CI_Model {
 
     $query = $this
         ->db
-        ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC, \'1\' AS fridge', false )
-        ->from( 'fridge' )
-        ->join( 'beers', 'beers.beer_id = fridge.beer_id', 'inner' )
+        ->select( 'CONCAT( breweries.name, \': \', beers.beer_name ) AS beerC, \'1\' AS cellar', false )
+        ->from( 'cellar' )
+        ->join( 'beers', 'beers.beer_id = cellar.beer_id', 'inner' )
         ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
-        ->join( 'drink_log', 'fridge.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $userID, 'left' )
-        ->where( 'fridge.user_id', $userID )
+        ->join( 'drink_log', 'cellar.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $userID, 'left' )
+        ->where( 'cellar.user_id', $userID )
         ->where( 'drink_log.log_id IS NULL' )
         ->order_by( 'beerC', 'asc' )
         ->get();
     if( $query->num_rows > 0 ) {
-        foreach( $query->result_array() as $fridge ) {
-            array_push( $allBeers, $fridge );
+        foreach( $query->result_array() as $cellar ) {
+            array_push( $allBeers, $cellar );
         }
     }
 
@@ -208,25 +208,25 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getFridgeBeers( $userID, $curUser, $fridgeID = -1 ) {
+    public function getCellarBeers( $userID, $curUser, $cellarID = -1 ) {
         $query = $this
             ->db
-            ->select( 'fridge.*, beers.beer_name, beers.brewery_id, beers.beer_ba_rating, breweries.name AS brewery_name, beer_style.family_id, beer_sub_style.style_id, beer_sub_style.substyle_id, beer_sub_style.substyle_name, serving_size.name AS size_name, drink_log.log_id AS have_had, f2.id AS in_my_fridge' )
-            ->from( 'fridge' )
-            ->join( 'beers', 'beers.beer_id = fridge.beer_id', 'inner' )
+            ->select( 'cellar.*, beers.beer_name, beers.brewery_id, beers.beer_ba_rating, breweries.name AS brewery_name, beer_style.family_id, beer_sub_style.style_id, beer_sub_style.substyle_id, beer_sub_style.substyle_name, serving_size.name AS size_name, drink_log.log_id AS have_had, f2.id AS in_my_cellar' )
+            ->from( 'cellar' )
+            ->join( 'beers', 'beers.beer_id = cellar.beer_id', 'inner' )
             ->join( 'breweries', 'breweries.brewery_id = beers.brewery_id', 'inner' )
             ->join( 'beer_sub_style', 'beers.substyle_id = beer_sub_style.substyle_id', 'inner' )
             ->join( 'beer_style', 'beer_sub_style.style_id = beer_style.style_id', 'inner' )
-            ->join( 'serving_size', 'serving_size.size_id = fridge.size_id', 'inner' )
-            ->join( 'drink_log', 'fridge.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $curUser, 'left' )
-            ->join( 'fridge AS f2', 'fridge.beer_id = f2.beer_id AND f2.user_id = ' . $curUser, 'left' )
-            ->order_by( 'breweries.name, beers.beer_name, fridge.size_id', 'asc' )
-            ->group_by( 'fridge.id' )
-            ->where( 'fridge.user_id', $userID );
-        if( $fridgeID != -1 ) {
+            ->join( 'serving_size', 'serving_size.size_id = cellar.size_id', 'inner' )
+            ->join( 'drink_log', 'cellar.beer_id = drink_log.beer_id AND drink_log.user_id = ' . $curUser, 'left' )
+            ->join( 'cellar AS f2', 'cellar.beer_id = f2.beer_id AND f2.user_id = ' . $curUser, 'left' )
+            ->order_by( 'breweries.name, beers.beer_name, cellar.size_id', 'asc' )
+            ->group_by( 'cellar.id' )
+            ->where( 'cellar.user_id', $userID );
+        if( $cellarID != -1 ) {
             $query = $this
                 ->db
-                ->where( 'fridge.id', $fridgeID );
+                ->where( 'cellar.id', $cellarID );
         }
         $query = $this
             ->db
@@ -238,15 +238,15 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getFridgesWithBeer( $beer ) {
+    public function getCellarsWithBeer( $beer ) {
         $query = $this
             ->db
-            ->select( 'fridge.*, users.display_name AS user_name, serving_size.name AS size_name' )
-            ->from( 'fridge' )
-            ->join( 'users', 'users.user_id = fridge.user_id', 'inner' )
-            ->join( 'serving_size', 'serving_size.size_id = fridge.size_id', 'inner' )
+            ->select( 'cellar.*, users.display_name AS user_name, serving_size.name AS size_name' )
+            ->from( 'cellar' )
+            ->join( 'users', 'users.user_id = cellar.user_id', 'inner' )
+            ->join( 'serving_size', 'serving_size.size_id = cellar.size_id', 'inner' )
             ->order_by( 'users.display_name', 'asc' )
-            ->where( 'fridge.beer_id', $beer )
+            ->where( 'cellar.beer_id', $beer )
             ->get();
         if( $query->num_rows > 0 ) {
             return $query->result_array();
@@ -255,12 +255,12 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getFridgeBeerCount( $userID ) {
+    public function getCellarBeerCount( $userID ) {
         $query = $this
             ->db
-            ->select( 'SUM( fridge.quantity ) AS total' )
-            ->from( 'fridge' )
-            ->where( 'fridge.user_id', $userID )
+            ->select( 'SUM( cellar.quantity ) AS total' )
+            ->from( 'cellar' )
+            ->where( 'cellar.user_id', $userID )
             ->get();
         if( $query->num_rows != 1 ) {
             return 0;
@@ -269,12 +269,12 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getFridgeBeerTradeCount( $userID ) {
+    public function getCellarBeerTradeCount( $userID ) {
         $query = $this
             ->db
-            ->select( 'SUM( fridge.will_trade ) AS total' )
-            ->from( 'fridge' )
-            ->where( 'fridge.user_id', $userID )
+            ->select( 'SUM( cellar.will_trade ) AS total' )
+            ->from( 'cellar' )
+            ->where( 'cellar.user_id', $userID )
             ->get();
         if( $query->num_rows != 1 ) {
             return 0;
@@ -283,26 +283,26 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function deleteFridgeBeer( $id ) {
+    public function deleteCellarBeer( $id ) {
         $query = $this
             ->db
             ->where( 'id', $id )
             ->limit( 1 )
-            ->delete( 'fridge' );
+            ->delete( 'cellar' );
     }
 
-    public function checkIfInFridge( $userID, $beerID, $sizeID ) {
+    public function checkIfInCellar( $userID, $beerID, $sizeID ) {
         $query = $this
             ->db
             ->where( 'user_id', $userID )
             ->where( 'beer_id', $beerID )
             ->where( 'size_id', $sizeID )
             ->limit( 1 )
-            ->get( 'fridge' );
+            ->get( 'cellar' );
         return $query->num_rows() == 1;
     }
     
-    public function updateFridgeBeer( $id, $user, $beer, $size, $number, $trade, $notes ) {
+    public function updateCellarBeer( $id, $user, $beer, $size, $number, $trade, $notes ) {
         if( ( $user <= 0 )
          || ( $beer <= 0 )
          || ( $size <= 0 )
@@ -325,19 +325,19 @@ class Users_Model extends CI_Model {
             $query = $this
                 ->db
                 ->where( 'id', $id )
-                ->update( 'fridge', $data );
+                ->update( 'cellar', $data );
         } else {
             //inserting
             $query = $this
                 ->db
-                ->insert( 'fridge', $data );
+                ->insert( 'cellar', $data );
         }
         if( $query == 1 ) {
             $query = $this
                 ->db
                 ->select( 'id' )
                 ->where( $data )
-                ->get( 'fridge' );
+                ->get( 'cellar' );
             if( $query->num_rows > 0 ) {
                 $results = $query->result_array();
                 return $results[ 0 ][ 'id' ];

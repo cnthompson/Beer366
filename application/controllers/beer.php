@@ -52,7 +52,7 @@ class Beer extends CI_Controller {
                 $data[ 'brewery' ] = $breweries[ 0 ];
                 $data[ 'beer' ] = $beers[ 0 ];
                 $data[ 'drinkLog' ] = $this->drinkers_model->getLoggedDrinks( $beer );
-                $data[ 'fridgeBeers' ] = $this->users_model->getFridgesWithBeer( $beer );
+                $data[ 'cellarBeers' ] = $this->users_model->getCellarsWithBeer( $beer );
                 $header[ 'title' ] = 'Beer Profile - ' . $data[ 'beer' ][ 'beer_name' ];
                 $this->load->view( 'templates/header.php', $header );
                 $this->load->view( 'pages/beer_profile', $data );

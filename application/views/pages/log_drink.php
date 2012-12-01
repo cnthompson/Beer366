@@ -3,8 +3,8 @@
         <?php
             if( $scratch != null ) {
                 echo 'Convert Scratchpad Drink';
-            } else if( isset( $editFridge ) and $editFridge != null ) {
-                echo 'Log Beer From Your Fridge';
+            } else if( isset( $editCellar ) and $editCellar != null ) {
+                echo 'Log Beer From Your Cellar';
             } else if( $editDrink == null or $editDrink[ 'id' ] == -1 ) {
                 echo 'Log Drink';
             } else {
@@ -23,8 +23,8 @@
     $url = 'log/drink';
     if( $scratch != null ) {
         $url = 'log/scratch/' . $scratch[ 'id' ] . '/c';
-    } else if( isset( $editFridge ) and $editFridge != null ) {
-        $url = 'log/fridge/' . $editFridge[ 'id' ] . '/l';
+    } else if( isset( $editCellar ) and $editCellar != null ) {
+        $url = 'log/cellar/' . $editCellar[ 'id' ] . '/l';
     } else if( $editDrink != null ) {
         $url = 'log/drink/' . $editDrink[ 'id' ] . '/' . $extra;
     }

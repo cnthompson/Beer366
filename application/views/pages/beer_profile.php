@@ -5,7 +5,7 @@
     // URLs used later on the page
     $edit_url   = base_url( "log/beer/" . $beer[ 'beer_id' ] );
     $log_url    = base_url( 'log/drink/' . $beer[ 'beer_id' ] . '/d' );
-    $fridge_url = base_url( 'log/fridge/' . $beer[ 'beer_id' ] . '/a' );
+    $cellar_url = base_url( 'log/cellar/' . $beer[ 'beer_id' ] . '/a' );
     $info_url   = base_url( "beer/info/" . $brewery[ 'brewery_id' ] );
 ?>
 <div class="page-header">
@@ -14,7 +14,7 @@
 <?php if( $auth ): ?>
     <div class="btn-group">
         <?php echo anchor( $log_url, "<i class='icon-plus'></i> Log This", array( 'class' => 'btn' ) ); ?>
-        <?php echo anchor( $fridge_url, "<i class='icon-calendar'></i> Add to My Fridge", array( 'class' => 'btn' ) ); ?>
+        <?php echo anchor( $cellar_url, "<i class='icon-calendar'></i> Add to My Cellar", array( 'class' => 'btn' ) ); ?>
         <?php echo anchor( $edit_url, "<i class='icon-pencil'></i> Edit Beer", array( 'class' => 'btn' ) ); ?>
     </div>
 <?php endif; ?>
@@ -90,16 +90,16 @@
 </p>
 <p>
 <?php
-    if( count( $fridgeBeers ) > 0 ) {
-        echo '<h2>In Fridges</h2>';
+    if( count( $cellarBeers ) > 0 ) {
+        echo '<h2>In Cellars</h2>';
         $tmpl = array(
             'table_open' => '<table class="table table-bordered sortable">'
         );
         $this->table->set_template( $tmpl );
         $this->table->set_heading( 'Person', 'Serving', 'Quantity', 'Will Trade' );
-        foreach( $fridgeBeers as $fridge ) {
-            $u = anchor( base_url( "users/fridge/" . $fridge[ 'user_id' ] . "/" ), $fridge[ 'user_name' ] );
-            $this->table->add_row( $u, $fridge[ 'size_name' ], $fridge[ 'quantity' ], $fridge[ 'will_trade' ] );
+        foreach( $cellarBeers as $cellar ) {
+            $u = anchor( base_url( "users/cellar/" . $cellar[ 'user_id' ] . "/" ), $cellar[ 'user_name' ] );
+            $this->table->add_row( $u, $cellar[ 'size_name' ], $cellar[ 'quantity' ], $cellar[ 'will_trade' ] );
         }
         echo $this->table->generate();
     }

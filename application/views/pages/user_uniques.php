@@ -4,18 +4,18 @@
 
 <ul>
 <?php
-    $fridgeBeers = array();
+    $cellarBeers = array();
     foreach( $uniques as $beer ) {
-        if( $beer[ 'fridge' ] == 0 ) {
+        if( $beer[ 'cellar' ] == 0 ) {
             echo $beer[ 'beerC' ];
             echo "<br>";
         } else {
-            array_push( $fridgeBeers, $beer );
+            array_push( $cellarBeers, $beer );
         }
     }
-    if( count( $fridgeBeers ) > 0 ) {
-        echo '<br><h2>Still In the Fridge</h2>';
-        foreach( $fridgeBeers as $beer ) {
+    if( count( $cellarBeers ) > 0 ) {
+        echo '<br><h2>Still In the Cellar</h2>';
+        foreach( $cellarBeers as $beer ) {
             echo $beer[ 'beerC' ];
             echo "<br>";
         }

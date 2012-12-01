@@ -62,8 +62,8 @@ class Users extends CI_Controller {
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 10 );
             $data[ 'fives' ] = $this->beers_model->getBeersByRating( $userID, 5 );
             $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 20 );
-            $data[ 'fridgeCount' ] = $this->users_model->getFridgeBeerCount( $userID );
-            $data[ 'tradeCount'  ] = $this->users_model->getFridgeBeerTradeCount( $userID );
+            $data[ 'cellarCount' ] = $this->users_model->getCellarBeerCount( $userID );
+            $data[ 'tradeCount'  ] = $this->users_model->getCellarBeerTradeCount( $userID );
             $this->load->view( 'pages/user_profile', $data );
         }
 
@@ -84,24 +84,24 @@ class Users extends CI_Controller {
         $this->load->view( 'templates/footer.php', null );
     }
 
-    public function fridge( $userID = 0 ) {
+    public function cellar( $userID = 0 ) {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
 
         $uid = $userID <= 0 ? (int)$this->authenticator->get_user_id() : $userID;
         $allUsers = $this->users_model->getUsers( $uid );
         if( count( $allUsers ) == 0 ) {
-            redirect( 'users/fridge/' );
+            redirect( 'users/cellar/' );
         }
         $data[ 'user' ] = $allUsers[ 0 ];
 
-        $data[ 'fridge_beers' ] = $this->users_model->getFridgeBeers( $data[ 'user' ][ 'user_id' ], (int)$this->authenticator->get_user_id(), -1 );
+        $data[ 'cellar_beers' ] = $this->users_model->getCellarBeers( $data[ 'user' ][ 'user_id' ], (int)$this->authenticator->get_user_id(), -1 );
 
         $this->load->helper( 'html' );
         $this->load->library( 'table' );
 
-        $header[ 'title' ] = $this->authenticator->is_current_user( $data[ 'user' ][ 'user_id' ] ) ? 'My Fridge' : ( $data[ 'user' ][ 'display_name' ] . '\'s Fridge' );
+        $header[ 'title' ] = $this->authenticator->is_current_user( $data[ 'user' ][ 'user_id' ] ) ? 'My Cellar' : ( $data[ 'user' ][ 'display_name' ] . '\'s Cellar' );
         $this->load->view( 'templates/header.php', $header );
-        $this->load->view( 'pages/user_fridge.php', $data );
+        $this->load->view( 'pages/user_cellar.php', $data );
         $this->load->view( 'templates/footer.php', null );
     }
 

@@ -90,9 +90,9 @@
             $ba    = $ba == NULL ? '-' : $ba;
 
             $haveHad = is_numeric( $beer[ 'have_had' ] ) ? 'X' : '';
-            $inMyFridge = is_numeric( $beer[ 'in_my_fridge' ] ) ? 'F' : '';
+            $inMyCellar = is_numeric( $beer[ 'in_my_cellar' ] ) ? 'C' : '';
 
-            $this->table->add_row( $nameAnchor, $ssAnchor, $abvS, $ba, $haveHad . $inMyFridge );
+            $this->table->add_row( $nameAnchor, $ssAnchor, $abvS, $ba, $haveHad . $inMyCellar );
         }
         echo $this->table->generate();
     ?>
