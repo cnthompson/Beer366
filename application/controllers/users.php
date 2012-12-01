@@ -51,7 +51,7 @@ class Users extends CI_Controller {
             $data[ 'allUsers' ] = $allUsers;
             $data[ 'totals' ] = $userToTotalsMap;
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 7 );
-            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
+            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 20 );
             $data[ 'uniques' ] =$this->drinkers_model->getGloballyUniqueCount();
             $this->load->view( 'pages/all_users', $data );
         } else {
@@ -61,7 +61,7 @@ class Users extends CI_Controller {
             $data[ 'user' ] = $allUsers[ 0 ];
             $data[ 'drinkLog' ] = $this->drinkers_model->getRecentLoggedDrinks( $userID, 10 );
             $data[ 'fives' ] = $this->beers_model->getBeersByRating( $userID, 5 );
-            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 10 );
+            $data[ 'abv' ] = $this->drinkers_model->getBeersByABV( $userID, 20 );
             $data[ 'fridgeCount' ] = $this->users_model->getFridgeBeerCount( $userID );
             $data[ 'tradeCount'  ] = $this->users_model->getFridgeBeerTradeCount( $userID );
             $this->load->view( 'pages/user_profile', $data );
