@@ -8,9 +8,21 @@ $currentLetter = '';
 foreach( $breweries as $brewery ):
 ?>
     <?php
-    $letter = strtoupper( substr( iconv( 'UTF-8', 'ASCII//TRANSLIT//IGNORE', $brewery['name'] ), 0, 1 ) );
-    if( is_numeric( $letter ) ) {
+    //$letter = substr( iconv( 'UTF-8', 'ASCII//TRANSLIT//IGNORE', $brewery['name'] ), 0, 1 );
+    $letter = substr( $brewery['name'], 0, 1 );
+    if( ord( $letter ) == 195 ) {
+        $letter = 'O';
+    } else if( ord( $letter ) == 197 ) {
+        $letter = 'Z';
+    } else if( is_numeric( $letter ) ) {
         $letter = '#';
+    } else if( ( ord( $letter ) < 65 )
+            || ( ( ord( $letter ) > 90 )
+              && ( ord( $letter ) < 97 ) )
+            || ( ( ord( $letter ) > 122 ) ) ) {
+        $letter = '*';
+    } else {
+        $letter = strtoupper( $letter );
     }
     if( $letter != $currentLetter ):
         $currentLetter = $letter;
