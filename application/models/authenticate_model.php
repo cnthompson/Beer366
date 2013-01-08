@@ -37,6 +37,33 @@ class Authenticate_Model extends CI_Model {
         return $query->row();
     }
 
+    public function is_username_available( $email, $username ) {
+        $query = $this
+           ->db
+           ->where( "LOWER( display_name ) = '" . strtolower( $username ) . "'" )
+           ->where( "LOWER( email ) != '" . strtolower( $email ) . "'" )
+           ->limit( 1 )
+           ->get( 'users' );
+        if( $query->num_rows != 0 ) {
+            return false;
+        }
+        return true;
+    }
+
+    public function change_username( $email, $username ) {
+        $data = array(
+            'display_name' => $username,
+            );
+        $q = $this->db
+            ->where( 'email', $email )
+            ->update( 'users', $data );
+        if( $q == 1 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function change_pw( $email, $oldPW, $newPW ) {
         // first things first, let's make sure a user with this email exists
         $query = $this

@@ -5,7 +5,8 @@
 
 <ul>
 <?php
-    echo $this->authenticator->get_display_name();
+    echo "<h3>" . $this->authenticator->get_display_name() . "</h3>";
+    echo anchor( base_url( "authenticate/changelogin/" ),  'Change' )
 ?>
 </ul>
 <br>
@@ -13,7 +14,7 @@
 <h2> Email </h2>
 <ul>
 <?php
-    echo $this->authenticator->get_email();
+    echo "<h3>" . $this->authenticator->get_email() . "</h3>";
 ?>
 </ul>
 <br>

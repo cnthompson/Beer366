@@ -37,6 +37,9 @@ class Authenticator {
         }
         return "";
     }
+    public function set_username( $username ) {
+        $_SESSION[ 'displayname' ] = $username;
+    }
 
     // Get the current session user id, if it is set
     public function get_user_id() {
@@ -110,6 +113,7 @@ class Authenticator {
         return ( ( isset( $_SESSION[ 'admin' ] ) )
               && ( $_SESSION[ 'admin' ] == true ) );
     }
+
 }
 
 ?>

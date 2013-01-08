@@ -58,6 +58,44 @@ class Authenticate extends CI_Controller {
         redirect( 'authenticate' );
     }
 
+    public function changeLogin() {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+        $data[ 'error' ] = '';
+        $data[ 'page' ] = 'authenticate/changeLogin';
+
+        $this->load->library( 'form_validation' );
+        $this->form_validation->set_rules( 'new_username', 'Current Username', 'trim|required|callback_username_check' );
+        if( $this->form_validation->run() !== false ) {
+            if( strtolower( $this->input->post( 'new_username' ) ) == strtolower( $this->authenticator->get_display_name() ) ) {
+                $data[ 'error' ] = 'Your new username cannot be the same as your old one.';
+            } else {
+                $this->load->model( 'authenticate_model' );
+                $res = $this->authenticate_model->change_username( $this->authenticator->get_email(), $this->input->post( 'new_username' ) );
+                if( $res == FALSE ) {
+                    $data[ 'error' ] = 'Username not changed.';
+                } else {
+                    $this->authenticator->set_username( $this->input->post( 'new_username' ) );
+                    redirect( $this->authenticator->get_homepage() );
+                }
+            }
+        }
+        $header[ 'title' ] = 'Change Username';
+        $this->load->view( 'templates/header.php', $header );
+        $this->load->view( 'change_username', $data );
+        $this->load->view( 'templates/footer.php', null );
+    }
+    
+    public function username_check( $username ) {
+        $this->authenticator->ensure_auth( $this->uri->uri_string() );
+        $this->load->model('authenticate_model');
+        $res = $this->authenticate_model->is_username_available( $this->authenticator->get_email(), $username );
+        if( $res == false ) {
+            $this->form_validation->set_message( 'username_check', 'That username is not available.' );
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     public function changePassword() {
         $pageGiven = false;
         $redirect = 'users';
