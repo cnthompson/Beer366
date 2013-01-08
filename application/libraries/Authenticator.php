@@ -11,7 +11,7 @@ class Authenticator {
 
     // Save User Information
     // Save some authenticated user information as session data
-    public function save_info( $userID, $fName, $lName, $dName, $email, $page, $current ) {
+    public function save_info( $userID, $fName, $lName, $dName, $email, $page, $current, $admin ) {
         $_SESSION[ 'userid'      ] = $userID;
         $_SESSION[ 'firstname'   ] = $fName;
         $_SESSION[ 'lastname'    ] = $lName;
@@ -19,6 +19,7 @@ class Authenticator {
         $_SESSION[ 'email'       ] = $email;
         $_SESSION[ 'homepage'    ] = $page;
         $_SESSION[ 'current'     ] = $current;
+        $_SESSION[ 'admin'       ] = $admin;
     }
 
     // Get the current session email, if it is set
@@ -105,6 +106,10 @@ class Authenticator {
               || ( $ignoreExpired ) ) );
     }
 
+    public function is_admin() {
+        return ( ( isset( $_SESSION[ 'admin' ] ) )
+              && ( $_SESSION[ 'admin' ] == true ) );
+    }
 }
 
 ?>

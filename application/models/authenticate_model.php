@@ -4,15 +4,24 @@ class Authenticate_Model extends CI_Model {
     function __construct() {
     }
 
-    public function verify_user( $email, $password ) {
-        // first things first, let's make sure a user with this email exists
+    public function verify_user( $login, $password ) {
+        // Try to validate the login as an email address first
         $query = $this
-           ->db
-           ->where( "LOWER( email ) = '" . strtolower( $email ) . "'" )
-           ->limit(1)
-           ->get( 'users' );
+            ->db
+            ->where( "LOWER( email ) = '" . strtolower( $login ) . "'" )
+            ->limit( 1 )
+            ->get( 'users' );
         if( $query->num_rows != 1 ) {
-            return false;
+            // Since that failed, try it as the display name
+            $query = $this
+                ->db
+                ->where( "LOWER( display_name ) = '" . strtolower( $login ) . "'" )
+                ->limit( 1 )
+                ->get( 'users' );
+            if( $query->num_rows != 1 ) {
+                // If both failed, return immediately
+                return false;
+            }
         }
 
         // now we know that the user exists and we have the salt

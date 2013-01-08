@@ -31,13 +31,12 @@
                 <div class="span4">
                 <?php
                     $attributes = array(
-                        'name'        => 'email_address',
-                        'value'       => set_value( 'email_address' ),
-                        'id'          => 'email_address',
-                        'type'        => 'email',
+                        'name'        => 'login',
+                        'value'       => set_value( 'login' ),
+                        'id'          => 'login',
                         'autofocus'   => 'autofocus',
                         'class'       => 'span4',
-                        'placeholder' => 'email address'
+                        'placeholder' => 'login or email address'
                     );
                     echo form_input( $attributes );
                 ?>
@@ -52,7 +51,6 @@
                             'class'        => 'span4',
                             'placeholder'  => 'password'
                         );
-                        //echo form_label( 'Password:', 'password' );
                         echo form_password( $attributes );
                     ?>
                 </div>
@@ -66,5 +64,5 @@
     </div>
     <?php echo form_close(); ?>
     </div>
-    </div>
 </body>
+</html>

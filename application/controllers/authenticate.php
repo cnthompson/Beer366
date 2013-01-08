@@ -25,20 +25,20 @@ class Authenticate extends CI_Controller {
             }
         }
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('email_address', 'Email Address', 'trim|required|valid_email' );
+        $this->form_validation->set_rules('login', 'Login', 'trim|required' );
         $this->form_validation->set_rules('password', 'Password', 'trim|required' );
 
         $data[ 'error' ] = '';
 
         if( $this->form_validation->run() !== false ) {
             $this->load->model('authenticate_model');
-            $res = $this->authenticate_model->verify_user( $this->input->post( 'email_address' ), $this->input->post( 'password' ) );
+            $res = $this->authenticate_model->verify_user( $this->input->post( 'login' ), $this->input->post( 'password' ) );
             if( $res == false ) {
                 // unsuccessful login
                 $data[ 'error' ] = 'Login unsuccessful. Please try again.';
             } else {
                 // save the user information from the query
-                $this->authenticator->save_info( $res->user_id, $res->first_name, $res->last_name, $res->display_name, $res->email, $res->homepage, $res->temp != 1 );
+                $this->authenticator->save_info( $res->user_id, $res->first_name, $res->last_name, $res->display_name, $res->email, $res->homepage, $res->temp != 1, $res->admin == 1 );
                 if( $pageGiven or $this->authenticator->get_homepage() == null ) {
                     redirect( $redirect );
                 } else {
