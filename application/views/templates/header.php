@@ -64,6 +64,22 @@
                     <li><a href="<?php echo base_url( "/beer/info/" ) ?>">Breweries</a></li>
                     <li><a href="<?php echo base_url( "/beer/location/" ) ?>">Locations</a></li>
                     <li><a href="<?php echo base_url( "/beer/styles/" ) ?>">Styles</a></li>
+                    <?php
+                        if( $this->authenticator->check_auth() and $this->authenticator->is_admin() ):
+                    ?>
+                            <li class="dropdown" id="adminMenu">
+                                <a href="#"
+                                    class="dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    data-target="#adminMenu">Admin<b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?php echo base_url( "/admin/addUser/" ) ?>">Add User</a></li>
+                                </ul>
+                            </li>
+                    <?php
+                        endif;
+                    ?>
                 </ul>
                 </div>
             </div>

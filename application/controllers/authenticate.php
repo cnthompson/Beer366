@@ -75,7 +75,11 @@ class Authenticate extends CI_Controller {
                     $data[ 'error' ] = 'Username not changed.';
                 } else {
                     $this->authenticator->set_username( $this->input->post( 'new_username' ) );
-                    redirect( $this->authenticator->get_homepage() );
+                    if( $this->authenticator->get_homepage() == null ) {
+                        redirect( '' );
+                    } else {
+                        redirect( $this->authenticator->get_homepage() );
+                    }
                 }
             }
         }
@@ -84,7 +88,7 @@ class Authenticate extends CI_Controller {
         $this->load->view( 'change_username', $data );
         $this->load->view( 'templates/footer.php', null );
     }
-    
+
     public function username_check( $username ) {
         $this->authenticator->ensure_auth( $this->uri->uri_string() );
         $this->load->model('authenticate_model');

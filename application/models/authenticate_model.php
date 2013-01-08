@@ -39,11 +39,29 @@ class Authenticate_Model extends CI_Model {
 
     public function is_username_available( $email, $username ) {
         $query = $this
+            ->db
+            ->where( "LOWER( display_name ) = '" . strtolower( $username ) . "'" );
+        if( $email != null ) {
+            $query = $this
+                ->db
+                ->where( "LOWER( email ) != '" . strtolower( $email ) . "'" );
+        }
+        $query = $this
            ->db
-           ->where( "LOWER( display_name ) = '" . strtolower( $username ) . "'" )
-           ->where( "LOWER( email ) != '" . strtolower( $email ) . "'" )
            ->limit( 1 )
            ->get( 'users' );
+        if( $query->num_rows != 0 ) {
+            return false;
+        }
+        return true;
+    }
+
+    public function is_email_available( $email ) {
+        $query = $this
+            ->db
+            ->where( "LOWER( email ) = '" . strtolower( $email ) . "'" )
+            ->limit( 1 )
+            ->get( 'users' );
         if( $query->num_rows != 0 ) {
             return false;
         }
@@ -101,6 +119,23 @@ class Authenticate_Model extends CI_Model {
         } else {
             return false;
         }
+    }
+    
+    public function add_new_user( $firstName, $lastName, $email, $username, $curUser ) {
+        $data = array(
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $email,
+            'display_name' => $username,
+            'added_by' => $curUser,
+            );
+        $query = $this
+            ->db
+            ->insert( 'users', $data );
+        if( $query == 1 ) {
+            return true;
+        }
+        return false;
     }
 }
 
