@@ -11,8 +11,10 @@ class Users_Model extends CI_Model {
             ->from( 'users' )
             ->order_by( 'users.display_name', 'asc' );
         if( $userID <= 0 ) {
+            $where = 'users.last_login >= ( NOW() - INTERVAL 30 DAY )';
             $query = $this
                 ->db
+                ->where( $where, '', false )
                 ->get();
         } else {
             $query = $this

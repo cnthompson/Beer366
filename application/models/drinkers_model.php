@@ -174,7 +174,7 @@ class Drinkers_Model extends CI_Model {
              . "  WHERE dl2.user_id IS NULL"
              . "  GROUP BY dl.user_id, dl.beer_id ) AS t"
              . " INNER JOIN users AS u ON ( u.user_id = t.user_id )"
-             . ( ( $id > 0 ) ? ( " WHERE u.user_id = '" . $id . "'" ) : "" )
+             . ( ( $id > 0 ) ? ( " WHERE u.user_id = '" . $id . "'" ) : " WHERE u.last_login >= ( NOW() - INTERVAL 30 DAY )" )
              . " GROUP BY t.user_id"
              . " ORDER BY uniques DESC";
         $query = $this->db->query( $sql );

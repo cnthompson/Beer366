@@ -37,6 +37,16 @@ class Authenticate_Model extends CI_Model {
         return $query->row();
     }
 
+    public function update_last_login( $email ) {
+        $data = array (
+            'last_login' => date( 'Y-m-d H:i:s' ),
+        );
+        $query = $this
+            ->db
+            ->where( "LOWER( email ) = '" . strtolower( $email ) . "'" )
+            ->update( 'users', $data );
+    }
+
     public function is_username_available( $email, $username ) {
         $query = $this
             ->db
@@ -120,7 +130,7 @@ class Authenticate_Model extends CI_Model {
             return false;
         }
     }
-    
+
     public function add_new_user( $firstName, $lastName, $email, $username, $curUser ) {
         $data = array(
             'first_name' => $firstName,

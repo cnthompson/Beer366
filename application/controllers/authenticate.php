@@ -39,6 +39,7 @@ class Authenticate extends CI_Controller {
             } else {
                 // save the user information from the query
                 $this->authenticator->save_info( $res->user_id, $res->first_name, $res->last_name, $res->display_name, $res->email, $res->homepage, $res->temp != 1, $res->admin == 1 );
+                $this->authenticate_model->update_last_login( $res->email );
                 if( $pageGiven or $this->authenticator->get_homepage() == null ) {
                     redirect( $redirect );
                 } else {
