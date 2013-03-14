@@ -27,11 +27,13 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getTotalBeerCountForUser( $userID ) {
+    public function getTotalBeerCountForUser( $userID, $minSize ) {
         $query = $this
             ->db
             ->select( 'user_id, COUNT( user_id ) AS beer_count' )
             ->from( 'drink_log' )
+            ->join( 'serving_size', 'serving_size.size_id = drink_log.size_id', 'inner' )
+            ->where( 'serving_size.ml >', $minSize )
             ->group_by( 'user_id' )
             ->order_by( 'beer_count', 'desc' );
         if( $userID > 0 ) {
@@ -49,11 +51,13 @@ class Users_Model extends CI_Model {
         }
     }
 
-    public function getUniqueBeerCountForUser( $userID ) {
+    public function getUniqueBeerCountForUser( $userID, $minSize ) {
         $query = $this
             ->db
             ->select( 'user_id, COUNT( user_id ) AS unique_count' )
-            ->from( "( SELECT user_id, beer_id FROM drink_log GROUP BY user_id, beer_id ) as total", NULL, FALSE )
+            ->from( "( SELECT user_id, beer_id, size_id FROM drink_log GROUP BY user_id, beer_id ) as total", NULL, FALSE )
+            ->join( 'serving_size', 'serving_size.size_id = total.size_id', 'inner' )
+            ->where( 'serving_size.ml >', $minSize )
             ->group_by( 'user_id' )
             ->order_by( 'unique_count', 'desc' );
         if( $userID > 0 ) {

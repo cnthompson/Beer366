@@ -35,13 +35,13 @@ class Users extends CI_Controller {
             $allUsers = $this->users_model->getUsers( $userID );
             $userToTotalsMap = NULL;
             foreach( $allUsers as $user ) {
-                $result = $this->users_model->getTotalBeerCountForUser( $user[ 'user_id' ] );
+                $result = $this->users_model->getTotalBeerCountForUser( $user[ 'user_id' ], 236 );
                 $total = 0;
                 if( count( $result ) > 0 ) {
                     $total = $result[ 0 ][ 'beer_count' ];
                 }
                 $userToTotalsMap[ $user[ 'user_id' ] ][ 'total' ] = $total;
-                $result = $this->users_model->getUniqueBeerCountForUser( $user[ 'user_id' ] );
+                $result = $this->users_model->getUniqueBeerCountForUser( $user[ 'user_id' ], 236 );
                 $unique = 0;
                 if( count( $result ) > 0 ) {
                     $unique = $result[ 0 ][ 'unique_count' ];
