@@ -57,9 +57,9 @@
             echo '<div class="span4">';
             echo '<i class="icon-home"></i>';
             echo anchor( $brewery[ 'homepage' ], "Website", 'target="_blank" title="' . $brewery[ 'full_name' ] . '"' );
+            echo "</div>";
         }
     ?>
-    </div>
 </div>
 <p>
     <?php
