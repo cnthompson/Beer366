@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  
+  "name": "Beer366",
+  "description": "It's a One-A-Day Leap Year Beer Celebration",
+  "version": "1.0",
+  "app": {
+    "launch": {
+      "local_path": "redirect.html"
+    }
+  },
+  "icons": {
+    "128": "icon_128.png"
+  }
+}
