@@ -103,9 +103,9 @@ class Beers_Model extends CI_Model {
         $starter = 'http://beeradvocate.com/beer/profile/';
         $starterwww = 'http://www.beeradvocate.com/beer/profile/';
         if( $page != null ) {
-            if ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+            if ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) {
                 $page = substr( $page, strlen( $starter ) );
-            } else if ( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) ) {
+            } else if ( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) {
                 $page = substr( $page, strlen( $starterwww ) );
             }
         }
@@ -131,9 +131,9 @@ class Beers_Model extends CI_Model {
         $starterwww = 'http://www.beeradvocate.com/beer/profile/';
         $page = ( $bapage == null || strlen( $bapage ) == 0 ) ? null : $bapage;
         if( $page != null ) {
-            if( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+            if( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) {
                 $page = substr( $page, strlen( $starter ) );
-            } else if( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) ) {
+            } else if( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) {
                 $page = substr( $page, strlen( $starterwww ) );
             }
         }
