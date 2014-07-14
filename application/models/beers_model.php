@@ -101,8 +101,13 @@ class Beers_Model extends CI_Model {
 
     public function checkIfPageExistsByBeer( $page, $beerID ) {
         $starter = 'http://beeradvocate.com/beer/profile/';
-        if( $page != null and ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
-            $page = substr( $page, strlen( $starter ) );
+        $starterwww = 'http://www.beeradvocate.com/beer/profile/';
+        if( $page != null ) {
+            if ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+                $page = substr( $page, strlen( $starter ) );
+            } else if ( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) ) {
+                $page = substr( $page, strlen( $starterwww ) );
+            }
         }
         $query = $this
             ->db
@@ -123,9 +128,14 @@ class Beers_Model extends CI_Model {
             return FALSE;
         }
         $starter = 'http://beeradvocate.com/beer/profile/';
+        $starterwww = 'http://www.beeradvocate.com/beer/profile/';
         $page = ( $bapage == null || strlen( $bapage ) == 0 ) ? null : $bapage;
-        if( $page != null and ( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
-            $page = substr( $page, strlen( $starter ) );
+        if( $page != null ) {
+            if( strncmp( $page, $starter, strlen( $starter ) ) == 0 ) ) {
+                $page = substr( $page, strlen( $starter ) );
+            } else if( strncmp( $page, $starterwww, strlen( $starterwww ) ) == 0 ) ) {
+                $page = substr( $page, strlen( $starterwww ) );
+            }
         }
         $data = array (
             'beer_name'     => $name,
