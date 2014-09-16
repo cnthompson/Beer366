@@ -28,11 +28,7 @@
         $brewerAnchor = anchor( $brewerBase, $beer[ 'brewery_name' ] );
         $styleBase = base_url( "beer/styles/" . $beer[ 'family_id' ] . '/' . $beer[ 'style_id' ] . '/' . $beer[ 'substyle_id' ] . '/' );
         $styleAnchor = anchor( $styleBase, $beer[ 'substyle_name' ] );
-        $edit_props = array(
-            'src' => 'img/pencil.png',
-            'alt' => 'Edit',
-        );
-        $editAnchor    = anchor( base_url( 'log/drink/' . $beer[ 'log_id' ] . '/l/' ), img( $edit_props ), array( 'title' => 'Edit' ) );
+        $editAnchor    = anchor( base_url( 'log/drink/' . $beer[ 'log_id' ] . '/l/' ), '<i class="icon-pencil"></i>', array( 'title' => 'Edit' ) );
         if( $user == null ) {
             $this->table->add_row( $beer[ 'date' ], $beer[ 'display_name' ], $beerAnchor, $brewerAnchor, $styleAnchor, $beer[ 'ssize' ], $beer[ 'rating' ], $beer[ 'notes' ], $beer[ 'original' ] == null ? 'X' : '' );
         } else if( $this->authenticator->is_current_user( $user[ 'user_id' ] ) ) {
